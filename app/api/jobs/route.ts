@@ -1,0 +1,157 @@
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth-guard";
+import { createJobSchema } from "@/lib/validations";
+import { apiSuccess, apiError, apiServerError } from "@/lib/api-response";
+import { matchArtisans, notifyTargetArtisan } from "@/services/matching";
+import { createPaymentIntent, isStripeConfigured, PLATFORM_FEE_PERCENT } from "@/lib/stripe";
+import { createNotification } from "@/services/notification";
+import { jobLogger } from "@/lib/logger";
+
+export async function GET(req: NextRequest) {
+  const auth = requireAuth(req);
+  if ("error" in auth) return auth.error;
+
+  const { payload } = auth;
+  const { searchParams } = new URL(req.url);
+  const page = parseInt(searchParams.get("page") ?? "1");
+  const limit = parseInt(searchParams.get("limit") ?? "10");
+  const skip = (page - 1) * limit;
+
+  try {
+    const where =
+      payload.role === "CLIENT"
+        ? { clientId: payload.userId }
+        : payload.role === "ARTISAN"
+        ? { assignment: { artisan: { userId: payload.userId } } }
+        : {};
+
+    const [jobs, total] = await Promise.all([
+      prisma.jobRequest.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+        include: {
+          category: true,
+          client: { select: { firstName: true, lastName: true, phone: true } },
+          assignment: {
+            include: {
+              artisan: {
+                select: {
+                  companyName: true,
+                  ratingAverage: true,
+                  photoUrl: true,
+                  user: { select: { firstName: true, lastName: true, phone: true } },
+                },
+              },
+            },
+          },
+          payment: { select: { status: true, amount: true } },
+          review: { select: { rating: true, comment: true } },
+        },
+      }),
+      prisma.jobRequest.count({ where }),
+    ]);
+
+    return apiSuccess({ jobs, total, page, limit, pages: Math.ceil(total / limit) });
+  } catch (err) {
+    jobLogger.error({ err }, "List jobs error");
+    return apiServerError();
+  }
+}
+
+export async function POST(req: NextRequest) {
+  const auth = requireAuth(req, ["CLIENT"]);
+  if ("error" in auth) return auth.error;
+
+  const { payload } = auth;
+
+  try {
+    const body = await req.json();
+    const parsed = createJobSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return apiError(parsed.error.issues[0].message);
+    }
+
+    const { categoryId, description, address, city, urgencyLevel, scheduledAt, targetArtisanId } = parsed.data;
+
+    // Estimate price from local artisans
+    const artisanServices = await prisma.artisanService.findMany({
+      where: {
+        categoryId,
+        isActive: true,
+        artisan: { city, isApproved: true },
+      },
+      select: { basePrice: true, emergencyFee: true },
+    });
+
+    const estimatedPrice =
+      artisanServices.length > 0
+        ? artisanServices.reduce((sum, s) => {
+            const price = urgencyLevel === "URGENT"
+              ? s.basePrice + s.emergencyFee
+              : s.basePrice;
+            return sum + price;
+          }, 0) / artisanServices.length
+        : 150; // fallback CHF
+
+    const platformFee = estimatedPrice * PLATFORM_FEE_PERCENT;
+
+    // Create Stripe PaymentIntent only if Stripe is configured
+    const stripeReady = isStripeConfigured();
+    let paymentIntentId: string | null = null;
+    let clientSecret: string | null = null;
+
+    if (stripeReady) {
+      const paymentIntent = await createPaymentIntent(estimatedPrice, "temp");
+      paymentIntentId = paymentIntent.id;
+      clientSecret = paymentIntent.client_secret;
+    }
+
+    // Create job + payment atomically
+    const job = await prisma.$transaction(async (tx) => {
+      const newJob = await tx.jobRequest.create({
+        data: {
+          clientId: payload.userId,
+          categoryId,
+          description,
+          address,
+          city,
+          urgencyLevel,
+          status: "MATCHING",
+          estimatedPrice,
+          ...(scheduledAt ? { scheduledAt: new Date(scheduledAt) } : {}),
+          ...(targetArtisanId ? { targetArtisanId } : {}),
+        },
+      });
+
+      await tx.payment.create({
+        data: {
+          jobId: newJob.id,
+          stripePaymentIntentId: paymentIntentId,
+          amount: estimatedPrice,
+          platformFee,
+          status: stripeReady ? "AUTHORIZED" : "PENDING",
+        },
+      });
+
+      return newJob;
+    });
+
+    // Notify artisan(s) — async, don't block response
+    if (targetArtisanId) {
+      // Demande directe depuis la carte interactive
+      notifyTargetArtisan(job.id, targetArtisanId, city).catch((err) => jobLogger.error({ err }, "notifyTargetArtisan failed"));
+    } else {
+      // Matching automatique (top 5 par ville/catégorie)
+      matchArtisans(job.id, categoryId, city).catch((err) => jobLogger.error({ err }, "matchArtisans failed"));
+    }
+
+    return apiSuccess({ jobId: job.id, estimatedPrice, clientSecret }, 201);
+  } catch (err) {
+    jobLogger.error({ err }, "Create job error");
+    return apiServerError();
+  }
+}

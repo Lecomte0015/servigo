@@ -1,0 +1,356 @@
+// ServiGo — Prisma Schema
+// PostgreSQL · Production-ready
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
+
+enum Role {
+  CLIENT
+  ARTISAN
+  ADMIN
+}
+
+enum UrgencyLevel {
+  STANDARD
+  URGENT
+}
+
+enum JobStatus {
+  PENDING
+  MATCHING
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  RELEASED
+  REFUNDED
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// ─────────────────────────────────────────
+// USER
+// ─────────────────────────────────────────
+
+model User {
+  id         String   @id @default(uuid())
+  role       Role     @default(CLIENT)
+  firstName  String
+  lastName   String
+  email      String   @unique
+  password   String
+  phone      String?
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  resetToken              String?   @unique
+  resetTokenExpiry        DateTime?
+  verificationToken       String?   @unique
+  verificationTokenExpiry DateTime?
+  stripeCustomerId        String?   // Stripe Customer ID for saved payment methods
+
+  // ── 2FA TOTP (admin uniquement) ──────────────────────────────────────────
+  totpEnabled       Boolean @default(false)
+  totpSecret        String? // secret AES-256-GCM chiffré (actif)
+  totpPendingSecret String? // secret AES-256-GCM chiffré (en attente de vérification)
+
+  artisanProfile ArtisanProfile?
+  jobRequests    JobRequest[]    @relation("ClientJobs")
+  reviews        Review[]        @relation("ClientReviews")
+  notifications  Notification[]
+  sentMessages   Message[]       @relation("MessageSender")
+  auditLogs      AuditLog[]      @relation("AdminAuditLogs")
+
+  @@index([email])
+  @@index([role])
+}
+
+// ─────────────────────────────────────────
+// AUDIT LOG
+// ─────────────────────────────────────────
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  adminId    String
+  action     String   // ARTISAN_APPROVED | ARTISAN_REJECTED | PAYOUT_* | SETTINGS_UPDATED | CATEGORY_*
+  targetId   String?  // ID de l'entité affectée
+  targetType String?  // ArtisanProfile | Payout | ServiceCategory | SiteSettings
+  details    Json?    // contexte additionnel (motif, montant, nom...)
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  admin User @relation("AdminAuditLogs", fields: [adminId], references: [id])
+
+  @@index([adminId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+// ─────────────────────────────────────────
+// ARTISAN PROFILE
+// ─────────────────────────────────────────
+
+model ArtisanProfile {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  companyName        String
+  rcNumber           String
+  insuranceVerified  Boolean  @default(false)
+  isApproved         Boolean  @default(false)
+  ratingAverage      Float    @default(0)
+  ratingCount        Int      @default(0)
+  city               String
+  description           String?
+  emergencyAvailable    Boolean  @default(false)
+  onboardingCompleted   Boolean  @default(false)
+  photoUrl              String?
+  slug                  String?  @unique  // URL-friendly identifier for public profile
+  createdAt             DateTime @default(now())
+
+  // Bank account for payouts (stored encrypted AES-256-GCM)
+  iban                  String?
+  accountHolder         String?
+
+  // Géolocalisation (geocodée automatiquement depuis city)
+  latitude     Float?
+  longitude    Float?
+
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services     ArtisanService[]
+  assignments  JobAssignment[]
+  reviews      Review[]         @relation("ArtisanReviews")
+  payouts      Payout[]
+  targetedJobs JobRequest[]     @relation("TargetedJobs")
+
+  @@index([city])
+  @@index([isApproved, emergencyAvailable])
+  @@index([slug])
+  @@index([latitude, longitude])
+}
+
+// ─────────────────────────────────────────
+// SERVICE CATEGORY
+// ─────────────────────────────────────────
+
+model ServiceCategory {
+  id           String  @id @default(uuid())
+  name         String
+  slug         String  @unique
+  icon         String?           // emoji fallback
+  imageUrl     String?           // real image (Supabase Storage)
+  description  String?           // short card description
+  startPrice   Float?            // "Dès X CHF/h"
+  bgColor      String?           // card background color
+  accentColor  String?           // card accent color
+  displayOrder Int     @default(0)
+  isVisible    Boolean @default(true)
+
+  artisanServices ArtisanService[]
+  jobRequests     JobRequest[]
+
+  @@index([slug])
+  @@index([displayOrder])
+}
+
+// ─────────────────────────────────────────
+// ARTISAN SERVICE
+// ─────────────────────────────────────────
+
+model ArtisanService {
+  id           String  @id @default(uuid())
+  artisanId    String
+  categoryId   String
+  basePrice    Float
+  emergencyFee Float
+  isActive     Boolean @default(true)
+
+  artisan  ArtisanProfile  @relation(fields: [artisanId], references: [id], onDelete: Cascade)
+  category ServiceCategory @relation(fields: [categoryId], references: [id])
+
+  @@unique([artisanId, categoryId])
+  @@index([artisanId, isActive])
+}
+
+// ─────────────────────────────────────────
+// JOB REQUEST
+// ─────────────────────────────────────────
+
+model JobRequest {
+  id             String       @id @default(uuid())
+  clientId        String
+  categoryId      String
+  description     String
+  address         String
+  city            String
+  urgencyLevel    UrgencyLevel @default(STANDARD)
+  status          JobStatus    @default(PENDING)
+  estimatedPrice  Float?
+  scheduledAt     DateTime?    // date d'intervention planifiée (STANDARD uniquement)
+  targetArtisanId String?      // demande directe à un artisan spécifique (via carte)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  client        User            @relation("ClientJobs", fields: [clientId], references: [id])
+  category      ServiceCategory @relation(fields: [categoryId], references: [id])
+  targetArtisan ArtisanProfile? @relation("TargetedJobs", fields: [targetArtisanId], references: [id])
+  assignment    JobAssignment?
+  payment       Payment?
+  review        Review?
+  messages      Message[]
+
+  @@index([clientId])
+  @@index([status])
+  @@index([city, status])
+  @@index([targetArtisanId])
+}
+
+// ─────────────────────────────────────────
+// MESSAGE (in-app chat par mission)
+// ─────────────────────────────────────────
+
+model Message {
+  id        String    @id @default(uuid())
+  jobId     String
+  senderId  String
+  content   String
+  readAt    DateTime? // null = non lu
+  createdAt DateTime  @default(now())
+
+  job    JobRequest @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  sender User       @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([jobId, createdAt])
+  @@index([senderId])
+}
+
+// ─────────────────────────────────────────
+// JOB ASSIGNMENT
+// ─────────────────────────────────────────
+
+model JobAssignment {
+  id          String    @id @default(uuid())
+  jobId       String    @unique
+  artisanId   String
+  acceptedAt  DateTime?
+  startedAt   DateTime?
+  completedAt DateTime?
+  finalPrice  Float?
+
+  job     JobRequest     @relation(fields: [jobId], references: [id])
+  artisan ArtisanProfile @relation(fields: [artisanId], references: [id])
+
+  @@index([artisanId])
+}
+
+// ─────────────────────────────────────────
+// REVIEW
+// ─────────────────────────────────────────
+
+model Review {
+  id        String   @id @default(uuid())
+  jobId     String   @unique
+  clientId  String
+  artisanId String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  job     JobRequest     @relation(fields: [jobId], references: [id])
+  client  User           @relation("ClientReviews", fields: [clientId], references: [id])
+  artisan ArtisanProfile @relation("ArtisanReviews", fields: [artisanId], references: [id])
+
+  @@index([artisanId])
+}
+
+// ─────────────────────────────────────────
+// PAYMENT
+// ─────────────────────────────────────────
+
+model Payment {
+  id                    String        @id @default(uuid())
+  jobId                 String        @unique
+  stripePaymentIntentId String?       @unique  // null when Stripe not configured
+  amount                Float
+  platformFee           Float
+  status                PaymentStatus @default(PENDING)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  job JobRequest @relation(fields: [jobId], references: [id])
+
+  @@index([stripePaymentIntentId])
+}
+
+// ─────────────────────────────────────────
+// NOTIFICATION
+// ─────────────────────────────────────────
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+}
+
+// ─────────────────────────────────────────
+// PAYOUT (Retrait artisan vers compte bancaire)
+// ─────────────────────────────────────────
+
+model Payout {
+  id            String       @id @default(uuid())
+  artisanId     String
+  amount        Float
+  status        PayoutStatus @default(PENDING)
+  // Snapshot du RIB au moment de la demande
+  iban          String
+  accountHolder String
+  // Admin
+  adminNotes    String?
+  processedAt   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  artisan ArtisanProfile @relation(fields: [artisanId], references: [id], onDelete: Cascade)
+
+  @@index([artisanId])
+  @@index([status])
+}
+
+// ─────────────────────────────────────────
+// SITE SETTINGS (CMS — homepage éditable)
+// ─────────────────────────────────────────
+
+model SiteSettings {
+  id        String   @id @default("singleton")
+  data      Json     // Full homepage config as JSON
+  updatedAt DateTime @updatedAt
+}

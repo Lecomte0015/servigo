@@ -1,0 +1,41 @@
+"use client";
+
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+interface AuthUser {
+  id: string;
+  email: string;
+  role: "CLIENT" | "ARTISAN" | "ADMIN";
+  firstName: string;
+  lastName: string;
+  isApproved?: boolean | null;
+}
+
+interface AuthState {
+  user: AuthUser | null;
+  isLoading: boolean;
+  setUser: (user: AuthUser | null) => void;
+  setLoading: (loading: boolean) => void;
+  logout: () => Promise<void>;
+}
+
+export const useAuth = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      isLoading: false,
+      setUser: (user) => set({ user }),
+      setLoading: (isLoading) => set({ isLoading }),
+      logout: async () => {
+        await fetch("/api/auth/logout", { method: "POST" });
+        set({ user: null });
+        window.location.href = "/auth/login";
+      },
+    }),
+    {
+      name: "servigo-auth",
+      partialize: (state) => ({ user: state.user }),
+    }
+  )
+);
