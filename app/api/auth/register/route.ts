@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { randomBytes } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/hash";
+import { z } from "zod";
 import { registerClientSchema, registerArtisanSchema } from "@/lib/validations";
 import { apiSuccess, apiError, apiServerError } from "@/lib/api-response";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     const parsed = schema.safeParse(body);
 
     if (!parsed.success) {
-      return apiError(parsed.error.errors[0].message);
+      return apiError(parsed.error.issues[0].message);
     }
 
     const data = parsed.data;
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
     const { token, expiry } = generateVerificationToken();
 
     if (role === "ARTISAN") {
-      const artisanData = data as typeof registerArtisanSchema._type;
+      const artisanData = data as z.infer<typeof registerArtisanSchema>;
 
       const user = await prisma.user.create({
         data: {

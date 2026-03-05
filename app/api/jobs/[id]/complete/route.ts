@@ -31,8 +31,10 @@ export async function POST(
     if (job.status !== "IN_PROGRESS") return apiError("Statut invalide");
     if (!job.payment) return apiError("Paiement introuvable");
 
-    // Capture Stripe payment
-    await capturePaymentIntent(job.payment.stripePaymentIntentId);
+    // Capture Stripe payment (stripePaymentIntentId may be null if Stripe not configured)
+    if (job.payment.stripePaymentIntentId) {
+      await capturePaymentIntent(job.payment.stripePaymentIntentId);
+    }
 
     const now = new Date();
 

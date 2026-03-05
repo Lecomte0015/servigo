@@ -77,7 +77,7 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
     const parsed = bankAccountSchema.safeParse(body);
     if (!parsed.success) {
-      return apiError(parsed.error.errors[0].message);
+      return apiError(parsed.error.issues[0].message);
     }
 
     const { iban, accountHolder } = parsed.data;

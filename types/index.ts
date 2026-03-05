@@ -8,6 +8,7 @@ export interface AuthUser {
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string | null;
 }
 
 // ─── API Responses ──────────────────────────────────────────────────────────
@@ -86,9 +87,15 @@ export type NotificationType =
   | "JOB_ASSIGNED"
   | "JOB_STARTED"
   | "JOB_COMPLETED"
+  | "JOB_CANCELLED"
   | "REVIEW_RECEIVED"
   | "PROFILE_APPROVED"
-  | "PAYMENT_CAPTURED";
+  | "PROFILE_REJECTED"
+  | "PAYMENT_CAPTURED"
+  | "PAYOUT_REQUESTED"
+  | "PAYOUT_PROCESSING"
+  | "PAYOUT_COMPLETED"
+  | "PAYOUT_FAILED";
 
 export interface NotificationPayload {
   userId: string;

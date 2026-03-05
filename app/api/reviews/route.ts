@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const parsed = createReviewSchema.safeParse(body);
-    if (!parsed.success) return apiError(parsed.error.errors[0].message);
+    if (!parsed.success) return apiError(parsed.error.issues[0].message);
 
     const { jobId, rating, comment } = parsed.data;
 

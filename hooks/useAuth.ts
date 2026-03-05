@@ -10,6 +10,7 @@ interface AuthUser {
   firstName: string;
   lastName: string;
   isApproved?: boolean | null;
+  phone?: string | null;
 }
 
 interface AuthState {
