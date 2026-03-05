@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "prisma migrate dev",
-    "db:push": "prisma db push",
+    "db:push": "node --env-file=.env -e \"const {execSync}=require('child_process');execSync('prisma db push',{stdio:'inherit',env:{...process.env,DATABASE_URL:process.env.DIRECT_URL||process.env.DATABASE_URL}})\"",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force && tsx prisma/seed.ts",
