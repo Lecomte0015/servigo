@@ -88,7 +88,7 @@ export default function AdminPaymentsPage() {
             <p className="text-2xl font-bold text-[#1CA7A6] mt-1">{summary.totalAmount.toFixed(0)} CHF</p>
           </Card>
           <Card padding="md">
-            <p className="text-xs text-gray-400">Commission ServiGo (10%)</p>
+            <p className="text-xs text-gray-400">Commission GoServi (10%)</p>
             <p className="text-2xl font-bold text-green-600 mt-1">{summary.totalFees.toFixed(0)} CHF</p>
           </Card>
           <Card padding="md">

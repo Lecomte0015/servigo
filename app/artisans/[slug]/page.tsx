@@ -101,13 +101,13 @@ export async function generateMetadata({
   const artisan = await getArtisan(slug);
 
   if (!artisan) {
-    return { title: "Artisan introuvable | ServiGo" };
+    return { title: "Artisan introuvable | GoServi" };
   }
 
-  const title = `${artisan.companyName} — ${artisan.city} | ServiGo`;
+  const title = `${artisan.companyName} — ${artisan.city} | GoServi`;
   const description =
     artisan.description ??
-    `${artisan.companyName} est un artisan professionnel basé à ${artisan.city}. ${artisan.ratingCount > 0 ? `Note : ${artisan.ratingAverage.toFixed(1)}/5 sur ${artisan.ratingCount} avis.` : ""} Trouvez et réservez rapidement sur ServiGo.`;
+    `${artisan.companyName} est un artisan professionnel basé à ${artisan.city}. ${artisan.ratingCount > 0 ? `Note : ${artisan.ratingAverage.toFixed(1)}/5 sur ${artisan.ratingCount} avis.` : ""} Trouvez et réservez rapidement sur GoServi.`;
 
   return {
     title,
@@ -198,7 +198,7 @@ export default async function ArtisanPublicPage({
         <div style={{ background: "#ffffff", borderBottom: "1px solid #E6F2F2" }}>
           <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "12px 24px" }}>
             <nav style={{ fontSize: "13px", color: "#6B7280" }}>
-              <Link href="/" style={{ color: "#1CA7A6", textDecoration: "none" }}>ServiGo</Link>
+              <Link href="/" style={{ color: "#1CA7A6", textDecoration: "none" }}>GoServi</Link>
               {" / "}
               <Link href="/services" style={{ color: "#1CA7A6", textDecoration: "none" }}>Artisans</Link>
               {" / "}

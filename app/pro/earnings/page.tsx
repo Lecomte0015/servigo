@@ -75,7 +75,7 @@ export default function ProEarningsPage() {
       {/* Header */}
       <div>
         <h1 className="text-xl font-semibold text-[#1F2937]">Mes revenus</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Suivi de vos gains ServiGo</p>
+        <p className="text-sm text-gray-500 mt-0.5">Suivi de vos gains GoServi</p>
       </div>
 
       {/* Summary KPIs */}
@@ -91,7 +91,7 @@ export default function ProEarningsPage() {
           {
             label: "Frais plateforme",
             value: `${(data?.summary.totalFees ?? 0).toFixed(0)} CHF`,
-            sub: "10% ServiGo",
+            sub: "10% GoServi",
             color: "text-red-500",
             icon: "📊",
           },
@@ -214,7 +214,7 @@ export default function ProEarningsPage() {
           <div>
             <p className="text-sm font-medium text-[#1F2937]">Frais de plateforme</p>
             <p className="text-xs text-gray-500 mt-0.5">
-              ServiGo prélève 10% de commission sur chaque mission pour vous mettre en relation avec des clients qualifiés.
+              GoServi prélève 10% de commission sur chaque mission pour vous mettre en relation avec des clients qualifiés.
               Le paiement est sécurisé via Stripe avec pré-autorisation et capture à la completion.
             </p>
           </div>

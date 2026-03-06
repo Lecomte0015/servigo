@@ -235,7 +235,7 @@ export default function PaymentMethodsPage() {
         <span>🔒</span>
         <p>
           Vos données bancaires sont chiffrées et stockées de façon sécurisée par Stripe.
-          ServiGo n'a jamais accès à vos numéros de carte complets.
+          GoServi n'a jamais accès à vos numéros de carte complets.
         </p>
       </div>
     </div>

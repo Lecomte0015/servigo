@@ -78,7 +78,7 @@ export function DashboardShell({
         {/* Logo + notification bell */}
         <div className="h-14 px-4 flex items-center justify-between border-b border-[#D1E5E5]">
           <Link href="/" className="font-bold text-[#1CA7A6] text-base flex items-center gap-1">
-            <span>⚡</span> ServiGo
+            <span>⚡</span> GoServi
           </Link>
           <NotificationBell />
         </div>
@@ -139,7 +139,7 @@ export function DashboardShell({
         </button>
 
         <Link href="/" className="font-bold text-[#1CA7A6] text-base flex items-center gap-1">
-          <span>⚡</span> ServiGo
+          <span>⚡</span> GoServi
         </Link>
 
         <div className="flex items-center gap-2">
@@ -167,7 +167,7 @@ export function DashboardShell({
                 onClick={() => setDrawerOpen(false)}
                 className="font-bold text-[#1CA7A6] text-base flex items-center gap-1"
               >
-                <span>⚡</span> ServiGo
+                <span>⚡</span> GoServi
               </Link>
               <button
                 onClick={() => setDrawerOpen(false)}

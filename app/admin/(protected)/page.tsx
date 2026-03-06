@@ -43,7 +43,7 @@ export default function AdminPage() {
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <h1 className="text-xl font-semibold text-[#1F2937]">Administration ServiGo</h1>
+        <h1 className="text-xl font-semibold text-[#1F2937]">Administration GoServi</h1>
         <p className="text-sm text-gray-500 mt-0.5">Vue d&apos;ensemble de la plateforme</p>
       </div>
 

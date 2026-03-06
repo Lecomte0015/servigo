@@ -284,7 +284,7 @@ export default function ArtisansMapPage() {
           {/* Footer */}
           <div className="mt-auto p-3 border-t border-[#E6F2F2] bg-[#F4F7F7] shrink-0">
             <p className="text-xs text-gray-400 text-center">
-              🗺️ Carte © OpenStreetMap · Artisans vérifiés ServiGo
+              🗺️ Carte © OpenStreetMap · Artisans vérifiés GoServi
             </p>
           </div>
         </aside>

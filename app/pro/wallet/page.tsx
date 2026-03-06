@@ -240,9 +240,9 @@ export default function ProWalletPage() {
       <div className="bg-[#F4F7F7] border border-[#D1E5E5] rounded-[10px] px-4 py-3 flex items-start gap-3">
         <span className="text-lg">ℹ️</span>
         <div>
-          <p className="text-sm font-medium text-[#1F2937]">Commission ServiGo</p>
+          <p className="text-sm font-medium text-[#1F2937]">Commission GoServi</p>
           <p className="text-xs text-gray-500 mt-0.5">
-            ServiGo prélève <strong>10%</strong> sur chaque mission complétée. Le montant net vous est reversé après validation du paiement.
+            GoServi prélève <strong>10%</strong> sur chaque mission complétée. Le montant net vous est reversé après validation du paiement.
             Le solde devient <span className="text-[#1CA7A6] font-medium">disponible</span> une fois la mission entièrement réglée par le client.
           </p>
         </div>

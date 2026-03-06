@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
 
       // Pas de 2FA — vérifier le rôle
       if (json.data?.role !== "ADMIN") {
-        setError("Accès réservé aux administrateurs ServiGo.");
+        setError("Accès réservé aux administrateurs GoServi.");
         await fetch("/api/auth/logout", { method: "POST" });
         return;
       }
@@ -100,7 +100,7 @@ export default function AdminLoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 text-white font-bold text-2xl mb-1">
-            <span>⚡</span> ServiGo
+            <span>⚡</span> GoServi
           </div>
           <p className="text-xs text-gray-400 tracking-widest uppercase mt-1">
             Back-office Administration

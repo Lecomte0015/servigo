@@ -122,7 +122,7 @@ export default function ArtisanOnboardingPage() {
       {/* Top bar */}
       <header className="bg-white border-b border-[#D1E5E5] h-14 flex items-center px-4 sticky top-0 z-10">
         <Link href="/" className="font-bold text-[#1CA7A6] flex items-center gap-1 text-base">
-          <span>⚡</span> ServiGo
+          <span>⚡</span> GoServi
         </Link>
         <span className="mx-3 text-gray-300">|</span>
         <span className="text-sm text-gray-500">Configuration de votre compte artisan</span>

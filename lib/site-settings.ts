@@ -78,7 +78,7 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
     title: "Tous les artisans de Genève,",
     titleHighlight: "en moins de 30 min",
     subtitle:
-      "ServiGo met en relation les particuliers avec des artisans locaux vérifiés pour toutes vos interventions urgentes — 24h/24, 7j/7.",
+      "GoServi met en relation les particuliers avec des artisans locaux vérifiés pour toutes vos interventions urgentes — 24h/24, 7j/7.",
     searchPlaceholder: "Quel service cherchez-vous ? (ex : plomberie, électricité…)",
     searchCta: "Rechercher",
     bgFrom: "#E6F2F2",
@@ -119,7 +119,7 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
   guarantees: {
     title: "Votre satisfaction,",
     titleHighlight: "garantie",
-    subtitle: "ServiGo s'engage pour une expérience irréprochable",
+    subtitle: "GoServi s'engage pour une expérience irréprochable",
     items: [
       {
         icon: "🛡️",
@@ -140,7 +140,7 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
   },
   proCta: {
     badge: "Vous êtes professionnel ?",
-    title: "Développez votre activité avec ServiGo",
+    title: "Développez votre activité avec GoServi",
     subtitle:
       "Rejoignez notre réseau d'artisans vérifiés à Genève. Recevez des missions qualifiées, gérez votre agenda et soyez payé rapidement.",
     benefits: [
@@ -148,7 +148,7 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
       "Missions urgentes et standard",
       "Paiement sécurisé et rapide",
     ],
-    ctaText: "Devenir artisan ServiGo →",
+    ctaText: "Devenir artisan GoServi →",
     statValue: "500+",
     statLabel: "artisans nous font confiance",
     revenueValue: "+2 000 CHF",
@@ -157,7 +157,7 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
   footer: {
     tagline: "La marketplace des artisans de confiance à Genève.",
     location: "Genève, Suisse",
-    copyright: "ServiGo Sàrl — Genève, Suisse",
+    copyright: "GoServi Sàrl — Genève, Suisse",
   },
 };
 
