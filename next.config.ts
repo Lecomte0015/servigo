@@ -50,12 +50,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1", "localhost"],
-  turbopack: {
-    root: process.cwd(),
-  },
+  // turbopack.root is dev-only — omit in production to avoid Vercel path issues
   // ─── Prisma: prevent bundling native binaries in serverless functions ─────
-  // Prisma uses a native query engine binary that cannot be bundled by webpack.
-  // Marking these as external ensures they're loaded from node_modules at runtime.
   serverExternalPackages: ["@prisma/client", "prisma"],
   async headers() {
     return [
