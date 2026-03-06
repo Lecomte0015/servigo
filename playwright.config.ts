@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * ServiGo — Playwright E2E Configuration
+ * GoServi — Playwright E2E Configuration
  *
  * Tests run sequentially (workers: 1) to avoid DB conflicts.
  * Uses existing dev server if running, otherwise starts one.

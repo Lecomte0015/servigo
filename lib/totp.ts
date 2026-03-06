@@ -1,5 +1,5 @@
 /**
- * ServiGo — TOTP (Time-based One-Time Password) helper
+ * GoServi — TOTP (Time-based One-Time Password) helper
  *
  * Utilise otplib (RFC 6238 / Google Authenticator compatible).
  * Le secret est chiffré AES-256-GCM avant stockage en DB.
@@ -35,7 +35,7 @@ export function generateTotpSecret(): string {
  */
 export function getTotpUri(secret: string, adminEmail: string): string {
   return generateURI({
-    issuer: "ServiGo Admin",
+    issuer: "GoServi Admin",
     label:  adminEmail,
     secret,
   });

@@ -1,5 +1,5 @@
 /**
- * ServiGo — Logger structuré (pino)
+ * GoServi — Logger structuré (pino)
  *
  * Remplace les console.error/console.warn/console.info dispersés.
  *

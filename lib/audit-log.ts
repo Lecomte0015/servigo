@@ -1,5 +1,5 @@
 /**
- * ServiGo — Audit Log Service
+ * GoServi — Audit Log Service
  *
  * Enregistre les actions sensibles des administrateurs.
  * Non-bloquant : les erreurs sont loggées sans planter la requête principale.

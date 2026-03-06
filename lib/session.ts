@@ -1,5 +1,5 @@
 /**
- * ServiGo — Session Revocation
+ * GoServi — Session Revocation
  *
  * Stocke les JTI révoqués dans Upstash Redis avec TTL = durée restante du JWT.
  * Fallback no-op si Redis non configuré (la déconnexion efface quand même le cookie).
@@ -10,7 +10,7 @@
 import { sessionLogger } from "@/lib/logger";
 
 const BLACKLIST_PREFIX = "session:revoked:";
-const DEFAULT_TTL_SEC  = 7 * 24 * 3600; // 7 jours (durée max d'un JWT ServiGo)
+const DEFAULT_TTL_SEC  = 7 * 24 * 3600; // 7 jours (durée max d'un JWT GoServi)
 
 // ─── Lazy Redis client ──────────────────────────────────────────────────────
 

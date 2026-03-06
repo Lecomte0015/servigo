@@ -1,5 +1,5 @@
 /**
- * ServiGo — Environment Variable Validation
+ * GoServi — Environment Variable Validation
  *
  * Valide TOUTES les variables d'environnement au démarrage du serveur.
  * Les variables requises font crasher le process en production si absentes.
@@ -67,7 +67,7 @@ const envSchema = z.object({
     .string()
     .refine(
       (v) => !v || v.includes("@"),
-      "RESEND_FROM_EMAIL doit contenir une adresse email (ex: noreply@goservi.ch ou ServiGo <noreply@goservi.ch>)"
+      "RESEND_FROM_EMAIL doit contenir une adresse email (ex: noreply@goservi.ch ou GoServi <noreply@goservi.ch>)"
     )
     .optional()
     .or(z.literal("")),

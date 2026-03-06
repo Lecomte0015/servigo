@@ -1,5 +1,5 @@
 /**
- * ServiGo — Next.js Instrumentation Hook
+ * GoServi — Next.js Instrumentation Hook
  *
  * S'exécute UNE FOIS au démarrage du serveur Node.js, avant le premier request.
  * Utilisé pour :
@@ -28,7 +28,7 @@ export async function register() {
   const lines = [
     "",
     "┌─────────────────────────────────────────────────┐",
-    "│  ⚡  ServiGo — Démarrage                         │",
+    "│  ⚡  GoServi — Démarrage                         │",
     "└─────────────────────────────────────────────────┘",
     "",
     `  ENV          ${env.NODE_ENV}`,

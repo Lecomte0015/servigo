@@ -1,5 +1,5 @@
 /**
- * ServiGo — Rate Limiter
+ * GoServi — Rate Limiter
  *
  * Strategy:
  *   - If UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN are set  → Upstash Redis (multi-instance prod)
