@@ -17,16 +17,7 @@ export async function POST(req: NextRequest) {
       return apiError("Trop de tentatives de connexion. Réessayez dans 15 minutes.", 429);
     }
 
-    // ── Parse body (req.text() + JSON.parse pour exposer le body brut en cas d'erreur) ──
-    const rawText = await req.text();
-    let body: unknown;
-    try {
-      body = JSON.parse(rawText);
-    } catch (parseErr) {
-      authLogger.error({ parseErr, rawText }, "Login body JSON parse failed");
-      return apiServerError(`JSON parse error: ${String(parseErr)} | rawBody[:200]="${rawText.slice(0, 200)}"`);
-    }
-
+    const body = await req.json();
     const parsed = loginSchema.safeParse(body);
 
     if (!parsed.success) {
@@ -75,10 +66,7 @@ export async function POST(req: NextRequest) {
       isApproved: user.artisanProfile?.isApproved ?? null,
     });
   } catch (err) {
-    // TEMP DEBUG — remove after diagnosis
-    const msg = err instanceof Error ? err.message : String(err);
-    const stack = err instanceof Error ? err.stack?.slice(0, 500) : undefined;
     authLogger.error({ err }, "Login error");
-    return apiServerError(msg + " ||| " + stack);
+    return apiServerError();
   }
 }
