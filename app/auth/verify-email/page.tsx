@@ -58,7 +58,7 @@ function VerifyEmailContent() {
         {/* Logo */}
         <div className="text-center mb-6">
           <Link href="/" className="inline-flex items-center gap-2 text-[#1CA7A6] font-bold text-xl">
-            <span className="text-3xl">⚡</span> ServiGo
+            <span className="text-3xl">⚡</span> GoServi
           </Link>
         </div>
 

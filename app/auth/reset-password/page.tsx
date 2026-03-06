@@ -71,7 +71,7 @@ function ResetPasswordForm() {
               <>
                 <div className="text-center mb-6">
                   <Link href="/" className="inline-flex items-center gap-1 font-bold text-[#1CA7A6] text-lg mb-4">
-                    <span>⚡</span> ServiGo
+                    <span>⚡</span> GoServi
                   </Link>
                   <h1 className="text-xl font-semibold text-[#1F2937]">
                     Nouveau mot de passe

@@ -90,7 +90,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-md">
           <div className="text-center mb-6">
             <Link href="/" className="inline-flex items-center gap-2 text-[#1CA7A6] font-bold text-xl">
-              <span className="text-3xl">⚡</span> ServiGo
+              <span className="text-3xl">⚡</span> GoServi
             </Link>
           </div>
           <div className="bg-white border border-[#D1E5E5] rounded-[10px] shadow-sm p-8 text-center">
@@ -128,7 +128,7 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="text-center mb-6">
           <Link href="/" className="inline-flex items-center gap-2 text-[#1CA7A6] font-bold text-xl">
-            <span className="text-3xl">⚡</span> ServiGo
+            <span className="text-3xl">⚡</span> GoServi
           </Link>
           <p className="text-sm text-gray-500 mt-1">Créez votre compte gratuit</p>
         </div>
