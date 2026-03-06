@@ -19,7 +19,7 @@ export async function geocodeCity(city: string): Promise<GeoResult | null> {
 
     const res = await fetch(url, {
       headers: {
-        "User-Agent": "ServiGo/1.0 (contact@servigo.ch)",
+        "User-Agent": "GoServi/1.0 (contact@goservi.ch)",
         "Accept-Language": "fr",
       },
       next: { revalidate: 86400 }, // cache 24h

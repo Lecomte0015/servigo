@@ -15,7 +15,7 @@ const CATEGORIES = [
 ];
 
 async function main() {
-  console.log("🌱 Seeding ServiGo database...\n");
+  console.log("🌱 Seeding GoServi database...\n");
 
   // Categories
   for (const cat of CATEGORIES) {
@@ -33,46 +33,46 @@ async function main() {
   // Admin user
   const adminPassword = await bcrypt.hash("Admin123!", 12);
   const admin = await prisma.user.upsert({
-    where: { email: "admin@servigo.ch" },
+    where: { email: "admin@goservi.ch" },
     update: {},
     create: {
       role: "ADMIN",
       firstName: "Admin",
-      lastName: "ServiGo",
-      email: "admin@servigo.ch",
+      lastName: "GoServi",
+      email: "admin@goservi.ch",
       password: adminPassword,
       isVerified: true,
     },
   });
-  console.log(`✅ Admin: admin@servigo.ch / Admin123!`);
+  console.log(`✅ Admin: admin@goservi.ch / Admin123!`);
 
   // Demo client
   const clientPassword = await bcrypt.hash("Client123!", 12);
   const client = await prisma.user.upsert({
-    where: { email: "client@servigo.ch" },
+    where: { email: "client@goservi.ch" },
     update: {},
     create: {
       role: "CLIENT",
       firstName: "Marie",
       lastName: "Dupont",
-      email: "client@servigo.ch",
+      email: "client@goservi.ch",
       password: clientPassword,
       phone: "+41 79 123 45 67",
       isVerified: true,
     },
   });
-  console.log(`✅ Client: client@servigo.ch / Client123!`);
+  console.log(`✅ Client: client@goservi.ch / Client123!`);
 
   // Demo artisan — approved
   const artisanPassword = await bcrypt.hash("Artisan123!", 12);
   const artisanUser = await prisma.user.upsert({
-    where: { email: "artisan@servigo.ch" },
+    where: { email: "artisan@goservi.ch" },
     update: {},
     create: {
       role: "ARTISAN",
       firstName: "Pierre",
       lastName: "Martin",
-      email: "artisan@servigo.ch",
+      email: "artisan@goservi.ch",
       password: artisanPassword,
       phone: "+41 79 987 65 43",
       isVerified: true,
@@ -119,18 +119,18 @@ async function main() {
       });
     }
   }
-  console.log(`✅ Artisan: artisan@servigo.ch / Artisan123! (approuvé)`);
+  console.log(`✅ Artisan: artisan@goservi.ch / Artisan123! (approuvé)`);
 
   // Demo artisan — pending
   const artisan2Password = await bcrypt.hash("Artisan123!", 12);
   await prisma.user.upsert({
-    where: { email: "artisan2@servigo.ch" },
+    where: { email: "artisan2@goservi.ch" },
     update: {},
     create: {
       role: "ARTISAN",
       firstName: "Sophie",
       lastName: "Bernard",
-      email: "artisan2@servigo.ch",
+      email: "artisan2@goservi.ch",
       password: artisan2Password,
       phone: "+41 78 111 22 33",
       isVerified: false,
@@ -148,14 +148,14 @@ async function main() {
       },
     },
   });
-  console.log(`✅ Artisan (pending): artisan2@servigo.ch / Artisan123!`);
+  console.log(`✅ Artisan (pending): artisan2@goservi.ch / Artisan123!`);
 
   console.log("\n🎉 Seed completed!\n");
   console.log("Credentials:");
-  console.log("  Admin:   admin@servigo.ch    / Admin123!");
-  console.log("  Client:  client@servigo.ch   / Client123!");
-  console.log("  Artisan: artisan@servigo.ch  / Artisan123! (approved)");
-  console.log("  Artisan: artisan2@servigo.ch / Artisan123! (pending)");
+  console.log("  Admin:   admin@goservi.ch    / Admin123!");
+  console.log("  Client:  client@goservi.ch   / Client123!");
+  console.log("  Artisan: artisan@goservi.ch  / Artisan123! (approved)");
+  console.log("  Artisan: artisan2@goservi.ch / Artisan123! (pending)");
 }
 
 main()

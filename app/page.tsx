@@ -26,7 +26,7 @@ const FOOTER_LINKS = [
     ],
   },
   {
-    title: "ServiGo",
+    title: "GoServi",
     links: [
       { label: "À propos", href: "#" },
       { label: "Contact", href: "#" },
@@ -350,7 +350,7 @@ export default async function HomePage() {
           <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2 font-extrabold text-xl"
               style={{ color: settings.primaryColor }}>
-              <span>⚡</span> ServiGo
+              <span>⚡</span> GoServi
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">{footer.tagline}</p>
             <p className="text-xs text-gray-500 flex items-center gap-1">

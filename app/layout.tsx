@@ -8,10 +8,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ServiGo — Artisans urgents à Lausanne",
+  title: "GoServi — Artisans urgents à Genève & Lausanne",
   description:
-    "Trouvez un artisan disponible en quelques minutes. Plombiers, électriciens, serruriers — intervention rapide à Lausanne.",
-  keywords: "artisan urgence Lausanne, plombier urgent, électricien, serrurier",
+    "Trouvez un artisan disponible en quelques minutes. Plombiers, électriciens, serruriers — intervention rapide en Suisse romande.",
+  keywords: "artisan urgence Genève, plombier urgent, électricien, serrurier, GoServi",
 };
 
 export default function RootLayout({

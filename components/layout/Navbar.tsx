@@ -31,7 +31,7 @@ export function Navbar() {
           className="flex items-center gap-2 font-extrabold text-[#1CA7A6] text-xl shrink-0"
         >
           <span className="text-2xl">⚡</span>
-          ServiGo
+          GoServi
         </Link>
 
         {/* Desktop nav links */}

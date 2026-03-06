@@ -3,7 +3,7 @@ import { verifyToken, type JwtPayload } from "@/lib/jwt";
 import { apiForbidden, apiUnauthorized } from "@/lib/api-response";
 import type { NextResponse } from "next/server";
 
-const COOKIE_NAME = "servigo_token";
+const COOKIE_NAME = "goservi_token";
 
 type Role = "CLIENT" | "ARTISAN" | "ADMIN";
 

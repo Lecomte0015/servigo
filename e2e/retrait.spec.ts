@@ -34,7 +34,7 @@ test.describe("Retrait artisan", () => {
   test("3 — API wallet retourne les données correctes", async ({ request }) => {
     // Login as artisan
     const loginRes = await request.post("/api/auth/login", {
-      data: { email: "artisan@servigo.ch", password: "Artisan123!" },
+      data: { email: "artisan@goservi.ch", password: "Artisan123!" },
     });
     expect(loginRes.ok()).toBeTruthy();
 
@@ -53,7 +53,7 @@ test.describe("Retrait artisan", () => {
 
   test("4 — API payouts list retourne les retraits", async ({ request }) => {
     const loginRes = await request.post("/api/auth/login", {
-      data: { email: "artisan@servigo.ch", password: "Artisan123!" },
+      data: { email: "artisan@goservi.ch", password: "Artisan123!" },
     });
     expect(loginRes.ok()).toBeTruthy();
 
@@ -66,7 +66,7 @@ test.describe("Retrait artisan", () => {
 
   test("5 — Demande de retrait bloquée si solde insuffisant", async ({ request }) => {
     const loginRes = await request.post("/api/auth/login", {
-      data: { email: "artisan@servigo.ch", password: "Artisan123!" },
+      data: { email: "artisan@goservi.ch", password: "Artisan123!" },
     });
     expect(loginRes.ok()).toBeTruthy();
 

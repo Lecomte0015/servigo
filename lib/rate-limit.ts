@@ -90,7 +90,7 @@ async function getRedisRateLimit() {
         redis,
         limiter: Ratelimit.slidingWindow(max, `${Math.round(windowMs / 1000)} s`),
         analytics: false,
-        prefix: "servigo_rl",
+        prefix: "goservi_rl",
       });
 
       const { success, remaining, reset } = await limiter.limit(key);

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
 import { isSessionRevoked } from "@/lib/session";
 
-const COOKIE_NAME = "servigo_token";
+const COOKIE_NAME = "goservi_token";
 
 // Route access rules
 const PROTECTED_ROUTES: Record<string, string[]> = {

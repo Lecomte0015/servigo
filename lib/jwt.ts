@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { cookies } from "next/headers";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const COOKIE_NAME = "servigo_token";
+const COOKIE_NAME = "goservi_token";
 
 export interface JwtPayload {
   userId: string;

@@ -10,7 +10,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 // E2E test identifier — added to emails to allow easy cleanup
-export const E2E_EMAIL_SUFFIX = "+e2e@servigo.test";
+export const E2E_EMAIL_SUFFIX = "+e2e@goservi.test";
 
 async function globalSetup() {
   try {
@@ -19,9 +19,9 @@ async function globalSetup() {
       where: {
         email: {
           in: [
-            "client@servigo.ch",
-            "artisan@servigo.ch",
-            "admin@servigo.ch",
+            "client@goservi.ch",
+            "artisan@goservi.ch",
+            "admin@goservi.ch",
           ],
         },
         isVerified: false,

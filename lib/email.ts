@@ -1,5 +1,5 @@
 /**
- * ServiGo — Email Service (Resend)
+ * GoServi — Email Service (Resend)
  *
  * Usage:
  *   import { sendWelcomeEmail } from "@/lib/email";
@@ -16,7 +16,7 @@ const resend = process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== "re_
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
-const FROM = process.env.RESEND_FROM_EMAIL ?? "ServiGo <noreply@servigo.ch>";
+const FROM = process.env.RESEND_FROM_EMAIL ?? "GoServi <noreply@goservi.ch>";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 // ─── Base HTML Template ─────────────────────────────────────────────────────
@@ -27,7 +27,7 @@ function baseTemplate(content: string): string {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ServiGo</title>
+  <title>GoServi</title>
 </head>
 <body style="margin:0;padding:0;background:#F4F7F7;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;-webkit-font-smoothing:antialiased;">
   <div style="max-width:560px;margin:40px auto;padding:0 16px;">
@@ -38,7 +38,7 @@ function baseTemplate(content: string): string {
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td>
-              <span style="color:#ffffff;font-size:22px;font-weight:700;letter-spacing:-0.5px">ServiGo</span>
+              <span style="color:#ffffff;font-size:22px;font-weight:700;letter-spacing:-0.5px">GoServi</span>
               <p style="margin:2px 0 0;color:rgba(255,255,255,0.75);font-size:12px">La plateforme des artisans suisses</p>
             </td>
           </tr>
@@ -51,8 +51,8 @@ function baseTemplate(content: string): string {
       <!-- Footer -->
       <div style="padding:20px 36px;background:#F4F7F7;border-top:1px solid #E6F2F2;text-align:center;">
         <p style="margin:0;color:#9CA3AF;font-size:11px;line-height:1.6">
-          © 2026 ServiGo SA · Genève, Suisse<br>
-          <a href="${APP_URL}" style="color:#1CA7A6;text-decoration:none">servigo.ch</a>
+          © 2026 GoServi SA · Genève, Suisse<br>
+          <a href="${APP_URL}" style="color:#1CA7A6;text-decoration:none">goservi.ch</a>
           &nbsp;·&nbsp;
           <a href="${APP_URL}/support" style="color:#9CA3AF;text-decoration:none">Support</a>
         </p>
@@ -93,7 +93,7 @@ function infoBox(bg: string, border: string, textColor: string, content: string)
 
 export async function sendWelcomeEmail(to: string, firstName: string): Promise<void> {
   const html = baseTemplate(`
-    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700">Bienvenue sur ServiGo, ${firstName} ! 🎉</h2>
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700">Bienvenue sur GoServi, ${firstName} ! 🎉</h2>
     <p style="color:#6B7280;line-height:1.7;margin:0 0 20px">Votre compte est prêt. Vous pouvez dès maintenant :</p>
     <ul style="color:#6B7280;line-height:2;margin:0 0 24px;padding-left:20px">
       <li>Poster vos demandes de services en quelques clics</li>
@@ -101,16 +101,16 @@ export async function sendWelcomeEmail(to: string, firstName: string): Promise<v
       <li>Payer en toute sécurité via la plateforme</li>
     </ul>
     ${btn(`${APP_URL}/dashboard`, "Accéder à mon espace")}
-    <p style="color:#9CA3AF;font-size:12px;margin-top:24px">Vous avez une question ? Contactez-nous à <a href="mailto:support@servigo.ch" style="color:#1CA7A6">support@servigo.ch</a></p>
+    <p style="color:#9CA3AF;font-size:12px;margin-top:24px">Vous avez une question ? Contactez-nous à <a href="mailto:support@goservi.ch" style="color:#1CA7A6">support@goservi.ch</a></p>
   `);
-  await sendEmail(to, "🎉 Bienvenue sur ServiGo !", html);
+  await sendEmail(to, "🎉 Bienvenue sur GoServi !", html);
 }
 
 // ─── 2. Bienvenue Artisan ───────────────────────────────────────────────────
 
 export async function sendWelcomeArtisanEmail(to: string, firstName: string): Promise<void> {
   const html = baseTemplate(`
-    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700">Bienvenue sur ServiGo, ${firstName} ! 🔨</h2>
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700">Bienvenue sur GoServi, ${firstName} ! 🔨</h2>
     <p style="color:#6B7280;line-height:1.7;margin:0 0 16px">Votre demande d'inscription artisan a bien été reçue. Notre équipe va examiner votre dossier dans les <strong>24-48h</strong>.</p>
     ${infoBox("#F4F7F7", "#D1E5E5", "#374151", `<strong>📋 Prochaines étapes :</strong><br><br>
       1. Complétez votre profil et vos services<br>
@@ -118,7 +118,7 @@ export async function sendWelcomeArtisanEmail(to: string, firstName: string): Pr
       3. Commencez à recevoir des missions !`)}
     ${btn(`${APP_URL}/pro/onboarding`, "Compléter mon profil")}
   `);
-  await sendEmail(to, "🔨 Demande reçue — ServiGo Artisans", html);
+  await sendEmail(to, "🔨 Demande reçue — GoServi Artisans", html);
 }
 
 // ─── 3. Vérification email ──────────────────────────────────────────────────
@@ -134,12 +134,12 @@ export async function sendVerificationEmail(
       <div style="display:inline-block;width:60px;height:60px;background:#E6F2F2;border-radius:50%;line-height:60px;font-size:28px">✉️</div>
     </div>
     <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700;text-align:center">Confirmez votre adresse email</h2>
-    <p style="color:#6B7280;line-height:1.7;text-align:center;margin:0 0 24px">Bonjour ${firstName},<br>Cliquez sur le bouton ci-dessous pour activer votre compte ServiGo.</p>
+    <p style="color:#6B7280;line-height:1.7;text-align:center;margin:0 0 24px">Bonjour ${firstName},<br>Cliquez sur le bouton ci-dessous pour activer votre compte GoServi.</p>
     <div style="text-align:center">${btn(link, "Vérifier mon email")}</div>
     ${infoBox("#FFFBEB", "#FDE68A", "#92400E", "⏱ Ce lien est valable <strong>24 heures</strong>. Si vous n'avez pas créé de compte, ignorez simplement cet email.")}
     <p style="color:#9CA3AF;font-size:12px;word-break:break-all;text-align:center">Lien direct : <a href="${link}" style="color:#1CA7A6">${link}</a></p>
   `);
-  await sendEmail(to, "✉️ Confirmez votre adresse email — ServiGo", html);
+  await sendEmail(to, "✉️ Confirmez votre adresse email — GoServi", html);
 }
 
 // ─── 4. Réinitialisation mot de passe ──────────────────────────────────────
@@ -157,7 +157,7 @@ export async function sendPasswordResetEmail(
     ${infoBox("#FFFBEB", "#FDE68A", "#92400E", "⏱ Ce lien est valable <strong>1 heure</strong>. Si vous n'avez pas effectué cette demande, ignorez simplement cet email — votre compte reste sécurisé.")}
     <p style="color:#9CA3AF;font-size:12px;word-break:break-all">Lien direct : <a href="${link}" style="color:#1CA7A6">${link}</a></p>
   `);
-  await sendEmail(to, "Réinitialisation de votre mot de passe ServiGo", html);
+  await sendEmail(to, "Réinitialisation de votre mot de passe GoServi", html);
 }
 
 // ─── 4. Profil artisan approuvé ─────────────────────────────────────────────
@@ -192,7 +192,7 @@ export async function sendArtisanRejectedEmail(
     <p style="color:#6B7280;line-height:1.7;margin:0 0 24px">Vous pouvez corriger les points mentionnés et nous soumettre à nouveau votre dossier, ou contacter notre support.</p>
     ${btn(`${APP_URL}/pro/profile`, "Mettre à jour mon profil")}
   `);
-  await sendEmail(to, "Dossier artisan ServiGo — Action requise", html);
+  await sendEmail(to, "Dossier artisan GoServi — Action requise", html);
 }
 
 // ─── 6. Nouvelle mission disponible (artisan) ───────────────────────────────

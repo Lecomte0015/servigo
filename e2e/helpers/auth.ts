@@ -2,9 +2,9 @@ import { Page } from "@playwright/test";
 
 // ── Seeded test credentials ────────────────────────────────────────────────────
 export const CREDS = {
-  client:  { email: "client@servigo.ch",  password: "Client123!" },
-  artisan: { email: "artisan@servigo.ch", password: "Artisan123!" },
-  admin:   { email: "admin@servigo.ch",   password: "Admin123!" },
+  client:  { email: "client@goservi.ch",  password: "Client123!" },
+  artisan: { email: "artisan@goservi.ch", password: "Artisan123!" },
+  admin:   { email: "admin@goservi.ch",   password: "Admin123!" },
 } as const;
 
 // ── Login helpers ──────────────────────────────────────────────────────────────

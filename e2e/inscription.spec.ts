@@ -18,7 +18,7 @@ import { test, expect } from "@playwright/test";
  * Scenario D: Login blocked if not verified
  */
 
-const TEST_EMAIL = `user_${Date.now()}+e2e@servigo.test`;
+const TEST_EMAIL = `user_${Date.now()}+e2e@goservi.test`;
 const TEST_PASSWORD = "TestPass123!";
 
 test.describe("Inscription", () => {
@@ -26,7 +26,7 @@ test.describe("Inscription", () => {
     await page.goto("/auth/register");
 
     // Page loads
-    await expect(page).toHaveTitle(/ServiGo|Inscription|Register/i);
+    await expect(page).toHaveTitle(/GoServi|Inscription|Register/i);
 
     // Fill the form
     await page.fill('input[name="firstName"]', "Jean");
@@ -54,7 +54,7 @@ test.describe("Inscription", () => {
   });
 
   test("B — API registration + email verification flow", async ({ request }) => {
-    const uniqEmail = `api_${Date.now()}+e2e@servigo.test`;
+    const uniqEmail = `api_${Date.now()}+e2e@goservi.test`;
 
     // 1. Register
     const regRes = await request.post("/api/auth/register", {
@@ -94,7 +94,7 @@ test.describe("Inscription", () => {
       data: {
         firstName: "Dup",
         lastName:  "User",
-        email:     "client@servigo.ch",  // Already exists
+        email:     "client@goservi.ch",  // Already exists
         phone:     "+41791234569",
         password:  TEST_PASSWORD,
         role:      "CLIENT",
@@ -108,7 +108,7 @@ test.describe("Inscription", () => {
   test("D — Login with seeded verified client succeeds", async ({ request, page }) => {
     // Login via API
     const res = await request.post("/api/auth/login", {
-      data: { email: "client@servigo.ch", password: "Client123!" },
+      data: { email: "client@goservi.ch", password: "Client123!" },
     });
     expect(res.ok()).toBeTruthy();
     const body = await res.json();
@@ -118,7 +118,7 @@ test.describe("Inscription", () => {
     const me = await request.get("/api/auth/me");
     expect(me.ok()).toBeTruthy();
     const meBody = await me.json();
-    expect(meBody.data?.email).toBe("client@servigo.ch");
+    expect(meBody.data?.email).toBe("client@goservi.ch");
     expect(meBody.data?.role).toBe("CLIENT");
   });
 });

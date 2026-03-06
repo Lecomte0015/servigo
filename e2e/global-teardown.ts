@@ -6,7 +6,7 @@ async function globalTeardown() {
   try {
     // Remove E2E test users
     await prisma.user.deleteMany({
-      where: { email: { endsWith: "+e2e@servigo.test" } },
+      where: { email: { endsWith: "+e2e@goservi.test" } },
     });
 
     // Remove E2E test jobs

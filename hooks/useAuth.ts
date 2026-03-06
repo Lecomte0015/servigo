@@ -35,7 +35,7 @@ export const useAuth = create<AuthState>()(
       },
     }),
     {
-      name: "servigo-auth",
+      name: "goservi-auth",
       partialize: (state) => ({ user: state.user }),
     }
   )

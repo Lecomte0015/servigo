@@ -47,7 +47,7 @@ const envSchema = z.object({
   // ── URL de l'application ──────────────────────────────────────────────────
   NEXT_PUBLIC_APP_URL: z
     .string()
-    .url("NEXT_PUBLIC_APP_URL doit être une URL valide (ex: https://servigo.ch)"),
+    .url("NEXT_PUBLIC_APP_URL doit être une URL valide (ex: https://goservi.ch)"),
 
   // ── Environnement ─────────────────────────────────────────────────────────
   NODE_ENV: z
@@ -67,7 +67,7 @@ const envSchema = z.object({
     .string()
     .refine(
       (v) => !v || v.includes("@"),
-      "RESEND_FROM_EMAIL doit contenir une adresse email (ex: noreply@servigo.ch ou ServiGo <noreply@servigo.ch>)"
+      "RESEND_FROM_EMAIL doit contenir une adresse email (ex: noreply@goservi.ch ou ServiGo <noreply@goservi.ch>)"
     )
     .optional()
     .or(z.literal("")),

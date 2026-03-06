@@ -126,7 +126,7 @@ export default function AdminLoginPage() {
                   autoComplete="username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@servigo.ch"
+                  placeholder="admin@goservi.ch"
                   required
                 />
                 <Input

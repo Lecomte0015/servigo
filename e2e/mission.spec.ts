@@ -39,7 +39,7 @@ test.describe("Mission complète", () => {
 
   test("2 — Client crée une mission via l'API", async ({ request }) => {
     // Login as client
-    await apiAs(request, "client@servigo.ch", "Client123!");
+    await apiAs(request, "client@goservi.ch", "Client123!");
 
     // Get available categories
     const categories = await apiGetCategories(request);
@@ -86,7 +86,7 @@ test.describe("Mission complète", () => {
     const jid = readFileSync("/tmp/e2e-job-id.txt", "utf-8").trim();
 
     // Login as artisan
-    await apiAs(request, "artisan@servigo.ch", "Artisan123!");
+    await apiAs(request, "artisan@goservi.ch", "Artisan123!");
 
     // Accept job
     const res = await request.post(`/api/jobs/${jid}/accept`);
@@ -113,7 +113,7 @@ test.describe("Mission complète", () => {
     }
     const jid = readFileSync("/tmp/e2e-job-id.txt", "utf-8").trim();
 
-    await apiAs(request, "artisan@servigo.ch", "Artisan123!");
+    await apiAs(request, "artisan@goservi.ch", "Artisan123!");
 
     const res = await request.post(`/api/jobs/${jid}/start`);
     const body = await res.json();
@@ -136,7 +136,7 @@ test.describe("Mission complète", () => {
     }
     const jid = readFileSync("/tmp/e2e-job-id.txt", "utf-8").trim();
 
-    await apiAs(request, "client@servigo.ch", "Client123!");
+    await apiAs(request, "client@goservi.ch", "Client123!");
 
     // Get job status
     const jobRes = await request.get(`/api/jobs/${jid}`);

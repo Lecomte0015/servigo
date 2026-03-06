@@ -16,11 +16,11 @@ const ARTISAN_STEPS = [
 ];
 
 const FAQS = [
-  { q: "Combien coûte le service ?", a: "ServiGo prend une commission de 10% sur chaque mission complétée. L'inscription et l'utilisation de la plateforme sont gratuites." },
+  { q: "Combien coûte le service ?", a: "GoServi prend une commission de 10% sur chaque mission complétée. L'inscription et l'utilisation de la plateforme sont gratuites." },
   { q: "Comment les artisans sont-ils sélectionnés ?", a: "Chaque artisan passe par un processus de vérification : numéro RC, assurance responsabilité civile, et entretien avec notre équipe." },
   { q: "Que se passe-t-il si je ne suis pas satisfait ?", a: "Notre équipe support est disponible 7j/7. En cas de litige, nous faisons office de médiateur et pouvons procéder à un remboursement." },
   { q: "Puis-je annuler une mission ?", a: "Oui, tant que la mission n'a pas commencé. Aucun frais si elle est en cours de recherche d'artisan." },
-  { q: "La plateforme est-elle disponible dans toute la Suisse ?", a: "Pour l'instant, ServiGo est actif à Genève et dans les communes environnantes. Nous expandons progressivement." },
+  { q: "La plateforme est-elle disponible dans toute la Suisse ?", a: "Pour l'instant, GoServi est actif à Genève et dans les communes environnantes. Nous expandons progressivement." },
 ];
 
 export default function CommentCaMarchePage() {
@@ -32,7 +32,7 @@ export default function CommentCaMarchePage() {
       <section className="bg-gradient-to-b from-[#E6F2F2] to-white pt-12 pb-16 px-4 text-center">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1F2937] mb-3">
-            Comment fonctionne ServiGo ?
+            Comment fonctionne GoServi ?
           </h1>
           <p className="text-gray-500 text-lg">
             Trouvez un artisan qualifié en moins de 2 minutes. Voici comment ça marche.

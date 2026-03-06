@@ -29,7 +29,7 @@ export default function DevenirArtisanPage() {
             🏆 Réseau de +500 artisans à Genève
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
-            Développez votre activité<br />avec ServiGo
+            Développez votre activité<br />avec GoServi
           </h1>
           <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
             Rejoignez notre réseau d&apos;artisans vérifiés. Recevez des missions qualifiées, gérez votre agenda librement et soyez payé rapidement.
@@ -70,7 +70,7 @@ export default function DevenirArtisanPage() {
 
       {/* Advantages */}
       <section className="max-w-[1200px] mx-auto px-4 py-10">
-        <h2 className="text-2xl font-bold text-[#1F2937] mb-8 text-center">Pourquoi rejoindre ServiGo ?</h2>
+        <h2 className="text-2xl font-bold text-[#1F2937] mb-8 text-center">Pourquoi rejoindre GoServi ?</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {ADVANTAGES.map((a) => (
             <div key={a.title} className="flex gap-4 p-5 border border-[#D1E5E5] rounded-[12px] hover:border-[#1CA7A6] transition-colors">
