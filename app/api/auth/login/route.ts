@@ -66,7 +66,10 @@ export async function POST(req: NextRequest) {
       isApproved: user.artisanProfile?.isApproved ?? null,
     });
   } catch (err) {
+    // TEMP DEBUG — remove after diagnosis
+    const msg = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack?.slice(0, 500) : undefined;
     authLogger.error({ err }, "Login error");
-    return apiServerError();
+    return apiServerError(msg + " ||| " + stack);
   }
 }
