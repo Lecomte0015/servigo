@@ -12,7 +12,7 @@ interface Notification {
   createdAt: string;
 }
 
-export function NotificationBell() {
+export function NotificationBell({ align = "right" }: { align?: "left" | "right" }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -95,7 +95,7 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-11 w-80 bg-white border border-[#D1E5E5] rounded-[12px] shadow-xl z-50 overflow-hidden">
+        <div className={`absolute ${align === "left" ? "left-0" : "right-0"} top-11 w-80 bg-white border border-[#D1E5E5] rounded-[12px] shadow-xl z-50 overflow-hidden`}>
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#E6F2F2]">
             <p className="text-sm font-semibold text-[#1F2937]">Notifications</p>
             {unreadCount > 0 && (

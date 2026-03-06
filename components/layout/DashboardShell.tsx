@@ -80,7 +80,7 @@ export function DashboardShell({
           <Link href="/" className="font-bold text-[#1CA7A6] text-base flex items-center gap-1">
             <span>⚡</span> GoServi
           </Link>
-          <NotificationBell />
+          <NotificationBell align="left" />
         </div>
 
         {/* Nav links */}
