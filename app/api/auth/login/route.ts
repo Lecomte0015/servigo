@@ -9,15 +9,24 @@ import { signPending2FAToken } from "@/lib/totp";
 import { authLogger } from "@/lib/logger";
 
 export async function POST(req: NextRequest) {
-  // ── Rate limiting: 5 attempts per IP per 15 minutes ──────────────────────
-  const ip = getClientIp(req);
-  const rl = await rateLimit(`login:${ip}`, 5, 15 * 60 * 1000);
-  if (!rl.success) {
-    return apiError("Trop de tentatives de connexion. Réessayez dans 15 minutes.", 429);
-  }
-
   try {
-    const body = await req.json();
+    // ── Rate limiting: 5 attempts per IP per 15 minutes ────────────────────
+    const ip = getClientIp(req);
+    const rl = await rateLimit(`login:${ip}`, 5, 15 * 60 * 1000);
+    if (!rl.success) {
+      return apiError("Trop de tentatives de connexion. Réessayez dans 15 minutes.", 429);
+    }
+
+    // ── Parse body (req.text() + JSON.parse pour exposer le body brut en cas d'erreur) ──
+    const rawText = await req.text();
+    let body: unknown;
+    try {
+      body = JSON.parse(rawText);
+    } catch (parseErr) {
+      authLogger.error({ parseErr, rawText }, "Login body JSON parse failed");
+      return apiServerError(`JSON parse error: ${String(parseErr)} | rawBody[:200]="${rawText.slice(0, 200)}"`);
+    }
+
     const parsed = loginSchema.safeParse(body);
 
     if (!parsed.success) {
