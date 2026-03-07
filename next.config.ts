@@ -53,10 +53,6 @@ const nextConfig: NextConfig = {
   // turbopack.root is dev-only — omit in production to avoid Vercel path issues
   // ─── Prisma: prevent bundling native binaries in serverless functions ─────
   serverExternalPackages: ["@prisma/client", "prisma"],
-  // ─── Augmente la limite du corps des Route Handlers (upload photo) ────────
-  experimental: {
-    serverBodySizeLimit: "8mb",
-  },
   async headers() {
     return [
       {
