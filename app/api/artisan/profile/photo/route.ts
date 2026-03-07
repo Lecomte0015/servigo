@@ -10,7 +10,7 @@ const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export async function POST(req: NextRequest) {
-  const auth = requireAuth(req, ["ARTISAN"]);
+  const auth = await requireAuth(req, ["ARTISAN"]);
   if ("error" in auth) return auth.error;
 
   const { payload } = auth;
