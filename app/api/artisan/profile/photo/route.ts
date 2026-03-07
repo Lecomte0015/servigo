@@ -6,7 +6,7 @@ import { apiSuccess, apiError, apiServerError } from "@/lib/api-response";
 import { logger } from "@/lib/logger";
 
 const BUCKET = "photo";
-const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_SIZE = 4 * 1024 * 1024; // 4 MB (cohérent avec la limite Vercel free plan)
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export async function POST(req: NextRequest) {

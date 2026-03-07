@@ -86,7 +86,14 @@ export default function ProProfilePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Local preview
+    // Validation taille côté client (4 Mo max)
+    if (file.size > 4 * 1024 * 1024) {
+      setMsg({ type: "error", text: "Image trop grande (max 4 Mo). Compressez-la avant de l'envoyer." });
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    // Preview locale uniquement après la validation
     const reader = new FileReader();
     reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
     reader.readAsDataURL(file);
@@ -96,12 +103,21 @@ export default function ProProfilePage() {
       const fd = new FormData();
       fd.append("photo", file);
       const res = await fetch("/api/artisan/profile/photo", { method: "POST", body: fd });
-      const json = await res.json();
-      if (res.ok) {
+
+      // Vercel peut retourner du texte brut (ex: 413) — ne pas assumer JSON
+      let json: { data?: { photoUrl: string }; error?: string } = {};
+      try { json = await res.json(); } catch { /* réponse non-JSON (413, etc.) */ }
+
+      if (res.ok && json.data?.photoUrl) {
         setPhotoPreview(json.data.photoUrl);
-        setProfile((p) => p ? { ...p, photoUrl: json.data.photoUrl } : p);
+        setProfile((p) => p ? { ...p, photoUrl: json.data!.photoUrl! } : p);
       } else {
-        setMsg({ type: "error", text: json.error ?? "Erreur lors du téléchargement." });
+        // Revenir à l'ancienne photo si l'upload échoue
+        setPhotoPreview(profile?.photoUrl ?? null);
+        const errorText = res.status === 413
+          ? "Image trop grande pour le serveur. Utilisez une image de moins de 4 Mo."
+          : json.error ?? "Erreur lors du téléchargement.";
+        setMsg({ type: "error", text: errorText });
       }
     } finally {
       setUploading(false);
