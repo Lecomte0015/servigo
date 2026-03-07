@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
+import { HomeSearchBar } from "@/components/home/HomeSearchBar";
 import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/site-settings";
 
@@ -81,29 +82,16 @@ export default async function HomePage() {
 
           <p className="text-lg text-gray-500 max-w-xl leading-relaxed">{hero.subtitle}</p>
 
-          {/* Search bar — envoie vers /dashboard/new-job?service=...
-               · Connecté (CLIENT) → atterrit sur new-job avec la catégorie pré-sélectionnée
-               · Non connecté → proxy redirige vers /auth/login?redirect=/dashboard/new-job?service=...
-                                 puis login renvoie vers new-job après connexion            */}
-          <form
-            action="/dashboard/new-job"
-            method="get"
-            className="w-full max-w-2xl flex rounded-[14px] overflow-hidden border border-[#D1E5E5] bg-white shadow-lg"
-          >
-            <input
-              type="text"
-              name="service"
-              placeholder={hero.searchPlaceholder}
-              className="flex-1 px-5 py-4 text-sm text-[#1F2937] placeholder:text-gray-400 focus:outline-none bg-transparent"
-            />
-            <button
-              type="submit"
-              className="text-white font-semibold px-7 py-4 text-sm transition-colors shrink-0"
-              style={{ backgroundColor: settings.primaryColor }}
-            >
-              {hero.searchCta}
-            </button>
-          </form>
+          {/* Barre de recherche intelligente :
+               · Dropdown avec les catégories filtrées en temps réel
+               · Non connecté → item affiche "Se connecter" + bannière login
+               · Connecté → redirige directement sur /dashboard/new-job?categoryId=...   */}
+          <HomeSearchBar
+            categories={dbCategories}
+            placeholder={hero.searchPlaceholder}
+            ctaText={hero.searchCta}
+            primaryColor={settings.primaryColor}
+          />
 
           {/* Category pills */}
           <div className="flex flex-wrap justify-center gap-2">

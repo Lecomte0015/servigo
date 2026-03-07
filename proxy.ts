@@ -94,6 +94,7 @@ function isPublicApiRoute(pathname: string): boolean {
     "/api/auth/reset-password",
     "/api/auth/verify-email",
     "/api/auth/resend-verification",
+    "/api/auth/me",                 // Vérification de session côté client (retourne 401 si non connecté)
     "/api/admin/2fa/verify-login",  // 2FA login step 2 (uses pendingToken, pas de cookie)
     "/api/webhooks",
     "/api/categories",
