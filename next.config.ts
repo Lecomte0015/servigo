@@ -53,6 +53,16 @@ const nextConfig: NextConfig = {
   // turbopack.root is dev-only — omit in production to avoid Vercel path issues
   // ─── Prisma: prevent bundling native binaries in serverless functions ─────
   serverExternalPackages: ["@prisma/client", "prisma"],
+  // ─── Autoriser les images Supabase Storage dans <Image> ──────────────────
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
+  },
   async headers() {
     return [
       {
