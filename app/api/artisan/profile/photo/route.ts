@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       return apiError("Format non supporté. Utilisez JPG, PNG ou WebP.");
     }
     if (file.size > MAX_SIZE) {
-      return apiError("Fichier trop volumineux (max 5 Mo)");
+      return apiError("Fichier trop volumineux (max 4 Mo)");
     }
 
     const artisan = await prisma.artisanProfile.findUnique({

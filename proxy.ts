@@ -97,7 +97,6 @@ function isPublicApiRoute(pathname: string): boolean {
     "/api/webhooks",
     "/api/categories",
     "/api/artisans",   // liste publique + profils publics artisans
-    "/api/debug",      // endpoint de diagnostic temporaire
   ];
   return publicRoutes.some((r) => pathname.startsWith(r));
 }
