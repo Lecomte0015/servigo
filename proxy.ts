@@ -51,7 +51,8 @@ export async function proxy(req: NextRequest) {
         const loginUrl = route === "/admin"
           ? new URL(ADMIN_LOGIN, req.url)
           : new URL("/auth/login", req.url);
-        if (route !== "/admin") loginUrl.searchParams.set("redirect", pathname);
+        // Preserve full path + query string so the user lands back on the right page after login
+        if (route !== "/admin") loginUrl.searchParams.set("redirect", pathname + req.nextUrl.search);
         return NextResponse.redirect(loginUrl);
       }
 

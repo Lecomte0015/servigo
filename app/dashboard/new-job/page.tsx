@@ -42,6 +42,9 @@ function NewJobForm() {
   const preArtisanId   = searchParams.get("artisanId") ?? "";
   const preArtisanName = searchParams.get("artisanName") ?? "";
   const preCity        = searchParams.get("city") ?? "";
+  const preCategoryId  = searchParams.get("categoryId") ?? "";
+  // Texte libre depuis la barre de recherche homepage (ex: "plombier", "électricité")
+  const preService     = searchParams.get("service") ?? "";
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -61,8 +64,35 @@ function NewJobForm() {
   const urgencyLevel = watch("urgencyLevel");
 
   useEffect(() => {
-    fetch("/api/categories").then(r => r.json()).then(j => setCategories(j.data ?? []));
-  }, []);
+    fetch("/api/categories")
+      .then(r => r.json())
+      .then(j => {
+        const cats: Category[] = j.data ?? [];
+        setCategories(cats);
+
+        // Pré-sélection depuis l'URL (?categoryId=... ou ?service=...)
+        let matched: Category | undefined;
+
+        if (preCategoryId) {
+          matched = cats.find(c => c.id === preCategoryId);
+        } else if (preService) {
+          const q = preService.toLowerCase();
+          matched = cats.find(
+            c =>
+              c.name.toLowerCase().includes(q) ||
+              c.slug.toLowerCase().includes(q)
+          );
+        }
+
+        if (matched) {
+          setSelectedCategory(matched.id);
+          setValue("categoryId", matched.id);
+          setStep(2);
+        }
+      });
+  // preCategoryId et preService sont stables (searchParams) — setValue est stable (react-hook-form)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preCategoryId, preService]);
 
   useEffect(() => {
     if (preCity) setValue("city", preCity);

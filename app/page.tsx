@@ -81,15 +81,18 @@ export default async function HomePage() {
 
           <p className="text-lg text-gray-500 max-w-xl leading-relaxed">{hero.subtitle}</p>
 
-          {/* Search bar */}
+          {/* Search bar — envoie vers /dashboard/new-job?service=...
+               · Connecté (CLIENT) → atterrit sur new-job avec la catégorie pré-sélectionnée
+               · Non connecté → proxy redirige vers /auth/login?redirect=/dashboard/new-job?service=...
+                                 puis login renvoie vers new-job après connexion            */}
           <form
-            action="/auth/register"
+            action="/dashboard/new-job"
             method="get"
             className="w-full max-w-2xl flex rounded-[14px] overflow-hidden border border-[#D1E5E5] bg-white shadow-lg"
           >
             <input
               type="text"
-              name="q"
+              name="service"
               placeholder={hero.searchPlaceholder}
               className="flex-1 px-5 py-4 text-sm text-[#1F2937] placeholder:text-gray-400 focus:outline-none bg-transparent"
             />
@@ -107,7 +110,7 @@ export default async function HomePage() {
             {dbCategories.map((cat) => (
               <Link
                 key={cat.id}
-                href="/auth/register"
+                href={`/dashboard/new-job?categoryId=${cat.id}`}
                 className="flex items-center gap-1.5 bg-white border border-[#D1E5E5] text-[#1F2937] text-sm font-medium px-3.5 py-1.5 rounded-full transition-all shadow-sm"
                 style={{"--hover-color": settings.primaryColor} as React.CSSProperties}
               >
@@ -150,7 +153,7 @@ export default async function HomePage() {
             return (
               <Link
                 key={cat.id}
-                href="/auth/register"
+                href={`/dashboard/new-job?categoryId=${cat.id}`}
                 className="group bg-white rounded-[16px] border border-[#D1E5E5] hover:shadow-xl transition-all overflow-hidden"
                 style={{ "--accent": accent } as React.CSSProperties}
               >
