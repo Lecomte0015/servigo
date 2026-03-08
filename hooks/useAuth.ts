@@ -29,9 +29,12 @@ export const useAuth = create<AuthState>()(
       setUser: (user) => set({ user }),
       setLoading: (isLoading) => set({ isLoading }),
       logout: async () => {
-        await fetch("/api/auth/logout", { method: "POST" });
+        // Vider l'état client immédiatement
         set({ user: null });
-        window.location.href = "/auth/login";
+        // Déléguer au serveur : GET /auth/logout efface le cookie JWT
+        // ET redirige vers /auth/login dans une seule réponse HTTP atomique.
+        // Cela évite la race condition entre cookies().delete() et la redirection.
+        window.location.href = "/auth/logout";
       },
     }),
     {
