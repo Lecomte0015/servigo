@@ -24,12 +24,14 @@ export async function PATCH(
   const { id } = await params;
 
   let verified: boolean;
+  let reason: string | undefined;
   try {
     const body = await req.json();
     if (typeof body.verified !== "boolean") {
       return apiError("Le champ 'verified' (boolean) est requis.");
     }
     verified = body.verified;
+    reason = typeof body.reason === "string" && body.reason.trim() ? body.reason.trim() : undefined;
   } catch {
     return apiError("Corps de requête invalide.");
   }
@@ -57,7 +59,9 @@ export async function PATCH(
       type: verified ? "INSURANCE_VERIFIED" : "INSURANCE_UNVERIFIED",
       message: verified
         ? "✅ Votre attestation d'assurance RC Pro a été vérifiée par GoServi. Votre profil est complet."
-        : "⚠️ La vérification de votre attestation d'assurance a été révoquée. Veuillez uploader un nouveau document.",
+        : reason
+          ? `❌ Votre attestation d'assurance a été refusée. Motif : ${reason}. Veuillez uploader un nouveau document.`
+          : "⚠️ La vérification de votre attestation d'assurance a été révoquée. Veuillez uploader un nouveau document.",
     }).catch(() => {});
 
     // Audit log non-bloquant

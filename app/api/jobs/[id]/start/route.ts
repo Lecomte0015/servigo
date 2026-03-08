@@ -38,7 +38,7 @@ export async function POST(
     await createNotification({
       userId: job.clientId,
       type: "JOB_STARTED",
-      message: "L'artisan a démarré l'intervention.",
+      message: "🚗 L'artisan est en route vers votre adresse. Préparez-vous à l'accueillir !",
     });
 
     return apiSuccess({ status: "IN_PROGRESS" });
