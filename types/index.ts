@@ -95,7 +95,10 @@ export type NotificationType =
   | "PAYOUT_REQUESTED"
   | "PAYOUT_PROCESSING"
   | "PAYOUT_COMPLETED"
-  | "PAYOUT_FAILED";
+  | "PAYOUT_FAILED"
+  | "INSURANCE_CERT_UPLOADED"   // admin alerté quand artisan uploade son attestation
+  | "INSURANCE_VERIFIED"        // artisan alerté quand admin valide son attestation
+  | "INSURANCE_UNVERIFIED";     // artisan alerté quand admin révoque la vérification
 
 export interface NotificationPayload {
   userId: string;

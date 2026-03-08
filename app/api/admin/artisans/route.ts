@@ -9,13 +9,18 @@ export async function GET(req: NextRequest) {
   if ("error" in auth) return auth.error;
 
   const { searchParams } = new URL(req.url);
-  const approved = searchParams.get("approved");
-  const page = parseInt(searchParams.get("page") ?? "1");
+  const approved  = searchParams.get("approved");
+  const hasCert   = searchParams.get("hasCert");   // "pending" → insuranceCertUrl non-null ET non vérifiée
+  const page  = parseInt(searchParams.get("page")  ?? "1");
   const limit = parseInt(searchParams.get("limit") ?? "20");
 
   try {
-    const where =
-      approved !== null ? { isApproved: approved === "true" } : {};
+    let where: Record<string, unknown> = {};
+    if (approved !== null) where.isApproved = approved === "true";
+    if (hasCert === "pending") {
+      where.insuranceCertUrl  = { not: null };
+      where.insuranceVerified = false;
+    }
 
     const [artisans, total] = await Promise.all([
       prisma.artisanProfile.findMany({

@@ -10,6 +10,7 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth-guard";
 import { createAuditLog } from "@/lib/audit-log";
+import { createNotification } from "@/services/notification";
 import { apiSuccess, apiError, apiNotFound, apiServerError } from "@/lib/api-response";
 import { adminLogger } from "@/lib/logger";
 
@@ -36,7 +37,7 @@ export async function PATCH(
   try {
     const artisan = await prisma.artisanProfile.findUnique({
       where: { id },
-      select: { id: true, insuranceCertUrl: true },
+      select: { id: true, insuranceCertUrl: true, userId: true },
     });
 
     if (!artisan) return apiNotFound("Artisan introuvable");
@@ -49,6 +50,15 @@ export async function PATCH(
       where: { id },
       data: { insuranceVerified: verified },
     });
+
+    // Notification à l'artisan (non-bloquante)
+    createNotification({
+      userId: artisan.userId,
+      type: verified ? "INSURANCE_VERIFIED" : "INSURANCE_UNVERIFIED",
+      message: verified
+        ? "✅ Votre attestation d'assurance RC Pro a été vérifiée par GoServi. Votre profil est complet."
+        : "⚠️ La vérification de votre attestation d'assurance a été révoquée. Veuillez uploader un nouveau document.",
+    }).catch(() => {});
 
     // Audit log non-bloquant
     createAuditLog({

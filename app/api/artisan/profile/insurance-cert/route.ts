@@ -19,6 +19,7 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth-guard";
 import { supabaseAdmin } from "@/lib/supabase";
+import { createNotification } from "@/services/notification";
 import { apiSuccess, apiError, apiServerError } from "@/lib/api-response";
 import { logger } from "@/lib/logger";
 
@@ -96,7 +97,7 @@ export async function POST(req: NextRequest) {
   try {
     const artisan = await prisma.artisanProfile.findUnique({
       where: { userId: auth.payload.userId },
-      select: { id: true, insuranceCertUrl: true },
+      select: { id: true, insuranceCertUrl: true, user: { select: { firstName: true, lastName: true } } },
     });
     if (!artisan) return apiError("Profil artisan introuvable");
 
@@ -115,6 +116,21 @@ export async function POST(req: NextRequest) {
         insuranceVerified: false, // nouveau doc = re-vérification admin requise
       },
     });
+
+    // Notifier tous les admins qu'un document est à vérifier (non-bloquant)
+    prisma.user.findMany({ where: { role: "ADMIN" }, select: { id: true } })
+      .then((admins) =>
+        Promise.all(
+          admins.map((admin) =>
+            createNotification({
+              userId: admin.id,
+              type: "INSURANCE_CERT_UPLOADED",
+              message: `📄 ${artisan.user.firstName} ${artisan.user.lastName} a uploadé son attestation d'assurance RC Pro. À vérifier dans le back-office.`,
+            })
+          )
+        )
+      )
+      .catch(() => {});
 
     return apiSuccess({ insuranceCertUrl: publicUrl });
   } catch (err) {

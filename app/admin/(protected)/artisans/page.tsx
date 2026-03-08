@@ -12,6 +12,8 @@ interface Artisan {
   rcNumber: string;
   city: string;
   isApproved: boolean;
+  insuranceCertUrl: string | null;
+  insuranceVerified: boolean;
   ratingAverage: number;
   ratingCount: number;
   emergencyAvailable: boolean;
@@ -27,18 +29,17 @@ interface Artisan {
 
 export default function AdminArtisansPage() {
   const [artisans, setArtisans] = useState<Artisan[]>([]);
-  const [filter, setFilter] = useState<"all" | "pending" | "approved">("pending");
+  const [filter, setFilter] = useState<"all" | "pending" | "approved" | "cert">("pending");
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState<string | null>(null);
 
   const fetchArtisans = () => {
     setLoading(true);
     const params =
-      filter === "pending"
-        ? "?approved=false"
-        : filter === "approved"
-        ? "?approved=true"
-        : "";
+      filter === "pending"  ? "?approved=false"
+      : filter === "approved" ? "?approved=true"
+      : filter === "cert"     ? "?hasCert=pending"
+      : "";
 
     fetch(`/api/admin/artisans${params}`)
       .then((r) => r.json())
@@ -66,8 +67,8 @@ export default function AdminArtisansPage() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1 bg-[#E6F2F2] p-1 rounded-[8px] w-fit">
-        {(["pending", "approved", "all"] as const).map((f) => (
+      <div className="flex gap-1 bg-[#E6F2F2] p-1 rounded-[8px] w-fit flex-wrap">
+        {(["pending", "approved", "cert", "all"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
@@ -77,7 +78,10 @@ export default function AdminArtisansPage() {
                 : "text-gray-500 hover:text-[#1F2937]"
             }`}
           >
-            {f === "pending" ? "En attente" : f === "approved" ? "Approuvés" : "Tous"}
+            {f === "pending"  ? "En attente"
+             : f === "approved" ? "Approuvés"
+             : f === "cert"     ? "📄 Docs à vérifier"
+             : "Tous"}
           </button>
         ))}
       </div>
@@ -112,6 +116,12 @@ export default function AdminArtisansPage() {
                     </Badge>
                     {artisan.emergencyAvailable && (
                       <Badge variant="info">⚡ Urgences</Badge>
+                    )}
+                    {artisan.insuranceCertUrl && !artisan.insuranceVerified && (
+                      <Badge variant="warning">📄 Assurance à vérifier</Badge>
+                    )}
+                    {artisan.insuranceCertUrl && artisan.insuranceVerified && (
+                      <Badge variant="success">✅ Assurance vérifiée</Badge>
                     )}
                   </div>
                   <p className="text-xs text-gray-500">
