@@ -13,6 +13,8 @@ export type AuditAction =
   // Artisans
   | "ARTISAN_APPROVED"
   | "ARTISAN_REJECTED"
+  | "INSURANCE_VERIFIED"
+  | "INSURANCE_UNVERIFIED"
   // Retraits
   | "PAYOUT_PROCESSING"
   | "PAYOUT_COMPLETED"
@@ -65,8 +67,10 @@ export async function createAuditLog(params: AuditLogParams): Promise<void> {
  */
 export function auditActionLabel(action: AuditAction): string {
   const labels: Record<AuditAction, string> = {
-    ARTISAN_APPROVED:   "Artisan approuvé",
-    ARTISAN_REJECTED:   "Artisan refusé",
+    ARTISAN_APPROVED:      "Artisan approuvé",
+    ARTISAN_REJECTED:      "Artisan refusé",
+    INSURANCE_VERIFIED:    "Assurance vérifiée",
+    INSURANCE_UNVERIFIED:  "Vérification assurance révoquée",
     PAYOUT_PROCESSING:  "Retrait → En traitement",
     PAYOUT_COMPLETED:   "Retrait → Complété",
     PAYOUT_FAILED:      "Retrait → Échoué",

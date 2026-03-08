@@ -17,6 +17,8 @@ interface ArtisanDetail {
   description: string | null;
   isApproved: boolean;
   emergencyAvailable: boolean;
+  insuranceVerified: boolean;
+  insuranceCertUrl: string | null;
   ratingAverage: number;
   ratingCount: number;
   createdAt: string;
@@ -59,11 +61,17 @@ export default function AdminArtisanDetailPage() {
   const [rejectMode, setRejectMode] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [done, setDone] = useState<"approved" | "rejected" | null>(null);
+  const [insVerified, setInsVerified] = useState(false);
+  const [verifyingIns, setVerifyingIns] = useState(false);
 
   useEffect(() => {
     fetch(`/api/admin/artisans/${id}`)
       .then((r) => r.json())
-      .then((j) => setArtisan(j.data ?? null))
+      .then((j) => {
+        const data: ArtisanDetail = j.data ?? null;
+        setArtisan(data);
+        if (data) setInsVerified(data.insuranceVerified);
+      })
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -91,6 +99,23 @@ export default function AdminArtisanDetailPage() {
       setTimeout(() => router.push("/admin/artisans"), 1500);
     } finally {
       setActioning(false);
+    }
+  };
+
+  const handleVerifyInsurance = async (verified: boolean) => {
+    setVerifyingIns(true);
+    try {
+      const res = await fetch(`/api/admin/artisans/${id}/verify-insurance`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ verified }),
+      });
+      if (res.ok) {
+        setInsVerified(verified);
+        setArtisan((a) => a ? { ...a, insuranceVerified: verified } : a);
+      }
+    } finally {
+      setVerifyingIns(false);
     }
   };
 
@@ -264,6 +289,69 @@ export default function AdminArtisanDetailPage() {
           </div>
         </Card>
       </div>
+
+      {/* ── Documents de vérification ───────────────────────────────────────────── */}
+      <Card>
+        <CardHeader><CardTitle>Documents de vérification</CardTitle></CardHeader>
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="text-2xl shrink-0">📄</span>
+            <div className="min-w-0">
+              <p className="text-xs text-gray-400 mb-0.5">Attestation d&apos;assurance RC Pro</p>
+              {artisan.insuranceCertUrl ? (
+                <a
+                  href={artisan.insuranceCertUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-[#1CA7A6] hover:underline block"
+                >
+                  Voir le certificat →
+                </a>
+              ) : (
+                <p className="text-sm text-gray-400 italic">Aucun document fourni</p>
+              )}
+              <div className="mt-1.5">
+                {insVerified ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                    ✅ Vérifiée
+                  </span>
+                ) : artisan.insuranceCertUrl ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                    🕐 En attente de vérification
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">
+                    — Aucun document
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Action button — only if a document exists */}
+          {artisan.insuranceCertUrl && (
+            <div className="shrink-0">
+              {insVerified ? (
+                <button
+                  onClick={() => handleVerifyInsurance(false)}
+                  disabled={verifyingIns}
+                  className="text-xs px-3 py-1.5 border border-red-200 rounded-[6px] text-red-500 hover:bg-red-50 transition-colors font-medium disabled:opacity-50"
+                >
+                  {verifyingIns ? "…" : "✗ Révoquer"}
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleVerifyInsurance(true)}
+                  disabled={verifyingIns}
+                  className="text-xs px-3 py-1.5 border border-green-200 rounded-[6px] text-green-700 hover:bg-green-50 transition-colors font-medium disabled:opacity-50"
+                >
+                  {verifyingIns ? "…" : "✓ Marquer vérifiée"}
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </Card>
 
       {/* Description */}
       {artisan.description && (

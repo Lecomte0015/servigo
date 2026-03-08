@@ -13,6 +13,7 @@ interface ArtisanProfile {
   description: string | null;
   emergencyAvailable: boolean;
   insuranceVerified: boolean;
+  insuranceCertUrl: string | null;
   isApproved: boolean;
   ratingAverage: number;
   ratingCount: number;
@@ -58,7 +59,10 @@ export default function ProProfilePage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [uploadingInsurance, setUploadingInsurance] = useState(false);
+  const [removingInsurance, setRemovingInsurance] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const insuranceRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch("/api/artisan/profile")
@@ -86,14 +90,12 @@ export default function ProProfilePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validation taille côté client (4 Mo max)
     if (file.size > 4 * 1024 * 1024) {
       setMsg({ type: "error", text: "Image trop grande (max 4 Mo). Compressez-la avant de l'envoyer." });
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
 
-    // Preview locale uniquement après la validation
     const reader = new FileReader();
     reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
     reader.readAsDataURL(file);
@@ -104,15 +106,13 @@ export default function ProProfilePage() {
       fd.append("photo", file);
       const res = await fetch("/api/artisan/profile/photo", { method: "POST", body: fd });
 
-      // Vercel peut retourner du texte brut (ex: 413) — ne pas assumer JSON
       let json: { data?: { photoUrl: string }; error?: string } = {};
-      try { json = await res.json(); } catch { /* réponse non-JSON (413, etc.) */ }
+      try { json = await res.json(); } catch { /* réponse non-JSON */ }
 
       if (res.ok && json.data?.photoUrl) {
         setPhotoPreview(json.data.photoUrl);
         setProfile((p) => p ? { ...p, photoUrl: json.data!.photoUrl! } : p);
       } else {
-        // Revenir à l'ancienne photo si l'upload échoue
         setPhotoPreview(profile?.photoUrl ?? null);
         const errorText = res.status === 413
           ? "Image trop grande pour le serveur. Utilisez une image de moins de 4 Mo."
@@ -122,6 +122,58 @@ export default function ProProfilePage() {
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleInsuranceCertUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      setMsg({ type: "error", text: "Fichier trop grand (max 10 Mo)." });
+      if (insuranceRef.current) insuranceRef.current.value = "";
+      return;
+    }
+
+    setUploadingInsurance(true);
+    setMsg(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/artisan/profile/insurance-cert", { method: "POST", body: fd });
+
+      let json: { data?: { insuranceCertUrl: string }; error?: string } = {};
+      try { json = await res.json(); } catch { /* non-JSON */ }
+
+      if (res.ok && json.data?.insuranceCertUrl) {
+        setProfile((p) =>
+          p ? { ...p, insuranceCertUrl: json.data!.insuranceCertUrl!, insuranceVerified: false } : p
+        );
+        setMsg({ type: "success", text: "Attestation téléversée avec succès. En attente de vérification par GoServi." });
+      } else {
+        setMsg({ type: "error", text: json.error ?? "Erreur lors du téléversement." });
+      }
+    } finally {
+      setUploadingInsurance(false);
+      if (insuranceRef.current) insuranceRef.current.value = "";
+    }
+  };
+
+  const handleRemoveInsuranceCert = async () => {
+    if (!confirm("Supprimer l'attestation d'assurance ? Vous devrez en uploader une nouvelle pour la vérification.")) return;
+    setRemovingInsurance(true);
+    setMsg(null);
+    try {
+      const res = await fetch("/api/artisan/profile/insurance-cert", { method: "DELETE" });
+      if (res.ok) {
+        setProfile((p) => p ? { ...p, insuranceCertUrl: null, insuranceVerified: false } : p);
+        setMsg({ type: "success", text: "Attestation supprimée." });
+      } else {
+        const json = await res.json().catch(() => ({}));
+        setMsg({ type: "error", text: (json as { error?: string }).error ?? "Erreur lors de la suppression." });
+      }
+    } finally {
+      setRemovingInsurance(false);
     }
   };
 
@@ -184,7 +236,6 @@ export default function ProProfilePage() {
                   initials
                 )}
               </div>
-              {/* Hover overlay */}
               <div
                 onClick={() => fileInputRef.current?.click()}
                 className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
@@ -192,7 +243,6 @@ export default function ProProfilePage() {
                 <span className="text-white text-xs font-medium">✏️</span>
               </div>
             </div>
-            {/* Visible upload button */}
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
@@ -326,18 +376,10 @@ export default function ProProfilePage() {
             </button>
           </div>
 
-          {/* Read-only info */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="p-3 bg-[#F4F7F7] rounded-[10px] border border-[#D1E5E5]">
-              <p className="text-xs text-gray-400 mb-0.5">N° RC</p>
-              <p className="text-sm font-medium text-[#1F2937]">{profile?.rcNumber}</p>
-            </div>
-            <div className="p-3 bg-[#F4F7F7] rounded-[10px] border border-[#D1E5E5]">
-              <p className="text-xs text-gray-400 mb-0.5">Assurance</p>
-              <p className="text-sm font-medium text-[#1F2937]">
-                {profile?.insuranceVerified ? "✓ Vérifiée" : "Non vérifiée"}
-              </p>
-            </div>
+          {/* Read-only: RC number */}
+          <div className="p-3 bg-[#F4F7F7] rounded-[10px] border border-[#D1E5E5]">
+            <p className="text-xs text-gray-400 mb-0.5">N° RC (Registre du Commerce)</p>
+            <p className="text-sm font-medium text-[#1F2937]">{profile?.rcNumber}</p>
           </div>
 
           {msg && (
@@ -356,6 +398,101 @@ export default function ProProfilePage() {
             Enregistrer les modifications
           </Button>
         </form>
+      </Card>
+
+      {/* ── Attestation d'assurance RC Pro ────────────────────────────────────── */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Attestation d&apos;assurance RC Pro</CardTitle>
+        </CardHeader>
+
+        <div className="flex flex-col gap-3">
+          <p className="text-xs text-gray-500 leading-relaxed">
+            Téléversez votre attestation d&apos;assurance responsabilité civile professionnelle.
+            Ce document est obligatoire pour la vérification de votre profil par l&apos;équipe GoServi.
+            Formats acceptés : <strong>PDF, JPG, PNG, WebP</strong> — max 10 Mo.
+          </p>
+
+          {profile?.insuranceCertUrl ? (
+            /* Document présent */
+            <div className="flex items-start justify-between gap-3 p-4 bg-[#F4F7F7] rounded-[10px] border border-[#D1E5E5]">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-2xl shrink-0">📄</span>
+                <div className="min-w-0">
+                  <a
+                    href={profile.insuranceCertUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium text-[#1CA7A6] hover:underline block truncate"
+                  >
+                    Voir l&apos;attestation →
+                  </a>
+                  <div className="mt-1">
+                    {profile.insuranceVerified ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                        ✅ Vérifiée par GoServi
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                        🕐 En attente de vérification
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => insuranceRef.current?.click()}
+                  disabled={uploadingInsurance}
+                  className="text-xs px-2.5 py-1.5 border border-[#D1E5E5] rounded-[6px] text-[#1CA7A6] hover:bg-white transition-colors font-medium disabled:opacity-50"
+                >
+                  {uploadingInsurance ? "Envoi…" : "Remplacer"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRemoveInsuranceCert}
+                  disabled={removingInsurance}
+                  className="text-xs px-2.5 py-1.5 border border-red-200 rounded-[6px] text-red-500 hover:bg-red-50 transition-colors font-medium disabled:opacity-50"
+                >
+                  {removingInsurance ? "…" : "Supprimer"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Aucun document */
+            <button
+              type="button"
+              onClick={() => insuranceRef.current?.click()}
+              disabled={uploadingInsurance}
+              className="flex flex-col items-center gap-2 p-6 border-2 border-dashed border-[#D1E5E5] rounded-[10px] hover:border-[#1CA7A6] hover:bg-[#F4F7F7] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {uploadingInsurance ? (
+                <>
+                  <span className="w-8 h-8 border-2 border-[#1CA7A6] border-t-transparent rounded-full animate-spin" />
+                  <span className="text-sm text-[#1CA7A6] font-medium">Téléversement en cours…</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-3xl">📄</span>
+                  <span className="text-sm font-medium text-[#1CA7A6]">
+                    Téléverser l&apos;attestation d&apos;assurance
+                  </span>
+                  <span className="text-xs text-gray-400">Cliquez pour sélectionner un fichier</span>
+                </>
+              )}
+            </button>
+          )}
+
+          {/* Hidden file input for insurance cert */}
+          <input
+            ref={insuranceRef}
+            type="file"
+            accept=".pdf,image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={handleInsuranceCertUpload}
+          />
+        </div>
       </Card>
 
       {/* Services */}
