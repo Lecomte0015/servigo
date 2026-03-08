@@ -29,11 +29,10 @@ export const useAuth = create<AuthState>()(
       setUser: (user) => set({ user }),
       setLoading: (isLoading) => set({ isLoading }),
       logout: async () => {
-        // Vider l'état client immédiatement
-        set({ user: null });
-        // Déléguer au serveur : GET /auth/logout efface le cookie JWT
-        // ET redirige vers /auth/login dans une seule réponse HTTP atomique.
-        // Cela évite la race condition entre cookies().delete() et la redirection.
+        // NE PAS appeler set({ user: null }) ici.
+        // Si le logout échoue (cookie non effacé), l'utilisateur reste sur
+        // le dashboard avec son état Zustand intact → bouton logout visible.
+        // Le DashboardShell utilise logoutAction() (Server Action) directement.
         window.location.href = "/auth/logout";
       },
     }),

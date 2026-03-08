@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/utils/cn";
 import { NotificationBell } from "@/components/ui/NotificationBell";
+import { logoutAction } from "@/app/actions/auth";
 
 interface NavItem {
   href: string;
@@ -52,9 +53,43 @@ export function DashboardShell({
   /** Supprime le max-w et le padding du contenu principal (pour les pages plein écran comme la carte) */
   fullBleed?: boolean;
 }) {
-  const { user, logout } = useAuth();
+  const { user, setUser } = useAuth();
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  // ── Session recovery ───────────────────────────────────────────────────────
+  // Si Zustand a user=null (ex: logout raté qui a vidé l'état client mais pas
+  // le cookie), on récupère les données depuis /api/auth/me au montage du shell.
+  useEffect(() => {
+    if (!user) {
+      fetch("/api/auth/me")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((j) => {
+          if (j?.success && j?.data) {
+            setUser({
+              id: j.data.id,
+              email: j.data.email,
+              role: j.data.role,
+              firstName: j.data.firstName,
+              lastName: j.data.lastName,
+              isApproved: j.data.artisanProfile?.isApproved ?? null,
+              phone: j.data.phone ?? null,
+            });
+          }
+        })
+        .catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Logout via Server Action (garanti de fonctionner) ─────────────────────
+  const handleLogout = () => {
+    setDrawerOpen(false);
+    startTransition(async () => {
+      await logoutAction();
+    });
+  };
 
   const nav =
     user?.role === "ARTISAN"
@@ -105,22 +140,24 @@ export function DashboardShell({
           })}
         </nav>
 
-        {/* User info */}
+        {/* User info + logout ─ bouton TOUJOURS visible (même si Zustand est null) */}
         <div className="p-3 border-t border-[#D1E5E5]">
           {user && (
-            <div className="flex flex-col gap-1">
+            <div className="mb-2">
               <p className="text-xs font-medium text-[#1F2937] truncate">
                 {user.firstName} {user.lastName}
               </p>
               <p className="text-xs text-gray-400 truncate">{user.email}</p>
-              <button
-                onClick={logout}
-                className="mt-1 text-xs text-red-500 hover:text-red-700 text-left transition-colors"
-              >
-                Se déconnecter
-              </button>
             </div>
           )}
+          <button
+            onClick={handleLogout}
+            disabled={isPending}
+            className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700 text-left transition-colors disabled:opacity-50"
+          >
+            <span>🚪</span>
+            {isPending ? "Déconnexion…" : "Se déconnecter"}
+          </button>
         </div>
       </aside>
 
@@ -218,14 +255,15 @@ export function DashboardShell({
               })}
             </nav>
 
-            {/* Logout */}
+            {/* Logout ─ toujours visible */}
             <div className="p-3 border-t border-[#D1E5E5]">
               <button
-                onClick={() => { setDrawerOpen(false); logout(); }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-[8px] text-sm text-red-500 hover:bg-red-50 transition-colors"
+                onClick={handleLogout}
+                disabled={isPending}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-[8px] text-sm text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
               >
                 <span>🚪</span>
-                Se déconnecter
+                {isPending ? "Déconnexion en cours…" : "Se déconnecter"}
               </button>
             </div>
           </div>

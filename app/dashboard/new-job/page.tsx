@@ -65,9 +65,12 @@ function NewJobForm() {
 
   useEffect(() => {
     fetch("/api/categories")
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then(j => {
-        const cats: Category[] = j.data ?? [];
+        const cats: Category[] = Array.isArray(j.data) ? j.data : [];
         setCategories(cats);
 
         // Pré-sélection depuis l'URL (?categoryId=... ou ?service=...)
@@ -89,7 +92,8 @@ function NewJobForm() {
           setValue("categoryId", matched.id);
           setStep(2);
         }
-      });
+      })
+      .catch(() => setCategories([]));
   // preCategoryId et preService sont stables (searchParams) — setValue est stable (react-hook-form)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preCategoryId, preService]);
