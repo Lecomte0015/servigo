@@ -29,10 +29,10 @@ const FOOTER_LINKS = [
   {
     title: "GoServi",
     links: [
-      { label: "À propos", href: "#" },
-      { label: "Contact", href: "#" },
-      { label: "Mentions légales", href: "#" },
-      { label: "Confidentialité", href: "#" },
+      { label: "À propos", href: "/a-propos" },
+      { label: "Contact", href: "/contact" },
+      { label: "Mentions légales", href: "/mentions-legales" },
+      { label: "Confidentialité", href: "/confidentialite" },
     ],
   },
 ];
