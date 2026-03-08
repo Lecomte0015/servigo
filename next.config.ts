@@ -53,6 +53,8 @@ const nextConfig: NextConfig = {
   // turbopack.root is dev-only — omit in production to avoid Vercel path issues
   // ─── Prisma: prevent bundling native binaries in serverless functions ─────
   serverExternalPackages: ["@prisma/client", "prisma"],
+  // ─── react-markdown v10 est ESM-only — transpiler pour le bundler Next.js ─
+  transpilePackages: ["react-markdown"],
   // ─── Autoriser les images Supabase Storage dans <Image> ──────────────────
   images: {
     remotePatterns: [

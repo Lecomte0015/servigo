@@ -135,7 +135,7 @@ export function ChatWidget() {
       {/* ── Bouton flottant ─────────────────────────────────────────────── */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className={`fixed bottom-6 right-6 z-[1500] flex items-center gap-2 px-4 py-3 rounded-full shadow-xl text-white font-semibold text-sm transition-all duration-200 ${
+        className={`fixed bottom-20 md:bottom-6 right-4 md:right-6 z-[1500] flex items-center gap-2 px-4 py-3 rounded-full shadow-xl text-white font-semibold text-sm transition-all duration-200 ${
           open ? "scale-95 opacity-90" : "hover:scale-105"
         }`}
         style={{ backgroundColor: "#1CA7A6" }}
@@ -157,8 +157,8 @@ export function ChatWidget() {
       {/* ── Fenêtre de chat ─────────────────────────────────────────────── */}
       {open && (
         <div
-          className="fixed bottom-[84px] right-6 z-[1500] w-[340px] max-w-[calc(100vw-2rem)] bg-white rounded-[20px] shadow-2xl flex flex-col overflow-hidden border border-[#D1E5E5]"
-          style={{ height: "480px" }}
+          className="fixed bottom-[152px] md:bottom-[84px] right-4 md:right-6 z-[1500] w-[340px] max-w-[calc(100vw-2rem)] bg-white rounded-[20px] shadow-2xl flex flex-col overflow-hidden border border-[#D1E5E5]"
+          style={{ height: "min(480px, calc(100vh - 11rem))" }}
         >
           {/* Header */}
           <div

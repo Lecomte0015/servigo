@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
   try {
     // Streaming avec l'API Anthropic
     const stream = await client.messages.stream({
-      model: "claude-haiku-4-5",
+      model: "claude-3-5-haiku-20241022",
       max_tokens: 512,
       system: GOSERVI_SYSTEM_PROMPT,
       messages: sanitized,

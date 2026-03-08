@@ -9,7 +9,11 @@ export async function POST() {
     const payload = verifyToken(rawToken);
     if (payload?.jti) {
       // Non-bloquant : si Redis échoue, le cookie est quand même effacé
-      await revokeSession(payload.jti, payload.exp);
+      try {
+        await revokeSession(payload.jti, payload.exp);
+      } catch {
+        // ignore — le cookie sera effacé dans tous les cas
+      }
     }
   }
 
