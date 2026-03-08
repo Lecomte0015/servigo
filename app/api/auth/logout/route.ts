@@ -1,6 +1,8 @@
-import { clearAuthCookie, getRawTokenFromCookies, verifyToken } from "@/lib/jwt";
+import { NextResponse } from "next/server";
+import { getRawTokenFromCookies, verifyToken } from "@/lib/jwt";
 import { revokeSession } from "@/lib/session";
-import { apiSuccess } from "@/lib/api-response";
+
+const COOKIE_NAME = "goservi_token";
 
 export async function POST() {
   // Révoquer la session active (blacklist Redis) avant de vider le cookie
@@ -8,7 +10,6 @@ export async function POST() {
   if (rawToken) {
     const payload = verifyToken(rawToken);
     if (payload?.jti) {
-      // Non-bloquant : si Redis échoue, le cookie est quand même effacé
       try {
         await revokeSession(payload.jti, payload.exp);
       } catch {
@@ -17,6 +18,21 @@ export async function POST() {
     }
   }
 
-  await clearAuthCookie();
-  return apiSuccess({ message: "Déconnexion réussie" });
+  // Supprimer le cookie directement sur la réponse (méthode fiable sur Vercel)
+  // cookies().delete() n'émet pas toujours le header Set-Cookie en Route Handler
+  const response = NextResponse.json({
+    success: true,
+    data: { message: "Déconnexion réussie" },
+  });
+
+  response.cookies.set(COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 0,
+    path: "/",
+    expires: new Date(0),
+  });
+
+  return response;
 }
