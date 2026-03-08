@@ -16,7 +16,7 @@ const ARTISAN_STEPS = [
 ];
 
 const FAQS = [
-  { q: "Combien coûte le service ?", a: "GoServi prend une commission de 10% sur chaque mission complétée. L'inscription et l'utilisation de la plateforme sont gratuites." },
+  { q: "Combien coûte le service ?", a: "GoServi prend une commission de 15% sur chaque mission complétée. L'inscription et l'utilisation de la plateforme sont gratuites." },
   { q: "Comment les artisans sont-ils sélectionnés ?", a: "Chaque artisan passe par un processus de vérification : numéro RC, assurance responsabilité civile, et entretien avec notre équipe." },
   { q: "Que se passe-t-il si je ne suis pas satisfait ?", a: "Notre équipe support est disponible 7j/7. En cas de litige, nous faisons office de médiateur et pouvons procéder à un remboursement." },
   { q: "Puis-je annuler une mission ?", a: "Oui, tant que la mission n'a pas commencé. Aucun frais si elle est en cours de recherche d'artisan." },

@@ -4,7 +4,7 @@ import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiNotFound, apiServerError } from "@/lib/api-response";
 import { logger } from "@/lib/logger";
 
-const PLATFORM_FEE = 0.10;
+const PLATFORM_FEE = 0.15;
 
 export async function GET(req: NextRequest) {
   const auth = requireAuth(req, ["ARTISAN"]);

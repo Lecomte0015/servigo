@@ -24,6 +24,33 @@ const STEPS = [
   { label: "Confirmation", icon: "✅" },
 ];
 
+/** Fourchettes de tarifs horaires et suppléments urgence — marché suisse (CHF) */
+const PRICE_RANGES: Record<string, { min: number; max: number; eFeeMin: number; eFeeMax: number }> = {
+  plomberie:     { min: 120, max: 200, eFeeMin: 40, eFeeMax: 80 },
+  electricite:   { min: 110, max: 180, eFeeMin: 40, eFeeMax: 80 },
+  peinture:      { min: 80,  max: 140, eFeeMin: 30, eFeeMax: 60 },
+  serrurerie:    { min: 100, max: 180, eFeeMin: 40, eFeeMax: 100 },
+  nettoyage:     { min: 40,  max: 80,  eFeeMin: 20, eFeeMax: 40  },
+  menuiserie:    { min: 90,  max: 160, eFeeMin: 30, eFeeMax: 60  },
+  maconnerie:    { min: 80,  max: 150, eFeeMin: 30, eFeeMax: 60  },
+  jardinage:     { min: 60,  max: 100, eFeeMin: 20, eFeeMax: 40  },
+  demenagement:  { min: 70,  max: 120, eFeeMin: 30, eFeeMax: 60  },
+  informatique:  { min: 100, max: 200, eFeeMin: 40, eFeeMax: 80  },
+  climatisation: { min: 100, max: 180, eFeeMin: 40, eFeeMax: 80  },
+  chauffage:     { min: 120, max: 200, eFeeMin: 40, eFeeMax: 80  },
+  carrelage:     { min: 80,  max: 150, eFeeMin: 30, eFeeMax: 60  },
+  toiture:       { min: 100, max: 180, eFeeMin: 40, eFeeMax: 80  },
+  vitrage:       { min: 90,  max: 160, eFeeMin: 40, eFeeMax: 80  },
+};
+
+function getPriceRange(slug: string) {
+  const s = slug.toLowerCase().replace(/-/g, "");
+  for (const [key, range] of Object.entries(PRICE_RANGES)) {
+    if (s.includes(key)) return range;
+  }
+  return null;
+}
+
 export default function ArtisanOnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
@@ -52,7 +79,11 @@ export default function ArtisanOnboardingPage() {
         setServices((s) => s.filter((x) => x.categoryId !== catId));
         return prev.filter((id) => id !== catId);
       } else {
-        setServices((s) => [...s, { categoryId: catId, basePrice: "80", emergencyFee: "30" }]);
+        const cat = categories.find((c) => c.id === catId);
+        const range = cat ? getPriceRange(cat.slug) : null;
+        const defaultPrice = range ? String(Math.round((range.min + range.max) / 2)) : "80";
+        const defaultEFee  = range ? String(Math.round((range.eFeeMin + range.eFeeMax) / 2)) : "30";
+        setServices((s) => [...s, { categoryId: catId, basePrice: defaultPrice, emergencyFee: defaultEFee }]);
         return [...prev, catId];
       }
     });
@@ -216,10 +247,20 @@ export default function ArtisanOnboardingPage() {
                 <p className="text-sm text-gray-500 mt-0.5">Sélectionnez les services que vous proposez et définissez vos tarifs</p>
               </div>
 
+              {/* Commission info */}
+              <div className="bg-[#E6F2F2] rounded-[8px] px-3 py-2.5 flex items-start gap-2 text-xs text-[#178F8E]">
+                <span className="mt-0.5">💡</span>
+                <p>
+                  GoServi prélève <strong>15% de commission</strong> sur chaque mission.
+                  Les fourchettes indiquées sont les tarifs <strong>bruts</strong> pratiqués sur le marché suisse — pensez à les intégrer dans votre calcul.
+                </p>
+              </div>
+
               <div className="flex flex-col gap-3">
                 {categories.map((cat) => {
                   const selected = selectedCategories.includes(cat.id);
                   const svc = services.find((s) => s.categoryId === cat.id);
+                  const range = getPriceRange(cat.slug);
                   return (
                     <div key={cat.id} className={`border rounded-[10px] overflow-hidden transition-colors ${selected ? "border-[#1CA7A6]" : "border-[#D1E5E5]"}`}>
                       <button
@@ -244,6 +285,11 @@ export default function ArtisanOnboardingPage() {
                               onChange={(e) => updateService(cat.id, "basePrice", e.target.value)}
                               className="w-full px-2.5 py-1.5 border border-[#D1E5E5] rounded-[6px] text-sm focus:outline-none focus:border-[#1CA7A6]"
                             />
+                            {range && (
+                              <p className="text-[10px] text-[#1CA7A6] mt-0.5">
+                                Marché CH : {range.min}–{range.max} CHF/h
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="text-xs text-gray-500 mb-1 block">Supplément urgence (CHF)</label>
@@ -254,6 +300,11 @@ export default function ArtisanOnboardingPage() {
                               onChange={(e) => updateService(cat.id, "emergencyFee", e.target.value)}
                               className="w-full px-2.5 py-1.5 border border-[#D1E5E5] rounded-[6px] text-sm focus:outline-none focus:border-[#1CA7A6]"
                             />
+                            {range && (
+                              <p className="text-[10px] text-[#1CA7A6] mt-0.5">
+                                Marché CH : {range.eFeeMin}–{range.eFeeMax} CHF
+                              </p>
+                            )}
                           </div>
                         </div>
                       )}

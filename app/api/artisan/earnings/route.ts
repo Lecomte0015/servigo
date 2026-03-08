@@ -3,7 +3,7 @@ import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiForbidden, apiServerError } from "@/lib/api-response";
 import { prisma } from "@/lib/prisma";
 
-const PLATFORM_FEE = 0.10;
+const PLATFORM_FEE = 0.15;
 
 export async function GET(req: NextRequest) {
   const auth = await requireAuth(req, ["ARTISAN"]);

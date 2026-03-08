@@ -5,7 +5,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "sk_test_place
   typescript: true,
 });
 
-export const PLATFORM_FEE_PERCENT = 0.1; // 10%
+export const PLATFORM_FEE_PERCENT = 0.15; // 15%
 
 /** Returns true when a real Stripe key is configured */
 export function isStripeConfigured(): boolean {

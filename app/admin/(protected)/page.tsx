@@ -109,7 +109,7 @@ export default function AdminPage() {
                     {stats.totalRevenue.toFixed(0)} CHF
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    Commission plateforme (10%) :{" "}
+                    Commission plateforme (15%) :{" "}
                     <span className="font-medium text-[#1F2937]">
                       {stats.platformRevenue.toFixed(0)} CHF
                     </span>

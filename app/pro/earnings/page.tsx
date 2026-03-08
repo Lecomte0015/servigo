@@ -91,7 +91,7 @@ export default function ProEarningsPage() {
           {
             label: "Frais plateforme",
             value: `${(data?.summary.totalFees ?? 0).toFixed(0)} CHF`,
-            sub: "10% GoServi",
+            sub: "15% GoServi",
             color: "text-red-500",
             icon: "📊",
           },
@@ -214,7 +214,7 @@ export default function ProEarningsPage() {
           <div>
             <p className="text-sm font-medium text-[#1F2937]">Frais de plateforme</p>
             <p className="text-xs text-gray-500 mt-0.5">
-              GoServi prélève 10% de commission sur chaque mission pour vous mettre en relation avec des clients qualifiés.
+              GoServi prélève 15% de commission sur chaque mission pour vous mettre en relation avec des clients qualifiés.
               Le paiement est sécurisé via Stripe avec pré-autorisation et capture à la completion.
             </p>
           </div>

@@ -242,7 +242,7 @@ export default function ProWalletPage() {
         <div>
           <p className="text-sm font-medium text-[#1F2937]">Commission GoServi</p>
           <p className="text-xs text-gray-500 mt-0.5">
-            GoServi prélève <strong>10%</strong> sur chaque mission complétée. Le montant net vous est reversé après validation du paiement.
+            GoServi prélève <strong>15%</strong> sur chaque mission complétée. Le montant net vous est reversé après validation du paiement.
             Le solde devient <span className="text-[#1CA7A6] font-medium">disponible</span> une fois la mission entièrement réglée par le client.
           </p>
         </div>
