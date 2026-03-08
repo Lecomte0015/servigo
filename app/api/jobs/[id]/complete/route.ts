@@ -4,6 +4,7 @@ import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiError, apiNotFound, apiServerError } from "@/lib/api-response";
 import { capturePaymentIntent } from "@/lib/stripe";
 import { createNotification } from "@/services/notification";
+import { sendReviewRequestEmail } from "@/lib/email";
 import { jobLogger } from "@/lib/logger";
 
 export async function POST(
@@ -21,7 +22,8 @@ export async function POST(
     const job = await prisma.jobRequest.findUnique({
       where: { id: jobId },
       include: {
-        assignment: { include: { artisan: true } },
+        assignment: { include: { artisan: { include: { user: true } } } },
+        client: true,
         payment: true,
       },
     });
@@ -57,6 +59,16 @@ export async function POST(
         type: "PAYMENT_CAPTURED",
         message: "Intervention complétée. Le paiement vous sera versé sous 2-3 jours.",
       });
+    }
+
+    // Send review invitation email to client (non-blocking)
+    if (job.client?.email && job.assignment) {
+      sendReviewRequestEmail(
+        job.client.email,
+        job.client.firstName,
+        jobId,
+        job.assignment.artisan.companyName
+      ).catch(() => {/* ignore email errors */});
     }
 
     return apiSuccess({ status: "COMPLETED" });

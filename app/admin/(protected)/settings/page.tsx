@@ -7,7 +7,7 @@ import Input from "@/components/ui/Input";
 import type { SiteSettingsData } from "@/lib/site-settings";
 import { DEFAULT_SETTINGS } from "@/lib/site-settings";
 
-type Tab = "apparence" | "hero" | "stats" | "steps" | "garanties" | "pro" | "footer";
+type Tab = "apparence" | "hero" | "stats" | "steps" | "garanties" | "pro" | "footer" | "legal";
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: "apparence", label: "Apparence", icon: "🎨" },
@@ -17,6 +17,7 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: "garanties", label: "Garanties", icon: "🛡️" },
   { id: "pro", label: "CTA Pro", icon: "👷" },
   { id: "footer", label: "Footer", icon: "📄" },
+  { id: "legal", label: "Pages légales", icon: "⚖️" },
 ];
 
 export default function AdminSettingsPage() {
@@ -515,6 +516,95 @@ export default function AdminSettingsPage() {
             </Button>
           </div>
         </Card>
+      )}
+
+      {/* ── Tab: Pages légales ─────────────────────────────────── */}
+      {activeTab === "legal" && (
+        <div className="flex flex-col gap-5">
+          <div className="bg-[#F4F7F7] border border-[#D1E5E5] rounded-[12px] px-4 py-3 text-sm text-gray-600 flex gap-2 items-start">
+            <span className="text-lg shrink-0">💡</span>
+            <div>
+              <p className="font-semibold text-[#1F2937] mb-0.5">Syntaxe Markdown supportée</p>
+              <p className="text-xs text-gray-500">
+                <code className="bg-white px-1 rounded"># Titre</code> &nbsp;
+                <code className="bg-white px-1 rounded">## Sous-titre</code> &nbsp;
+                <code className="bg-white px-1 rounded">**gras**</code> &nbsp;
+                <code className="bg-white px-1 rounded">- liste</code> &nbsp;
+                <code className="bg-white px-1 rounded">[lien](url)</code>
+                <br />
+                Si le champ est vide, la version statique par défaut s&apos;affiche.
+              </p>
+            </div>
+          </div>
+
+          {/* Mentions légales */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Mentions légales</CardTitle>
+            </CardHeader>
+            <div className="flex flex-col gap-3">
+              <p className="text-xs text-gray-500">
+                Contenu affiché sur{" "}
+                <a href="/mentions-legales" target="_blank" className="text-[#1CA7A6] hover:underline">
+                  /mentions-legales ↗
+                </a>
+              </p>
+              <textarea
+                value={settings.legalPages?.mentionsLegales ?? ""}
+                onChange={(e) =>
+                  update("legalPages", {
+                    ...settings.legalPages,
+                    mentionsLegales: e.target.value,
+                  })
+                }
+                rows={22}
+                placeholder={"# Mentions légales\n\nDernière mise à jour : ...\n\n## 1. Éditeur du site\n\nLe site goservi.ch est édité par..."}
+                className="w-full px-3 py-2.5 text-sm font-mono border border-[#D1E5E5] rounded-[10px] bg-white focus:outline-none focus:ring-2 focus:ring-[#1CA7A6] resize-y"
+              />
+              <Button
+                size="sm"
+                loading={saving}
+                onClick={() => save({ legalPages: settings.legalPages })}
+              >
+                Sauvegarder les mentions légales
+              </Button>
+            </div>
+          </Card>
+
+          {/* Politique de confidentialité */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Politique de confidentialité</CardTitle>
+            </CardHeader>
+            <div className="flex flex-col gap-3">
+              <p className="text-xs text-gray-500">
+                Contenu affiché sur{" "}
+                <a href="/confidentialite" target="_blank" className="text-[#1CA7A6] hover:underline">
+                  /confidentialite ↗
+                </a>
+              </p>
+              <textarea
+                value={settings.legalPages?.confidentialite ?? ""}
+                onChange={(e) =>
+                  update("legalPages", {
+                    ...settings.legalPages,
+                    confidentialite: e.target.value,
+                  })
+                }
+                rows={22}
+                placeholder={"# Politique de confidentialité\n\nDernière mise à jour : ...\n\n## 1. Responsable du traitement\n\nGoServi SA..."}
+                className="w-full px-3 py-2.5 text-sm font-mono border border-[#D1E5E5] rounded-[10px] bg-white focus:outline-none focus:ring-2 focus:ring-[#1CA7A6] resize-y"
+              />
+              <Button
+                size="sm"
+                loading={saving}
+                onClick={() => save({ legalPages: settings.legalPages })}
+              >
+                Sauvegarder la politique de confidentialité
+              </Button>
+            </div>
+          </Card>
+        </div>
       )}
     </div>
   );

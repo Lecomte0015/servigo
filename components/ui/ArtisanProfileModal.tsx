@@ -1,17 +1,27 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ArtisanForMap } from "@/components/ui/ArtisanMap";
+
+interface ReviewData {
+  id: string;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  clientFirstName: string;
+  clientLastName: string;
+}
 
 interface Props {
   artisan: ArtisanForMap;
   onClose: () => void;
 }
 
-function Stars({ rating }: { rating: number }) {
+function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) {
+  const cls = size === "sm" ? "text-xs" : "text-base";
   return (
-    <span className="inline-flex gap-px">
+    <span className={`inline-flex gap-px ${cls}`}>
       {[1, 2, 3, 4, 5].map((i) => (
         <span key={i} className={i <= Math.round(rating) ? "text-amber-400" : "text-gray-200"}>
           ★
@@ -33,22 +43,38 @@ function buildContactUrl(artisan: ArtisanForMap): string {
   return `/dashboard/new-job?${params.toString()}`;
 }
 
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("fr-CH", { month: "long", year: "numeric" });
+}
+
 export function ArtisanProfileModal({ artisan, onClose }: Props) {
   const router = useRouter();
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
 
-  // Fermer avec Échap
+  // Fermer avec Échap + bloquer scroll body
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", handler);
-    // Bloquer le scroll du body pendant que la modal est ouverte
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", handler);
       document.body.style.overflow = "";
     };
   }, [onClose]);
+
+  // Charger les avis au montage
+  useEffect(() => {
+    if (!artisan.ratingCount) return;
+    setReviewsLoading(true);
+    fetch(`/api/artisans/${artisan.id}/reviews`)
+      .then((r) => r.json())
+      .then((j) => setReviews(j.data?.reviews ?? []))
+      .catch(() => {/* ignore */})
+      .finally(() => setReviewsLoading(false));
+  }, [artisan.id, artisan.ratingCount]);
 
   const minPrice =
     artisan.services.length > 0
@@ -107,8 +133,8 @@ export function ArtisanProfileModal({ artisan, onClose }: Props) {
               </h2>
               <p className="text-sm text-gray-500 mt-0.5">📍 {artisan.city}</p>
 
-              {/* Rating */}
-              {artisan.ratingCount > 0 && (
+              {/* Rating global */}
+              {artisan.ratingCount > 0 ? (
                 <div className="flex items-center gap-1.5 mt-1">
                   <Stars rating={artisan.ratingAverage} />
                   <span className="text-xs font-semibold text-[#1F2937]">
@@ -118,6 +144,8 @@ export function ArtisanProfileModal({ artisan, onClose }: Props) {
                     ({artisan.ratingCount} avis)
                   </span>
                 </div>
+              ) : (
+                <p className="text-xs text-gray-400 mt-1">Aucun avis pour l&apos;instant</p>
               )}
 
               {/* Badges */}
@@ -141,7 +169,7 @@ export function ArtisanProfileModal({ artisan, onClose }: Props) {
         </div>
 
         {/* ── Corps scrollable ────────────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
+        <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-5">
 
           {/* Description */}
           {artisan.description && (
@@ -189,8 +217,59 @@ export function ArtisanProfileModal({ artisan, onClose }: Props) {
             </div>
           )}
 
-          {/* Pas de description ni services */}
-          {!artisan.description && artisan.services.length === 0 && (
+          {/* ── Section Avis ──────────────────────────────────────────────── */}
+          {artisan.ratingCount > 0 && (
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
+                Avis clients ({artisan.ratingCount})
+              </p>
+
+              {reviewsLoading ? (
+                <div className="flex justify-center py-4">
+                  <div className="w-5 h-5 border-2 border-[#1CA7A6] border-t-transparent rounded-full animate-spin" />
+                </div>
+              ) : reviews.length === 0 ? (
+                <p className="text-xs text-gray-400 text-center py-3">Aucun avis disponible</p>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {reviews.map((r) => (
+                    <div
+                      key={r.id}
+                      className="bg-[#F4F7F7] rounded-[12px] p-3 border border-[#E6F2F2]"
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-full bg-[#1CA7A6]/15 flex items-center justify-center text-[10px] font-bold text-[#1CA7A6]">
+                            {r.clientFirstName[0]}{r.clientLastName[0]}
+                          </div>
+                          <span className="text-xs font-semibold text-[#1F2937]">
+                            {r.clientFirstName} {r.clientLastName}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Stars rating={r.rating} size="sm" />
+                          <span className="text-xs font-semibold text-[#1F2937]">
+                            {r.rating}/5
+                          </span>
+                        </div>
+                      </div>
+                      {r.comment && (
+                        <p className="text-xs text-gray-500 leading-relaxed mt-1.5 ml-9">
+                          &ldquo;{r.comment}&rdquo;
+                        </p>
+                      )}
+                      <p className="text-[10px] text-gray-400 mt-1 ml-9">
+                        {formatDate(r.createdAt)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Pas de description ni services ni avis */}
+          {!artisan.description && artisan.services.length === 0 && artisan.ratingCount === 0 && (
             <p className="text-sm text-gray-400 text-center py-4">
               Aucune information supplémentaire disponible.
             </p>

@@ -239,6 +239,36 @@ export async function sendJobAcceptedEmail(
   await sendEmail(to, `✅ Votre mission à ${city} a été acceptée`, html);
 }
 
+// ─── 8. Invitation à laisser un avis post-mission ──────────────────────────
+
+export async function sendReviewRequestEmail(
+  to: string,
+  firstName: string,
+  jobId: string,
+  artisanCompanyName: string
+): Promise<void> {
+  const url = `${APP_URL}/dashboard/history?jobId=${jobId}`;
+  const html = baseTemplate(`
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="display:inline-block;width:64px;height:64px;background:#FFF7ED;border-radius:50%;line-height:64px;font-size:32px">⭐</div>
+    </div>
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700;text-align:center">Votre mission est terminée !</h2>
+    <p style="color:#6B7280;line-height:1.7;text-align:center;margin:0 0 16px">Bonjour ${firstName},</p>
+    <p style="color:#374151;line-height:1.7;margin:0 0 20px">
+      Votre intervention réalisée par <strong>${artisanCompanyName}</strong> est désormais complétée.
+      Prenez 30 secondes pour laisser un avis — cela aide les autres utilisateurs et valorise le travail de cet artisan.
+    </p>
+    ${infoBox("#FFFBEB", "#FCD34D", "#92400E",
+      "Votre avis est important : les artisans les mieux notés sont mis en avant sur la plateforme GoServi."
+    )}
+    <div style="text-align:center;margin-top:24px">${btn(url, "Laisser mon avis ⭐")}</div>
+    <p style="color:#9CA3AF;font-size:12px;text-align:center;margin-top:16px">
+      Vous avez 30 jours pour noter cette intervention.
+    </p>
+  `);
+  await sendEmail(to, "⭐ Comment s'est passée votre intervention avec " + artisanCompanyName + " ?", html);
+}
+
 // ─── 8. Statut payout artisan ───────────────────────────────────────────────
 
 export async function sendPayoutStatusEmail(

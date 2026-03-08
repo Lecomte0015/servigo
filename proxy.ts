@@ -99,6 +99,7 @@ function isPublicApiRoute(pathname: string): boolean {
     "/api/webhooks",
     "/api/categories",
     "/api/artisans",   // liste publique + profils publics artisans
+    "/api/chat",       // chatbot IA GoServi (public, rate-limité par IP)
   ];
   return publicRoutes.some((r) => pathname.startsWith(r));
 }

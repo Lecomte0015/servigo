@@ -65,6 +65,10 @@ export interface SiteSettingsData {
     location: string;
     copyright: string;
   };
+  legalPages: {
+    mentionsLegales: string; // markdown — vide = affiche contenu statique de secours
+    confidentialite: string; // markdown — vide = affiche contenu statique de secours
+  };
 }
 
 // ─── Defaults ────────────────────────────────────────────────────────────────
@@ -158,6 +162,10 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
     tagline: "La marketplace des artisans de confiance à Genève.",
     location: "Genève, Suisse",
     copyright: "GoServi Sàrl — Genève, Suisse",
+  },
+  legalPages: {
+    mentionsLegales: "",
+    confidentialite: "",
   },
 };
 
