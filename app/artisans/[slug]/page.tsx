@@ -20,6 +20,7 @@ interface ArtisanPublicProfile {
   completedJobs: number;
   memberSince: Date;
   services: {
+    categoryId: string;
     categoryName: string;
     categoryIcon: string | null;
     categorySlug: string;
@@ -44,7 +45,7 @@ async function getArtisan(slug: string): Promise<ArtisanPublicProfile | null> {
       user: { select: { firstName: true, lastName: true, createdAt: true } },
       services: {
         where: { isActive: true },
-        include: { category: { select: { name: true, icon: true, slug: true } } },
+        include: { category: { select: { id: true, name: true, icon: true, slug: true } } },
       },
       reviews: {
         orderBy: { createdAt: "desc" },
@@ -74,6 +75,7 @@ async function getArtisan(slug: string): Promise<ArtisanPublicProfile | null> {
     completedJobs,
     memberSince: artisan.user.createdAt,
     services: artisan.services.map((s) => ({
+      categoryId: s.category.id,
       categoryName: s.category.name,
       categoryIcon: s.category.icon,
       categorySlug: s.category.slug,
@@ -184,6 +186,17 @@ export default async function ArtisanPublicPage({
   };
 
   const memberYear = new Date(artisan.memberSince).getFullYear();
+
+  // URL de contact pré-remplie : artisanId + nom + ville + 1ère catégorie → passe directement à l'étape 2
+  const contactParams = new URLSearchParams({
+    artisanId: artisan.id,
+    artisanName: artisan.companyName,
+    city: artisan.city,
+  });
+  if (artisan.services.length > 0) {
+    contactParams.set("categoryId", artisan.services[0].categoryId);
+  }
+  const contactUrl = `/dashboard/new-job?${contactParams.toString()}`;
 
   return (
     <>
@@ -378,7 +391,7 @@ export default async function ArtisanPublicPage({
                 </p>
 
                 <Link
-                  href="/dashboard/new-job"
+                  href={contactUrl}
                   style={{
                     display: "block",
                     textAlign: "center",
@@ -397,7 +410,7 @@ export default async function ArtisanPublicPage({
 
                 {artisan.emergencyAvailable && (
                   <Link
-                    href="/dashboard/new-job?urgency=URGENT"
+                    href={`${contactUrl}&urgencyLevel=URGENT`}
                     style={{
                       display: "block",
                       textAlign: "center",

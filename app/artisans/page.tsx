@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import type { ArtisanForMap } from "@/components/ui/ArtisanMap";
+import { ArtisanProfileModal } from "@/components/ui/ArtisanProfileModal";
 
 // Import dynamique du composant carte (Leaflet nécessite window)
 const ArtisanMap = dynamic(() => import("@/components/ui/ArtisanMap"), {
@@ -27,16 +28,30 @@ interface Category {
 
 // ─── Carte artisan dans la liste ──────────────────────────────────────────────
 
+function buildContactUrl(artisan: ArtisanForMap): string {
+  const params = new URLSearchParams({
+    artisanId: artisan.id,
+    artisanName: artisan.companyName,
+    city: artisan.city,
+  });
+  if (artisan.services.length > 0) {
+    params.set("categoryId", artisan.services[0].category.id);
+  }
+  return `/dashboard/new-job?${params.toString()}`;
+}
+
 function ArtisanCard({
   artisan,
   isSelected,
   onSelect,
   onContact,
+  onViewProfile,
 }: {
   artisan: ArtisanForMap;
   isSelected: boolean;
   onSelect: () => void;
   onContact: () => void;
+  onViewProfile: () => void;
 }) {
   const minPrice =
     artisan.services.length > 0
@@ -94,24 +109,29 @@ function ArtisanCard({
             </p>
           )}
 
-          <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center gap-2">
-              {minPrice && (
-                <span className="text-xs font-semibold text-[#1CA7A6]">
-                  Dès {minPrice} CHF
-                </span>
-              )}
-              {artisan.emergencyAvailable && (
-                <span className="text-xs text-red-500 font-medium">⚡ Urgences</span>
-              )}
-            </div>
+          {/* Prix + urgence */}
+          <div className="flex items-center gap-2 mt-2">
+            {minPrice && (
+              <span className="text-xs font-semibold text-[#1CA7A6]">
+                Dès {minPrice} CHF
+              </span>
+            )}
+            {artisan.emergencyAvailable && (
+              <span className="text-xs text-red-500 font-medium">⚡ Urgences</span>
+            )}
+          </div>
 
+          {/* Deux boutons */}
+          <div className="flex gap-2 mt-2">
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onContact();
-              }}
-              className="text-xs px-3 py-1.5 bg-[#1CA7A6] text-white rounded-[6px] hover:bg-[#178F8E] transition-colors font-medium shrink-0"
+              onClick={(e) => { e.stopPropagation(); onViewProfile(); }}
+              className="flex-1 text-xs px-2 py-1.5 border border-[#D1E5E5] text-[#1CA7A6] rounded-[6px] hover:bg-[#E6F2F2] transition-colors font-medium"
+            >
+              Voir le profil
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); onContact(); }}
+              className="flex-1 text-xs px-2 py-1.5 bg-[#1CA7A6] text-white rounded-[6px] hover:bg-[#178F8E] transition-colors font-medium"
             >
               Contacter
             </button>
@@ -133,6 +153,7 @@ export default function ArtisansMapPage() {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [citySearch, setCitySearch] = useState("");
   const [view, setView] = useState<"list" | "map">("map");
+  const [modalArtisan, setModalArtisan] = useState<ArtisanForMap | null>(null);
 
   const fetchArtisans = useCallback(() => {
     setLoading(true);
@@ -157,17 +178,18 @@ export default function ArtisansMapPage() {
     return () => clearTimeout(t);
   }, [fetchArtisans]);
 
+  // Bouton "Contacter" → new-job directement avec artisan + catégorie pré-remplis
   const handleContact = useCallback(
     (artisan: ArtisanForMap) => {
-      const params = new URLSearchParams({
-        artisanId: artisan.id,
-        artisanName: artisan.companyName,
-        city: artisan.city,
-      });
-      router.push(`/dashboard/new-job?${params}`);
+      router.push(buildContactUrl(artisan));
     },
     [router]
   );
+
+  // Bouton "Voir le profil" → ouvre la modal
+  const handleViewProfile = useCallback((artisan: ArtisanForMap) => {
+    setModalArtisan(artisan);
+  }, []);
 
   const handleSelect = useCallback((artisan: ArtisanForMap) => {
     setSelectedId((prev) => (prev === artisan.id ? null : artisan.id));
@@ -277,6 +299,7 @@ export default function ArtisansMapPage() {
                   setView("map");
                 }}
                 onContact={() => handleContact(artisan)}
+                onViewProfile={() => handleViewProfile(artisan)}
               />
             ))
           )}
@@ -328,12 +351,20 @@ export default function ArtisansMapPage() {
                         ⭐ {a.ratingAverage.toFixed(1)} · 📍 {a.city}
                       </p>
                     </div>
-                    <button
-                      onClick={() => handleContact(a)}
-                      className="shrink-0 bg-[#1CA7A6] text-white text-xs font-semibold px-4 py-2 rounded-[8px] hover:bg-[#178F8E]"
-                    >
-                      Contacter
-                    </button>
+                    <div className="flex gap-2 shrink-0">
+                      <button
+                        onClick={() => handleViewProfile(a)}
+                        className="text-xs font-semibold px-3 py-2 rounded-[8px] border border-[#D1E5E5] text-[#1CA7A6] hover:bg-[#E6F2F2]"
+                      >
+                        Profil
+                      </button>
+                      <button
+                        onClick={() => handleContact(a)}
+                        className="bg-[#1CA7A6] text-white text-xs font-semibold px-3 py-2 rounded-[8px] hover:bg-[#178F8E]"
+                      >
+                        Contacter
+                      </button>
+                    </div>
                   </div>
                 );
               })()}
@@ -341,6 +372,14 @@ export default function ArtisansMapPage() {
           )}
         </main>
       </div>
+
+      {/* ── Modal profil artisan ──────────────────────────────────────────── */}
+      {modalArtisan && (
+        <ArtisanProfileModal
+          artisan={modalArtisan}
+          onClose={() => setModalArtisan(null)}
+        />
+      )}
     </div>
   );
 }
