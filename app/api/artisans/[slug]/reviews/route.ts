@@ -2,22 +2,31 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { apiSuccess, apiNotFound, apiServerError } from "@/lib/api-response";
 
+/**
+ * GET /api/artisans/[slug]/reviews
+ *
+ * Accepts either the artisan profile UUID or its slug as the URL segment.
+ * The client passes artisan.id (UUID) which is used to look up the profile.
+ */
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const { id: artisanId } = await params;
+  const { slug: artisanId } = await params;
 
   try {
-    const artisan = await prisma.artisanProfile.findUnique({
-      where: { id: artisanId },
+    // Look up by UUID first, fall back to slug
+    const artisan = await prisma.artisanProfile.findFirst({
+      where: {
+        OR: [{ id: artisanId }, { slug: artisanId }],
+      },
       select: { id: true },
     });
 
     if (!artisan) return apiNotFound();
 
     const reviews = await prisma.review.findMany({
-      where: { artisanId },
+      where: { artisanId: artisan.id },
       orderBy: { createdAt: "desc" },
       take: 8,
       select: {
