@@ -29,6 +29,7 @@ interface ArtisanDetail {
     email: string;
     phone: string | null;
     createdAt: string;
+    isBlocked: boolean;
   };
   services: Array<{
     basePrice: number;
@@ -66,6 +67,10 @@ export default function AdminArtisanDetailPage() {
   const [rejectInsMode, setRejectInsMode] = useState(false);
   const [rejectInsReason, setRejectInsReason] = useState("");
   const [certLoading, setCertLoading] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [blocking, setBlocking] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     fetch(`/api/admin/artisans/${id}`)
@@ -73,7 +78,10 @@ export default function AdminArtisanDetailPage() {
       .then((j) => {
         const data: ArtisanDetail = j.data ?? null;
         setArtisan(data);
-        if (data) setInsVerified(data.insuranceVerified);
+        if (data) {
+          setInsVerified(data.insuranceVerified);
+          setIsBlocked(data.user.isBlocked);
+        }
       })
       .finally(() => setLoading(false));
   }, [id]);
@@ -121,6 +129,36 @@ export default function AdminArtisanDetailPage() {
       }
     } finally {
       setVerifyingIns(false);
+    }
+  };
+
+  const handleBlock = async (blocked: boolean) => {
+    setBlocking(true);
+    try {
+      const res = await fetch(`/api/admin/artisans/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blocked }),
+      });
+      if (res.ok) setIsBlocked(blocked);
+    } finally {
+      setBlocking(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/artisans/${id}`, { method: "DELETE" });
+      const json = await res.json();
+      if (res.ok) {
+        router.push("/admin/artisans");
+      } else {
+        alert(json.error ?? "Erreur lors de la suppression");
+        setConfirmDelete(false);
+      }
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -196,6 +234,9 @@ export default function AdminArtisanDetailPage() {
               <Badge variant={artisan.isApproved ? "success" : "warning"}>
                 {artisan.isApproved ? "Approuvé" : "En attente"}
               </Badge>
+              {isBlocked && (
+                <Badge variant="neutral">🔴 Suspendu</Badge>
+              )}
             </div>
             <p className="text-sm text-gray-500 mt-0.5">
               {artisan.user.firstName} {artisan.user.lastName} · {artisan.user.email}
@@ -412,6 +453,81 @@ export default function AdminArtisanDetailPage() {
             </div>
           </div>
         )}
+      </Card>
+
+      {/* ── Actions admin (bloc / suppression) ──────────────────────────────── */}
+      <Card>
+        <CardHeader><CardTitle>Actions administrateur</CardTitle></CardHeader>
+        <div className="flex flex-col gap-4">
+          {/* Bloc / Débloquer */}
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="text-sm font-medium text-[#1F2937]">
+                {isBlocked ? "🔴 Compte suspendu" : "🟢 Compte actif"}
+              </p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                {isBlocked
+                  ? "L'artisan ne peut plus se connecter à la plateforme."
+                  : "L'artisan peut accéder normalement à la plateforme."}
+              </p>
+            </div>
+            <button
+              onClick={() => handleBlock(!isBlocked)}
+              disabled={blocking}
+              className={`text-sm px-4 py-2 rounded-[8px] font-medium transition-colors disabled:opacity-50 shrink-0 ${
+                isBlocked
+                  ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100"
+                  : "bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100"
+              }`}
+            >
+              {blocking ? "…" : isBlocked ? "✓ Réactiver le compte" : "⊘ Suspendre le compte"}
+            </button>
+          </div>
+
+          {/* Suppression */}
+          <div className="pt-4 border-t border-[#E6F2F2]">
+            {!confirmDelete ? (
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                  <p className="text-sm font-medium text-red-600">Supprimer l'artisan</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Action irréversible. Toutes les données seront supprimées définitivement.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="text-sm px-4 py-2 rounded-[8px] font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors shrink-0"
+                >
+                  🗑 Supprimer le compte
+                </button>
+              </div>
+            ) : (
+              <div className="bg-red-50 border border-red-200 rounded-[8px] p-4">
+                <p className="text-sm font-semibold text-red-700 mb-1">
+                  Confirmer la suppression de {artisan.companyName} ?
+                </p>
+                <p className="text-xs text-red-500 mb-3">
+                  Cette action est irréversible. Toutes les données (profil, missions, avis) seront supprimées.
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleDelete}
+                    disabled={deleting}
+                    className="text-sm px-4 py-2 bg-red-600 text-white rounded-[8px] font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
+                  >
+                    {deleting ? "Suppression…" : "Oui, supprimer définitivement"}
+                  </button>
+                  <button
+                    onClick={() => setConfirmDelete(false)}
+                    className="text-sm px-4 py-2 border border-[#D1E5E5] rounded-[8px] text-gray-500 hover:bg-gray-50 transition-colors"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </Card>
 
       {/* Description */}

@@ -8,8 +8,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  // directUrl is used by Prisma CLI (migrate/push) via local .env only
-  // In production (Vercel), DATABASE_URL already points to the pooler
+  directUrl = env("DIRECT_URL")
 }
 
 // ─────────────────────────────────────────
@@ -64,6 +63,7 @@ model User {
   password   String
   phone      String?
   isVerified Boolean  @default(false)
+  isBlocked  Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

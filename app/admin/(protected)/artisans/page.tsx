@@ -23,6 +23,7 @@ interface Artisan {
     lastName: string;
     email: string;
     phone: string | null;
+    isBlocked: boolean;
   };
   services: Array<{ category: { name: string } }>;
 }
@@ -122,6 +123,9 @@ export default function AdminArtisansPage() {
                     )}
                     {artisan.insuranceCertUrl && artisan.insuranceVerified && (
                       <Badge variant="success">✅ Assurance vérifiée</Badge>
+                    )}
+                    {artisan.user.isBlocked && (
+                      <Badge variant="neutral">🔴 Suspendu</Badge>
                     )}
                   </div>
                   <p className="text-xs text-gray-500">

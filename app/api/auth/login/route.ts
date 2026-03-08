@@ -48,6 +48,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (user.isBlocked) {
+      return apiError(
+        "Votre compte a été suspendu. Contactez le support GoServi pour plus d'informations.",
+        403
+      );
+    }
+
     // ── 2FA admin : si activée → retourner un pending token (pas de cookie) ──
     if (user.role === "ADMIN" && user.totpEnabled) {
       const pendingToken = signPending2FAToken(user.id);

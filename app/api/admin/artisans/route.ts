@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
         take: limit,
         orderBy: { createdAt: "desc" },
         include: {
-          user: { select: { email: true, firstName: true, lastName: true, phone: true, createdAt: true } },
+          user: { select: { email: true, firstName: true, lastName: true, phone: true, createdAt: true, isBlocked: true } },
           services: { include: { category: true } },
         },
       }),
