@@ -129,6 +129,12 @@ export default function ProProfilePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const ALLOWED = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+    if (!ALLOWED.includes(file.type)) {
+      setMsg({ type: "error", text: "Format non supporté. Utilisez PDF, JPG, PNG ou WebP." });
+      if (insuranceRef.current) insuranceRef.current.value = "";
+      return;
+    }
     if (file.size > 10 * 1024 * 1024) {
       setMsg({ type: "error", text: "Fichier trop grand (max 10 Mo)." });
       if (insuranceRef.current) insuranceRef.current.value = "";
@@ -138,21 +144,46 @@ export default function ProProfilePage() {
     setUploadingInsurance(true);
     setMsg(null);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/artisan/profile/insurance-cert", { method: "POST", body: fd });
+      // Étape 1 : obtenir une URL signée Supabase depuis notre API
+      const signRes = await fetch(
+        `/api/artisan/profile/insurance-cert?type=${encodeURIComponent(file.type)}`
+      );
+      const signJson = await signRes.json().catch(() => ({}));
+      if (!signRes.ok) {
+        setMsg({ type: "error", text: signJson.error ?? "Impossible d'initialiser l'upload." });
+        return;
+      }
+      const { signedUrl, publicUrl } = signJson.data as { signedUrl: string; publicUrl: string };
 
-      let json: { data?: { insuranceCertUrl: string }; error?: string } = {};
-      try { json = await res.json(); } catch { /* non-JSON */ }
+      // Étape 2 : upload direct vers Supabase — contourne la limite 4.5 MB de Vercel
+      const uploadRes = await fetch(signedUrl, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": file.type },
+      });
+      if (!uploadRes.ok) {
+        setMsg({ type: "error", text: "Erreur lors de l'envoi vers le stockage. Réessayez." });
+        return;
+      }
 
-      if (res.ok && json.data?.insuranceCertUrl) {
+      // Étape 3 : enregistrer l'URL publique en DB via notre API
+      const saveRes = await fetch("/api/artisan/profile/insurance-cert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ publicUrl }),
+      });
+      const saveJson = await saveRes.json().catch(() => ({}));
+
+      if (saveRes.ok && saveJson.data?.insuranceCertUrl) {
         setProfile((p) =>
-          p ? { ...p, insuranceCertUrl: json.data!.insuranceCertUrl!, insuranceVerified: false } : p
+          p ? { ...p, insuranceCertUrl: saveJson.data.insuranceCertUrl, insuranceVerified: false } : p
         );
         setMsg({ type: "success", text: "Attestation téléversée avec succès. En attente de vérification par GoServi." });
       } else {
-        setMsg({ type: "error", text: json.error ?? "Erreur lors du téléversement." });
+        setMsg({ type: "error", text: saveJson.error ?? "Erreur lors de l'enregistrement." });
       }
+    } catch {
+      setMsg({ type: "error", text: "Une erreur inattendue est survenue. Réessayez." });
     } finally {
       setUploadingInsurance(false);
       if (insuranceRef.current) insuranceRef.current.value = "";
