@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiError, apiNotFound, apiServerError } from "@/lib/api-response";
 import { createNotification } from "@/services/notification";
+import { sendJobAcceptedEmail } from "@/lib/email";
 import { jobLogger } from "@/lib/logger";
 
 export async function POST(
@@ -18,6 +19,7 @@ export async function POST(
   try {
     const artisan = await prisma.artisanProfile.findUnique({
       where: { userId: payload.userId },
+      include: { user: { select: { phone: true } } },
     });
 
     if (!artisan || !artisan.isApproved) {
@@ -26,7 +28,10 @@ export async function POST(
 
     const job = await prisma.jobRequest.findUnique({
       where: { id: jobId },
-      include: { assignment: true },
+      include: {
+        assignment: true,
+        client: { select: { email: true, firstName: true } },
+      },
     });
 
     if (!job) return apiNotFound("Demande introuvable");
@@ -52,12 +57,23 @@ export async function POST(
       }),
     ]);
 
-    // Notify client
+    // Notify client (in-app)
     await createNotification({
       userId: job.clientId,
       type: "JOB_ASSIGNED",
       message: `Un artisan a accepté votre demande et sera bientôt chez vous.`,
     });
+
+    // Send email to client (non-blocking)
+    if (job.client?.email) {
+      sendJobAcceptedEmail(
+        job.client.email,
+        job.client.firstName,
+        artisan.companyName,
+        artisan.user?.phone ?? null,
+        job.city,
+      ).catch(() => {});
+    }
 
     return apiSuccess({ status: updatedJob.status });
   } catch (err) {

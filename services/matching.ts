@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { createNotification } from "@/services/notification";
+import { sendNewJobEmail } from "@/lib/email";
 
 const MAX_ARTISANS_NOTIFIED = 5;
 
@@ -17,6 +18,15 @@ export async function matchArtisans(
   categoryId: string,
   city: string
 ): Promise<void> {
+  // Fetch job details for email notification
+  const job = await prisma.jobRequest.findUnique({
+    where: { id: jobId },
+    select: {
+      description: true,
+      category: { select: { name: true } },
+    },
+  });
+
   const artisans = await prisma.artisanProfile.findMany({
     where: {
       city,
@@ -32,7 +42,7 @@ export async function matchArtisans(
     orderBy: { ratingAverage: "desc" },
     take: MAX_ARTISANS_NOTIFIED,
     include: {
-      user: { select: { id: true, firstName: true } },
+      user: { select: { id: true, firstName: true, email: true } },
       services: {
         where: { categoryId, isActive: true },
         select: { basePrice: true, emergencyFee: true },
@@ -49,14 +59,26 @@ export async function matchArtisans(
     return;
   }
 
-  // Notify each matched artisan
+  // Notify each matched artisan (in-app + email, non-blocking)
   await Promise.allSettled(
     artisans.map((artisan) =>
-      createNotification({
-        userId: artisan.user.id,
-        type: "JOB_MATCHED",
-        message: `Nouvelle demande à ${city} — Acceptez vite !`,
-      })
+      Promise.all([
+        createNotification({
+          userId: artisan.user.id,
+          type: "JOB_MATCHED",
+          message: `Nouvelle demande à ${city} — Acceptez vite !`,
+        }),
+        job
+          ? sendNewJobEmail(
+              artisan.user.email,
+              artisan.user.firstName,
+              job.description,
+              city,
+              job.category.name,
+              jobId
+            ).catch(() => {})
+          : Promise.resolve(),
+      ])
     )
   );
 }
@@ -70,28 +92,42 @@ export async function notifyTargetArtisan(
   artisanId: string,
   city: string
 ): Promise<void> {
-  const artisan = await prisma.artisanProfile.findUnique({
-    where: { id: artisanId, isApproved: true },
-    include: { user: { select: { id: true, firstName: true } } },
-  });
+  const [artisan, job] = await Promise.all([
+    prisma.artisanProfile.findUnique({
+      where: { id: artisanId, isApproved: true },
+      include: { user: { select: { id: true, firstName: true, email: true } } },
+    }),
+    prisma.jobRequest.findUnique({
+      where: { id: jobId },
+      select: { categoryId: true, description: true, category: { select: { name: true } } },
+    }),
+  ]);
 
   if (!artisan) {
     // Artisan non trouvé ou non approuvé → fallback matching classique
-    const job = await prisma.jobRequest.findUnique({
-      where: { id: jobId },
-      select: { categoryId: true },
-    });
     if (job) {
       await matchArtisans(jobId, job.categoryId, city);
     }
     return;
   }
 
-  await createNotification({
-    userId: artisan.user.id,
-    type: "JOB_MATCHED",
-    message: `Un client vous a envoyé une demande directe — Acceptez vite !`,
-  });
+  await Promise.all([
+    createNotification({
+      userId: artisan.user.id,
+      type: "JOB_MATCHED",
+      message: `Un client vous a envoyé une demande directe — Acceptez vite !`,
+    }),
+    job
+      ? sendNewJobEmail(
+          artisan.user.email,
+          artisan.user.firstName,
+          job.description,
+          city,
+          job.category.name,
+          jobId
+        ).catch(() => {})
+      : Promise.resolve(),
+  ]);
 }
 
 /**

@@ -131,11 +131,28 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    await createNotification({
-      userId: auth.payload.userId,
-      type: "PAYOUT_REQUESTED",
-      message: `Votre demande de retrait de ${amount.toFixed(2)} CHF a été enregistrée et est en cours de traitement.`,
+    // Fetch admin user IDs to notify them
+    const admins = await prisma.user.findMany({
+      where: { role: "ADMIN" },
+      select: { id: true },
     });
+
+    await Promise.allSettled([
+      // Confirm to artisan
+      createNotification({
+        userId: auth.payload.userId,
+        type: "PAYOUT_REQUESTED",
+        message: `Votre demande de retrait de ${amount.toFixed(2)} CHF a été enregistrée et est en cours de traitement.`,
+      }),
+      // Alert all admins
+      ...admins.map((admin) =>
+        createNotification({
+          userId: admin.id,
+          type: "PAYOUT_REQUESTED",
+          message: `Un artisan a demandé un retrait de ${amount.toFixed(2)} CHF. Traitement manuel requis.`,
+        })
+      ),
+    ]);
 
     return apiSuccess(payout, 201);
   } catch (err) {
