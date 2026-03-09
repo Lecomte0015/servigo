@@ -13,6 +13,7 @@ interface Client {
   lastName: string;
   email: string;
   phone: string | null;
+  isBlocked: boolean;
   createdAt: string;
   _count: { jobRequests: number };
 }
@@ -87,9 +88,16 @@ export default function AdminClientsPage() {
                       {client.firstName[0]}{client.lastName[0]}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-[#1F2937] truncate">
-                        {client.firstName} {client.lastName}
-                      </p>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <p className="text-sm font-medium text-[#1F2937] truncate">
+                          {client.firstName} {client.lastName}
+                        </p>
+                        {client.isBlocked && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-500 border border-gray-200 shrink-0">
+                            🔴 Suspendu
+                          </span>
+                        )}
+                      </div>
                       {client.phone && (
                         <p className="text-xs text-gray-400 truncate">{client.phone}</p>
                       )}

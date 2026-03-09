@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiNotFound, apiServerError, apiError } from "@/lib/api-response";
 import { createAuditLog } from "@/lib/audit-log";
+import { blockUser, unblockUser } from "@/lib/session";
 import { adminLogger } from "@/lib/logger";
 
 export async function GET(
@@ -86,6 +87,13 @@ export async function PATCH(
       where: { id },
       data: { isBlocked: blocked },
     });
+
+    // Propagation immédiate dans Redis pour le proxy Edge (fail-silent)
+    if (blocked) {
+      blockUser(id).catch(() => {});
+    } else {
+      unblockUser(id).catch(() => {});
+    }
 
     createAuditLog({
       action: blocked ? "USER_BLOCKED" : "USER_UNBLOCKED",

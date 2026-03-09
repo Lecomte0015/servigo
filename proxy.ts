@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
-import { isSessionRevoked } from "@/lib/session";
+import { isSessionRevoked, isUserBlocked } from "@/lib/session";
 
 const COOKIE_NAME = "goservi_token";
 
@@ -25,6 +25,13 @@ export async function proxy(req: NextRequest) {
   if (payload?.jti) {
     const revoked = await isSessionRevoked(payload.jti);
     if (revoked) payload = null;
+  }
+
+  // Vérification de blocage : si l'utilisateur est suspendu par un admin, on invalide la session
+  // Fail-open si Redis indisponible (le blocage au login reste actif comme fallback)
+  if (payload?.userId) {
+    const blocked = await isUserBlocked(payload.userId);
+    if (blocked) payload = null;
   }
 
   // Admin login page: already-logged-in ADMIN → /admin, others → allow

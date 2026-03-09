@@ -1,15 +1,19 @@
 /**
- * GoServi — Session Revocation
+ * GoServi — Session Revocation + User Block
  *
  * Stocke les JTI révoqués dans Upstash Redis avec TTL = durée restante du JWT.
- * Fallback no-op si Redis non configuré (la déconnexion efface quand même le cookie).
+ * Stocke aussi les userId bloqués (sans TTL) pour vérification dans le proxy (Edge).
+ * Fallback no-op si Redis non configuré.
  *
- * Clé Redis : `session:revoked:{jti}` → "1"   (auto-expire = remaining JWT lifetime)
+ * Clés Redis :
+ *   `session:revoked:{jti}`  → "1"  (auto-expire = remaining JWT lifetime)
+ *   `user:blocked:{userId}`  → "1"  (permanent, supprimé au déblocage)
  */
 
 import { sessionLogger } from "@/lib/logger";
 
-const BLACKLIST_PREFIX = "session:revoked:";
+const BLACKLIST_PREFIX  = "session:revoked:";
+const BLOCKED_PREFIX    = "user:blocked:";
 const DEFAULT_TTL_SEC  = 7 * 24 * 3600; // 7 jours (durée max d'un JWT GoServi)
 
 // ─── Lazy Redis client ──────────────────────────────────────────────────────
@@ -78,6 +82,53 @@ export async function isSessionRevoked(jti: string): Promise<boolean> {
     return val !== null;
   } catch {
     // Erreur Redis → fail-open (préférer la disponibilité à la sécurité parfaite)
+    return false;
+  }
+}
+
+// ─── Blocage utilisateur (Edge-compatible via Redis) ────────────────────────
+
+/**
+ * Marque un utilisateur comme bloqué dans Redis.
+ * Appelé par les endpoints admin PATCH block.
+ * Sans TTL : permanent jusqu'au déblocage explicite.
+ */
+export async function blockUser(userId: string): Promise<void> {
+  const redis = await getRedis();
+  if (!redis) return;
+  try {
+    await redis.set(`${BLOCKED_PREFIX}${userId}`, "1");
+  } catch (err) {
+    sessionLogger.warn({ err }, "blockUser Redis failed");
+  }
+}
+
+/**
+ * Retire un utilisateur de la liste bloquée dans Redis.
+ * Appelé par les endpoints admin PATCH unblock.
+ */
+export async function unblockUser(userId: string): Promise<void> {
+  const redis = await getRedis();
+  if (!redis) return;
+  try {
+    await redis.del(`${BLOCKED_PREFIX}${userId}`);
+  } catch (err) {
+    sessionLogger.warn({ err }, "unblockUser Redis failed");
+  }
+}
+
+/**
+ * Vérifie si un utilisateur est bloqué (via Redis).
+ * Utilisé dans proxy.ts (Edge runtime — pas de Prisma possible).
+ * Retourne `false` si Redis est indisponible (fail-open).
+ */
+export async function isUserBlocked(userId: string): Promise<boolean> {
+  const redis = await getRedis();
+  if (!redis) return false;
+  try {
+    const val = await redis.get(`${BLOCKED_PREFIX}${userId}`);
+    return val !== null;
+  } catch {
     return false;
   }
 }

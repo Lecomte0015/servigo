@@ -38,6 +38,7 @@ export async function GET(req: NextRequest) {
           lastName: true,
           email: true,
           phone: true,
+          isBlocked: true,
           createdAt: true,
           _count: { select: { jobRequests: true } },
         },
