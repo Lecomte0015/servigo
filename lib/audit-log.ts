@@ -28,7 +28,11 @@ export type AuditAction =
   // Auth / Compte
   | "ADMIN_LOGIN"
   | "ADMIN_2FA_ENABLED"
-  | "ADMIN_2FA_DISABLED";
+  | "ADMIN_2FA_DISABLED"
+  // Gestion utilisateurs
+  | "USER_BLOCKED"
+  | "USER_UNBLOCKED"
+  | "USER_DELETED";
 
 export interface AuditLogParams {
   adminId: string;
@@ -81,6 +85,9 @@ export function auditActionLabel(action: AuditAction): string {
     ADMIN_LOGIN:        "Connexion admin",
     ADMIN_2FA_ENABLED:  "2FA activée",
     ADMIN_2FA_DISABLED: "2FA désactivée",
+    USER_BLOCKED:       "Compte suspendu",
+    USER_UNBLOCKED:     "Compte réactivé",
+    USER_DELETED:       "Compte supprimé",
   };
   return labels[action] ?? action;
 }
