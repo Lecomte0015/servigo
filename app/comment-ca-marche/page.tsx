@@ -1,5 +1,66 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
+
+export const metadata: Metadata = {
+  title: "Comment ça marche — Trouvez un artisan en 4 étapes",
+  description:
+    "Découvrez comment GoServi fonctionne : décrivez votre besoin, un artisan vous répond, intervient, et vous payez en toute sécurité. Simple et rapide en Suisse romande.",
+  alternates: { canonical: "https://goservi.ch/comment-ca-marche" },
+  openGraph: {
+    url: "https://goservi.ch/comment-ca-marche",
+    title: "Comment ça marche | GoServi",
+    description:
+      "Trouvez un artisan qualifié en moins de 2 minutes. Découvrez comment GoServi simplifie la mise en relation.",
+  },
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Combien coûte le service ?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "GoServi prend une commission de 15% sur chaque mission complétée. L'inscription et l'utilisation de la plateforme sont gratuites.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Comment les artisans sont-ils sélectionnés ?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Chaque artisan passe par un processus de vérification : numéro RC, assurance responsabilité civile, et entretien avec notre équipe.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Que se passe-t-il si je ne suis pas satisfait ?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Notre équipe support est disponible 7j/7. En cas de litige, nous faisons office de médiateur et pouvons procéder à un remboursement.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Puis-je annuler une mission ?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Oui, tant que la mission n'a pas commencé. Aucun frais si elle est en cours de recherche d'artisan.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "La plateforme est-elle disponible dans toute la Suisse ?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Pour l'instant, GoServi est actif à Genève et dans les communes environnantes. Nous expandons progressivement.",
+      },
+    },
+  ],
+};
 
 const CLIENT_STEPS = [
   { n: "01", icon: "📝", title: "Décrivez votre besoin", desc: "Choisissez le type d'intervention, décrivez le problème et renseignez votre adresse en 30 secondes." },
@@ -26,6 +87,11 @@ const FAQS = [
 export default function CommentCaMarchePage() {
   return (
     <div className="min-h-screen bg-white">
+      {/* JSON-LD — FAQ rich snippets */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <Navbar />
 
       {/* Hero */}

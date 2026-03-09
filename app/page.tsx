@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
@@ -7,6 +8,43 @@ import { getSiteSettings } from "@/lib/site-settings";
 
 // Revalidate every 60 seconds (ISR) so homepage reflects CMS changes quickly
 export const revalidate = 60;
+
+const APP_URL = "https://goservi.ch";
+
+export const metadata: Metadata = {
+  title: "GoServi — Artisans urgents à Genève & Lausanne",
+  description:
+    "Trouvez un artisan disponible en quelques minutes. Plombiers, électriciens, serruriers, menuisiers — intervention rapide en Suisse romande. Artisans vérifiés, paiement sécurisé Stripe.",
+  alternates: { canonical: APP_URL },
+  openGraph: {
+    url: APP_URL,
+    title: "GoServi — Artisans urgents à Genève & Lausanne",
+    description:
+      "Trouvez un artisan disponible en quelques minutes. Artisans vérifiés, intervention rapide en Suisse romande.",
+  },
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "GoServi",
+  url: APP_URL,
+  logo: `${APP_URL}/og-image.png`,
+  description:
+    "Marketplace d'artisans vérifiés en Suisse romande. Intervention rapide à Genève, Lausanne et environs.",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Genève",
+    addressCountry: "CH",
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "contact@goservi.ch",
+    contactType: "customer service",
+    availableLanguage: "French",
+  },
+  sameAs: [],
+};
 
 const FOOTER_LINKS = [
   {
@@ -51,6 +89,11 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* JSON-LD — Organisation GoServi */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
       <Navbar />
 
       {/* ─── Hero ──────────────────────────────────────────────────────── */}

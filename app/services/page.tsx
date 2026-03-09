@@ -1,7 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Nos services — Plomberie, Électricité, Serrurerie & plus",
+  description:
+    "Découvrez tous les services GoServi : plomberie, électricité, serrurerie, menuiserie, peinture et bien plus. Artisans vérifiés disponibles 24h/24 en Suisse romande.",
+  alternates: { canonical: "https://goservi.ch/services" },
+  openGraph: {
+    url: "https://goservi.ch/services",
+    title: "Nos services — Plomberie, Électricité, Serrurerie & plus | GoServi",
+    description:
+      "Tous les services d'artisanat disponibles sur GoServi. Interventions rapides à Genève et en Suisse romande.",
+  },
+};
 
 export const revalidate = 60;
 

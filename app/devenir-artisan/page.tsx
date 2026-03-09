@@ -1,5 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
+
+export const metadata: Metadata = {
+  title: "Devenir artisan GoServi — Développez votre activité en Suisse",
+  description:
+    "Rejoignez le réseau GoServi : recevez des missions qualifiées, gérez votre agenda librement et soyez payé rapidement. +500 artisans à Genève. Inscription gratuite.",
+  alternates: { canonical: "https://goservi.ch/devenir-artisan" },
+  openGraph: {
+    url: "https://goservi.ch/devenir-artisan",
+    title: "Devenir artisan GoServi | Développez votre activité",
+    description:
+      "Rejoignez notre réseau d'artisans vérifiés. Recevez des missions, gérez votre agenda et soyez payé rapidement en Suisse romande.",
+  },
+};
 
 const ADVANTAGES = [
   { icon: "📱", title: "Missions qualifiées", desc: "Recevez des demandes de clients sérieux, géolocalisés près de chez vous." },
