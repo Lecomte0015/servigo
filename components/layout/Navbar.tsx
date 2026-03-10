@@ -31,9 +31,9 @@ export function Navbar() {
           <Image
             src="/logo.png"
             alt="GoServi"
-            width={130}
-            height={40}
-            className="h-10 w-auto object-contain"
+            width={180}
+            height={52}
+            className="h-12 w-auto object-contain"
             priority
           />
         </Link>

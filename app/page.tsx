@@ -383,16 +383,14 @@ export default async function HomePage() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
             <Link href="/" aria-label="GoServi — Accueil">
-              {/* Conteneur blanc pour que le logo reste lisible sur fond sombre */}
-              <div className="inline-block bg-white rounded-lg px-3 py-1.5">
-                <Image
-                  src="/logo.png"
-                  alt="GoServi"
-                  width={120}
-                  height={36}
-                  className="h-9 w-auto object-contain"
-                />
-              </div>
+              {/* brightness-0 invert = technique standard : rend le logo tout blanc sur fond sombre */}
+              <Image
+                src="/logo.png"
+                alt="GoServi"
+                width={140}
+                height={42}
+                className="h-10 w-auto object-contain brightness-0 invert"
+              />
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">{footer.tagline}</p>
             <p className="text-xs text-gray-500 flex items-center gap-1">
