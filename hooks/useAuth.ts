@@ -30,11 +30,11 @@ export const useAuth = create<AuthState>()(
       setUser: (user) => set({ user }),
       setLoading: (isLoading) => set({ isLoading }),
       logout: async () => {
-        // Vider le store Zustand + localStorage AVANT la redirection.
-        // Le cookie est effacé côté serveur par /auth/logout.
-        // Si le serveur échoue à effacer le cookie, l'appel à /api/auth/me
-        // lors du prochain chargement re-hydratera l'état correctement.
+        // 1. Vider Zustand
         set({ user: null });
+        // 2. Forcer la suppression du localStorage (évite toute race condition avec persist)
+        try { localStorage.removeItem("goservi-auth"); } catch {}
+        // 3. Redirection serveur qui efface le cookie JWT
         window.location.href = "/auth/logout";
       },
     }),

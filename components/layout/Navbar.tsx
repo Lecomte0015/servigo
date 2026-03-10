@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,8 +12,20 @@ const NAV_LINKS = [
 ];
 
 export function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, setUser, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Vérifie la validité de la session au montage.
+  // Si le cookie est absent/expiré mais que Zustand a encore un user
+  // (ex: après logout raté ou localStorage périmé), on vide l'état client.
+  useEffect(() => {
+    if (user) {
+      fetch("/api/auth/me")
+        .then((r) => { if (!r.ok) setUser(null); })
+        .catch(() => {});
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const dashboardHref =
     user?.role === "ARTISAN"
