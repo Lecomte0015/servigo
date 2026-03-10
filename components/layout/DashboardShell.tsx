@@ -117,8 +117,8 @@ export function DashboardShell({
             <Image
               src="/logo.png"
               alt="GoServi"
-              width={120}
-              height={36}
+              width={460}
+              height={156}
               className="h-9 w-auto object-contain"
               priority
             />
@@ -187,9 +187,9 @@ export function DashboardShell({
           <Image
             src="/logo.png"
             alt="GoServi"
-            width={120}
-            height={36}
-            className="h-9 w-auto object-contain"
+            width={460}
+              height={156}
+              className="h-9 w-auto object-contain"
             priority
           />
         </Link>
@@ -222,9 +222,9 @@ export function DashboardShell({
                 <Image
                   src="/logo.png"
                   alt="GoServi"
-                  width={120}
-                  height={36}
-                  className="h-9 w-auto object-contain"
+                  width={460}
+              height={156}
+              className="h-9 w-auto object-contain"
                 />
               </Link>
               <button

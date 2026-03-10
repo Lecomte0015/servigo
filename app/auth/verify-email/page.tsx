@@ -59,7 +59,7 @@ function VerifyEmailContent() {
         {/* Logo */}
         <div className="text-center mb-6">
           <Link href="/" className="inline-flex items-center justify-center" aria-label="GoServi — Accueil">
-            <Image src="/logo.png" alt="GoServi" width={240} height={160} className="w-[160px] h-auto object-contain" />
+            <Image src="/logo.png" alt="GoServi" width={460} height={156} className="h-12 w-auto object-contain" />
           </Link>
         </div>
 
