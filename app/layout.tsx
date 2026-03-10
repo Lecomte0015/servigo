@@ -58,15 +58,6 @@ export const metadata: Metadata = {
       "Trouvez un artisan disponible en quelques minutes. Plombiers, électriciens, serruriers — intervention rapide.",
     images: [`${APP_URL}/og-image.png`],
   },
-  icons: {
-    icon: [
-      { url: "/logo.png", type: "image/png" },
-    ],
-    shortcut: "/logo.png",
-    apple: [
-      { url: "/logo.png", sizes: "180x180", type: "image/png" },
-    ],
-  },
   robots: {
     index: true,
     follow: true,
