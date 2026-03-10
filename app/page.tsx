@@ -361,7 +361,7 @@ export default async function HomePage() {
 
           {/* Right — stat panel */}
           <div className="bg-[#E6F2F2] md:w-72 p-8 flex flex-col justify-center items-center gap-6 text-center">
-            <span className="text-7xl">👷</span>
+            <span className="text-7xl"></span>
             <div>
               <p className="text-3xl font-extrabold text-[#1F2937]">{proCta.statValue}</p>
               <p className="text-sm text-gray-500">{proCta.statLabel}</p>
@@ -384,11 +384,11 @@ export default async function HomePage() {
           <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2 font-extrabold text-xl"
               style={{ color: settings.primaryColor }}>
-              <span>⚡</span> GoServi
+              <span></span> GoServi
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">{footer.tagline}</p>
             <p className="text-xs text-gray-500 flex items-center gap-1">
-              <span>📍</span> {footer.location}
+              <span> </span> {footer.location}
             </p>
           </div>
 
@@ -416,7 +416,7 @@ export default async function HomePage() {
         <div className="border-t border-white/10">
           <div className="max-w-[1200px] mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
             <span>© {new Date().getFullYear()} {footer.copyright}</span>
-            <span>Réalisé avec ❤️ à Genève</span>
+            <span>Réalisé avec à Genève</span>
           </div>
         </div>
       </footer>
