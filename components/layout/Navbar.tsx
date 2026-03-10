@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 
 const NAV_LINKS = [
@@ -26,12 +27,15 @@ export function Navbar() {
       <div className="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
         {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-extrabold text-[#1CA7A6] text-xl shrink-0"
-        >
-          <span className="text-2xl">⚡</span>
-          GoServi
+        <Link href="/" className="shrink-0 flex items-center" aria-label="GoServi — Accueil">
+          <Image
+            src="/logo.png"
+            alt="GoServi"
+            width={130}
+            height={40}
+            className="h-10 w-auto object-contain"
+            priority
+          />
         </Link>
 
         {/* Desktop nav links */}

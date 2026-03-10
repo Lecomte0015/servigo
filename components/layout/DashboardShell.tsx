@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/utils/cn";
@@ -111,9 +112,16 @@ export function DashboardShell({
       {/* ── Desktop sidebar ─────────────────────────────── */}
       <aside className="hidden md:flex w-56 bg-white border-r border-[#D1E5E5] flex-col shrink-0">
         {/* Logo + notification bell */}
-        <div className="h-14 px-4 flex items-center justify-between border-b border-[#D1E5E5]">
-          <Link href="/" className="font-bold text-[#1CA7A6] text-base flex items-center gap-1">
-            <span>⚡</span> GoServi
+        <div className="h-14 px-3 flex items-center justify-between border-b border-[#D1E5E5]">
+          <Link href="/" aria-label="GoServi — Accueil">
+            <Image
+              src="/logo.png"
+              alt="GoServi"
+              width={100}
+              height={30}
+              className="h-8 w-auto object-contain"
+              priority
+            />
           </Link>
           <NotificationBell align="left" />
         </div>
@@ -175,8 +183,15 @@ export function DashboardShell({
           </svg>
         </button>
 
-        <Link href="/" className="font-bold text-[#1CA7A6] text-base flex items-center gap-1">
-          <span>⚡</span> GoServi
+        <Link href="/" aria-label="GoServi — Accueil">
+          <Image
+            src="/logo.png"
+            alt="GoServi"
+            width={100}
+            height={30}
+            className="h-8 w-auto object-contain"
+            priority
+          />
         </Link>
 
         <div className="flex items-center gap-2">
@@ -202,9 +217,15 @@ export function DashboardShell({
               <Link
                 href="/"
                 onClick={() => setDrawerOpen(false)}
-                className="font-bold text-[#1CA7A6] text-base flex items-center gap-1"
+                aria-label="GoServi — Accueil"
               >
-                <span>⚡</span> GoServi
+                <Image
+                  src="/logo.png"
+                  alt="GoServi"
+                  width={100}
+                  height={30}
+                  className="h-8 w-auto object-contain"
+                />
               </Link>
               <button
                 onClick={() => setDrawerOpen(false)}
