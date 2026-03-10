@@ -29,10 +29,11 @@ export const useAuth = create<AuthState>()(
       setUser: (user) => set({ user }),
       setLoading: (isLoading) => set({ isLoading }),
       logout: async () => {
-        // NE PAS appeler set({ user: null }) ici.
-        // Si le logout échoue (cookie non effacé), l'utilisateur reste sur
-        // le dashboard avec son état Zustand intact → bouton logout visible.
-        // Le DashboardShell utilise logoutAction() (Server Action) directement.
+        // Vider le store Zustand + localStorage AVANT la redirection.
+        // Le cookie est effacé côté serveur par /auth/logout.
+        // Si le serveur échoue à effacer le cookie, l'appel à /api/auth/me
+        // lors du prochain chargement re-hydratera l'état correctement.
+        set({ user: null });
         window.location.href = "/auth/logout";
       },
     }),
