@@ -237,7 +237,7 @@ export default async function HomePage() {
                     )}
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-gray-400 mt-1">
-                    <span className="text-amber-400 text-sm">★★★★★</span>
+                    <span className="text-amber-400 text-sm">★★★★</span>
                     <span className="font-medium text-gray-600">4.9</span>
                     <span>·</span>
                     <span className="flex items-center gap-1 text-green-600 font-medium">
@@ -422,7 +422,7 @@ export default async function HomePage() {
         <div className="border-t border-white/10">
           <div className="max-w-[1200px] mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
             <span>© {new Date().getFullYear()} {footer.copyright}</span>
-            <span>Réalisé avec ❤️ à Genève</span>
+            <span>Réalisé avec à Genève</span>
           </div>
         </div>
       </footer>
