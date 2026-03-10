@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { loginSchema, type LoginInput } from "@/lib/validations";
 import { useAuth } from "@/hooks/useAuth";
 import Button from "@/components/ui/Button";
@@ -75,8 +76,8 @@ function LoginPageContent() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-[#1CA7A6] font-bold text-xl">
-            <span className="text-3xl"></span> GoServi
+          <Link href="/" className="inline-flex items-center justify-center" aria-label="GoServi — Accueil">
+            <Image src="/logo.png" alt="GoServi" width={180} height={54} className="h-12 w-auto object-contain" />
           </Link>
           <p className="text-sm text-gray-500 mt-1">Connectez-vous à votre espace</p>
         </div>

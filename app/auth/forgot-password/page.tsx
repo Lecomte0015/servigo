@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
 import Button from "@/components/ui/Button";
 
@@ -58,8 +59,8 @@ export default function ForgotPasswordPage() {
           ) : (
             <div className="bg-white rounded-[12px] p-8 shadow-sm border border-[#D1E5E5]">
               <div className="text-center mb-6">
-                <Link href="/" className="inline-flex items-center gap-1 font-bold text-[#1CA7A6] text-lg mb-4">
-                  <span>⚡</span> GoServi
+                <Link href="/" className="inline-flex items-center justify-center mb-4" aria-label="GoServi — Accueil">
+                  <Image src="/logo.png" alt="GoServi" width={180} height={54} className="h-12 w-auto object-contain" />
                 </Link>
                 <h1 className="text-xl font-semibold text-[#1F2937]">
                   Mot de passe oublié ?

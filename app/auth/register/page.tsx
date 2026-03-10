@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   registerClientSchema,
   registerArtisanSchema,
@@ -89,8 +90,8 @@ export default function RegisterPage() {
       <div className="min-h-screen bg-[#F4F7F7] flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-6">
-            <Link href="/" className="inline-flex items-center gap-2 text-[#1CA7A6] font-bold text-xl">
-              <span className="text-3xl">⚡</span> GoServi
+            <Link href="/" className="inline-flex items-center justify-center" aria-label="GoServi — Accueil">
+              <Image src="/logo.png" alt="GoServi" width={180} height={54} className="h-12 w-auto object-contain" />
             </Link>
           </div>
           <div className="bg-white border border-[#D1E5E5] rounded-[10px] shadow-sm p-8 text-center">
