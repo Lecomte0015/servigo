@@ -382,15 +382,16 @@ export default async function HomePage() {
         <div className="max-w-[1200px] mx-auto px-4 pt-14 pb-10 grid grid-cols-2 md:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
-            <Link href="/" aria-label="GoServi — Accueil">
-              {/* brightness-0 invert = technique standard : rend le logo tout blanc sur fond sombre */}
-              <Image
-                src="/logo.png"
-                alt="GoServi"
-                width={140}
-                height={42}
-                className="h-10 w-auto object-contain brightness-0 invert"
-              />
+            <Link href="/" aria-label="GoServi — Accueil" className="inline-flex">
+              <div className="bg-white rounded-xl px-4 py-2 inline-flex items-center">
+                <Image
+                  src="/logo.png"
+                  alt="GoServi"
+                  width={160}
+                  height={48}
+                  className="h-11 w-auto object-contain"
+                />
+              </div>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">{footer.tagline}</p>
             <p className="text-xs text-gray-500 flex items-center gap-1">

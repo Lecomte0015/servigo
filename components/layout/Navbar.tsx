@@ -24,16 +24,16 @@ export function Navbar() {
 
   return (
     <header className="bg-white border-b border-[#D1E5E5] sticky top-0 z-50 shadow-sm">
-      <div className="max-w-[1200px] mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-[1200px] mx-auto px-4 h-20 flex items-center justify-between gap-4">
 
         {/* Logo */}
         <Link href="/" className="shrink-0 flex items-center" aria-label="GoServi — Accueil">
           <Image
             src="/logo.png"
             alt="GoServi"
-            width={220}
-            height={64}
-            className="h-14 w-auto object-contain"
+            width={260}
+            height={80}
+            className="h-16 w-auto object-contain"
             priority
           />
         </Link>
