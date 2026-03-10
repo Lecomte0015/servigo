@@ -33,7 +33,7 @@ export function Navbar() {
             alt="GoServi"
             width={260}
             height={80}
-            className="h-16 w-auto object-contain"
+            className="h-16 w-auto max-w-[220px] object-contain"
             priority
           />
         </Link>
@@ -63,7 +63,7 @@ export function Navbar() {
               </Link>
               <button
                 onClick={logout}
-                className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-[#1F2937] rounded-[8px] transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-[8px] transition-colors cursor-pointer"
               >
                 Déconnexion
               </button>
