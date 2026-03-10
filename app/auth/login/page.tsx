@@ -76,7 +76,7 @@ function LoginPageContent() {
         {/* Logo */}
         <div className="text-center mb-6">
           <Link href="/" className="inline-flex items-center gap-2 text-[#1CA7A6] font-bold text-xl">
-            <span className="text-3xl">⚡</span> GoServi
+            <span className="text-3xl"></span> GoServi
           </Link>
           <p className="text-sm text-gray-500 mt-1">Connectez-vous à votre espace</p>
         </div>
