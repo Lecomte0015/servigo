@@ -11,6 +11,7 @@ interface AuthUser {
   lastName: string;
   isApproved?: boolean | null;
   phone?: string | null;
+  avatarUrl?: string | null;
 }
 
 interface AuthState {

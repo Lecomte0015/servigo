@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
@@ -21,6 +21,10 @@ interface PasswordData {
 
 export default function ClientProfilePage() {
   const { user, setUser } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadMsg, setUploadMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [profile, setProfile] = useState<ProfileData>({
     firstName: "",
     lastName: "",
@@ -45,8 +49,38 @@ export default function ClientProfilePage() {
         email: user.email ?? "",
         phone: user.phone ?? "",
       });
+      if (user.avatarUrl) setAvatarPreview(user.avatarUrl);
     }
   }, [user]);
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Aperçu local immédiat
+    const reader = new FileReader();
+    reader.onload = (ev) => setAvatarPreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+
+    setUploading(true);
+    setUploadMsg(null);
+    try {
+      const formData = new FormData();
+      formData.append("photo", file);
+      const res = await fetch("/api/users/me/avatar", { method: "POST", body: formData });
+      const json = await res.json();
+      if (res.ok) {
+        setUser({ ...user!, avatarUrl: json.data.avatarUrl });
+        setUploadMsg({ type: "success", text: "Photo mise à jour !" });
+      } else {
+        setAvatarPreview(user?.avatarUrl ?? null);
+        setUploadMsg({ type: "error", text: json.error ?? "Échec de l'upload." });
+      }
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
 
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,9 +153,50 @@ export default function ClientProfilePage() {
       {/* Avatar */}
       <Card padding="md">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-[#1CA7A6] flex items-center justify-center text-white text-xl font-bold">
-            {initials}
+          <div className="flex flex-col items-center gap-2 shrink-0">
+            {/* Cercle avatar cliquable */}
+            <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-[#1CA7A6] flex items-center justify-center text-white text-xl font-bold">
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt="Photo de profil" className="w-full h-full object-cover" />
+                ) : (
+                  initials
+                )}
+              </div>
+              <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Bouton changer photo */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="text-xs px-3 py-1.5 border border-[#D1E5E5] rounded-[8px] text-[#1CA7A6] hover:bg-[#F4F7F7] transition-colors font-medium flex items-center gap-1.5 disabled:opacity-50"
+            >
+              {uploading ? (
+                <>
+                  <span className="w-3 h-3 border-2 border-[#1CA7A6] border-t-transparent rounded-full animate-spin" />
+                  Envoi…
+                </>
+              ) : (
+                "📷 Changer la photo"
+              )}
+            </button>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="hidden"
+              onChange={handleAvatarChange}
+            />
           </div>
+
           <div>
             <p className="font-semibold text-[#1F2937]">
               {user?.firstName} {user?.lastName}
@@ -130,6 +205,11 @@ export default function ClientProfilePage() {
             <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[#E6F2F2] text-[#178F8E]">
               Client
             </span>
+            {uploadMsg && (
+              <p className={`text-xs mt-1 ${uploadMsg.type === "success" ? "text-green-600" : "text-red-500"}`}>
+                {uploadMsg.text}
+              </p>
+            )}
           </div>
         </div>
       </Card>

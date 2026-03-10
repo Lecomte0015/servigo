@@ -196,8 +196,10 @@ export function DashboardShell({
 
         <div className="flex items-center gap-2">
           <NotificationBell />
-          <div className="w-9 h-9 rounded-full bg-[#1CA7A6] flex items-center justify-center text-white text-xs font-bold">
-            {initials}
+          <div className="w-9 h-9 rounded-full bg-[#1CA7A6] flex items-center justify-center text-white text-xs font-bold overflow-hidden shrink-0">
+            {user?.avatarUrl ? (
+              <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+            ) : initials}
           </div>
         </div>
       </div>
@@ -241,8 +243,10 @@ export function DashboardShell({
             {/* User card */}
             {user && (
               <div className="mx-3 mt-3 p-3 bg-[#F4F7F7] rounded-[10px] flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#1CA7A6] flex items-center justify-center text-white text-sm font-bold shrink-0">
-                  {initials}
+                <div className="w-10 h-10 rounded-full bg-[#1CA7A6] flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden">
+                  {user?.avatarUrl ? (
+                    <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : initials}
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-[#1F2937] truncate">

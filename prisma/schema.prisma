@@ -72,6 +72,7 @@ model User {
   verificationToken       String?   @unique
   verificationTokenExpiry DateTime?
   stripeCustomerId        String?   // Stripe Customer ID for saved payment methods
+  avatarUrl               String?   // Photo de profil (Supabase Storage, bucket "photo")
 
   // ── 2FA TOTP (admin uniquement) ──────────────────────────────────────────
   totpEnabled       Boolean @default(false)

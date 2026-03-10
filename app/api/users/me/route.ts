@@ -34,6 +34,7 @@ export async function PATCH(req: NextRequest) {
         lastName: true,
         email: true,
         phone: true,
+        avatarUrl: true,
         role: true,
       },
     });
