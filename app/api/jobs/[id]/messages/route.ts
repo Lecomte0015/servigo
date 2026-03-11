@@ -24,11 +24,30 @@ export async function GET(
 
     if (!job) return apiNotFound("Mission introuvable");
 
-    // Access control: only the client or the assigned artisan can see messages
+    // Access control: client, assigned artisan, or eligible artisan during MATCHING phase
     const artisanUserId = job.assignment?.artisan.userId ?? null;
-    const isAllowed =
+    let isAllowed =
       job.clientId === auth.payload.userId ||
       artisanUserId === auth.payload.userId;
+
+    if (!isAllowed && job.status === "MATCHING" && auth.payload.role === "ARTISAN") {
+      // Allow the targeted artisan (direct request) or any approved artisan
+      // matching city+category (standard matching) to participate in the conversation
+      const artisanProfile = await prisma.artisanProfile.findFirst({
+        where: {
+          userId: auth.payload.userId,
+          isApproved: true,
+          ...(job.targetArtisanId
+            ? { id: job.targetArtisanId }
+            : {
+                city: job.city,
+                services: { some: { categoryId: job.categoryId, isActive: true } },
+              }),
+        },
+        select: { id: true },
+      });
+      isAllowed = !!artisanProfile;
+    }
 
     if (!isAllowed) {
       return apiError("Accès refusé à cette conversation", 403);
@@ -86,11 +105,28 @@ export async function POST(
 
     if (!job) return apiNotFound("Mission introuvable");
 
-    // Access control
+    // Access control: same logic as GET
     const artisanUserId = job.assignment?.artisan.userId ?? null;
-    const isAllowed =
+    let isAllowed =
       job.clientId === auth.payload.userId ||
       artisanUserId === auth.payload.userId;
+
+    if (!isAllowed && job.status === "MATCHING" && auth.payload.role === "ARTISAN") {
+      const artisanProfile = await prisma.artisanProfile.findFirst({
+        where: {
+          userId: auth.payload.userId,
+          isApproved: true,
+          ...(job.targetArtisanId
+            ? { id: job.targetArtisanId }
+            : {
+                city: job.city,
+                services: { some: { categoryId: job.categoryId, isActive: true } },
+              }),
+        },
+        select: { id: true },
+      });
+      isAllowed = !!artisanProfile;
+    }
 
     if (!isAllowed) {
       return apiError("Accès refusé à cette conversation", 403);

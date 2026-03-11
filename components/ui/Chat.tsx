@@ -32,6 +32,7 @@ export default function Chat({ jobId, currentUserId, jobStatus }: ChatProps) {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [sendError, setSendError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const isActive = ACTIVE_STATUSES.includes(jobStatus);
 
@@ -67,6 +68,7 @@ export default function Chat({ jobId, currentUserId, jobStatus }: ChatProps) {
     if (!content || sending || !isActive) return;
 
     setSending(true);
+    setSendError(null);
     const optimisticMsg: Message = {
       id: `tmp-${Date.now()}`,
       content,
@@ -93,13 +95,16 @@ export default function Chat({ jobId, currentUserId, jobStatus }: ChatProps) {
         // Refresh to get the real message with correct sender info
         await fetchMessages();
       } else {
-        // Rollback optimistic update
+        // Rollback optimistic update and show error
+        const errJson = await res.json().catch(() => ({}));
         setMessages((prev) => prev.filter((m) => m.id !== optimisticMsg.id));
         setInput(content);
+        setSendError(errJson.error ?? "Impossible d'envoyer le message");
       }
     } catch {
       setMessages((prev) => prev.filter((m) => m.id !== optimisticMsg.id));
       setInput(content);
+      setSendError("Erreur réseau, veuillez réessayer");
     } finally {
       setSending(false);
     }
@@ -232,6 +237,13 @@ export default function Chat({ jobId, currentUserId, jobStatus }: ChatProps) {
         )}
         <div ref={bottomRef} />
       </div>
+
+      {/* Send error */}
+      {sendError && (
+        <div style={{ padding: "6px 16px", background: "#FEF2F2", borderTop: "1px solid #FECACA" }}>
+          <p style={{ fontSize: "12px", color: "#DC2626" }}>{sendError}</p>
+        </div>
+      )}
 
       {/* Input */}
       {isActive && (
