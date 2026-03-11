@@ -203,7 +203,11 @@ export default function ProWalletPage() {
               </p>
               <p className="text-xs text-gray-400 mt-1">Prêt à être retiré</p>
             </div>
-            <span className="text-2xl">💰</span>
+            <div className="w-9 h-9 rounded-[8px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6] shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+              </svg>
+            </div>
           </div>
         </Card>
 
@@ -216,7 +220,11 @@ export default function ProWalletPage() {
               </p>
               <p className="text-xs text-gray-400 mt-1">Missions en cours</p>
             </div>
-            <span className="text-2xl">⏳</span>
+            <div className="w-9 h-9 rounded-[8px] bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
           </div>
         </Card>
 
@@ -231,14 +239,22 @@ export default function ProWalletPage() {
                 {wallet?.completedCount ?? 0} mission{(wallet?.completedCount ?? 0) > 1 ? "s" : ""}
               </p>
             </div>
-            <span className="text-2xl">📈</span>
+            <div className="w-9 h-9 rounded-[8px] bg-gray-100 flex items-center justify-center text-gray-500 shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+              </svg>
+            </div>
           </div>
         </Card>
       </div>
 
       {/* ── Commission Info ── */}
       <div className="bg-[#F4F7F7] border border-[#D1E5E5] rounded-[10px] px-4 py-3 flex items-start gap-3">
-        <span className="text-lg">ℹ️</span>
+        <div className="w-6 h-6 rounded-full bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6] shrink-0 mt-0.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
         <div>
           <p className="text-sm font-medium text-[#1F2937]">Commission GoServi</p>
           <p className="text-xs text-gray-500 mt-0.5">
@@ -251,12 +267,12 @@ export default function ProWalletPage() {
       {/* Success banners */}
       {bankSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-[10px] px-4 py-3 text-sm text-green-700">
-          ✅ Coordonnées bancaires enregistrées avec succès.
+          Coordonnées bancaires enregistrées avec succès.
         </div>
       )}
       {payoutSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-[10px] px-4 py-3 text-sm text-green-700">
-          ✅ Demande de retrait enregistrée. Traitement sous 1-3 jours ouvrés.
+          Demande de retrait enregistrée. Traitement sous 1-3 jours ouvrés.
         </div>
       )}
 
@@ -351,16 +367,16 @@ export default function ProWalletPage() {
 
         {!bankAccount?.hasBankAccount ? (
           <div className="bg-amber-50 border border-amber-200 rounded-[8px] px-4 py-3 text-sm text-amber-700">
-            ⚠️ Configurez d&apos;abord vos coordonnées bancaires ci-dessus pour demander un retrait.
+            Configurez d&apos;abord vos coordonnées bancaires ci-dessus pour demander un retrait.
           </div>
         ) : realAvailable < 10 ? (
           <div className="bg-[#F4F7F7] border border-[#D1E5E5] rounded-[8px] px-4 py-3 text-sm text-gray-500">
-            💰 Solde insuffisant. Minimum de retrait : <strong>10 CHF</strong>.
+            Solde insuffisant. Minimum de retrait : <strong>10 CHF</strong>.
             Votre solde disponible : <strong>{realAvailable.toFixed(2)} CHF</strong>.
           </div>
         ) : hasPendingPayout ? (
           <div className="bg-amber-50 border border-amber-200 rounded-[8px] px-4 py-3 text-sm text-amber-700">
-            ⏳ Un retrait est déjà en cours de traitement. Vous pourrez en faire un nouveau une fois celui-ci traité.
+            Un retrait est déjà en cours de traitement. Vous pourrez en faire un nouveau une fois celui-ci traité.
           </div>
         ) : !showPayoutForm ? (
           <div className="flex items-center justify-between gap-4">
@@ -374,7 +390,7 @@ export default function ProWalletPage() {
               </p>
             </div>
             <Button size="sm" onClick={() => { setShowPayoutForm(true); setPayoutError(""); }}>
-              💸 Retirer
+              Retirer
             </Button>
           </div>
         ) : (
@@ -471,7 +487,6 @@ export default function ProWalletPage() {
         </CardHeader>
         {!wallet?.transactions.length ? (
           <div className="text-center py-12">
-            <p className="text-3xl mb-2">💸</p>
             <p className="text-gray-400 text-sm">Aucune transaction pour l&apos;instant</p>
           </div>
         ) : (

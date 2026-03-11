@@ -100,7 +100,7 @@ export default function AdminLoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 text-white font-bold text-2xl mb-1">
-            <span>⚡</span> GoServi
+            GoServi
           </div>
           <p className="text-xs text-gray-400 tracking-widest uppercase mt-1">
             Back-office Administration
@@ -153,8 +153,10 @@ export default function AdminLoginPage() {
             <>
               {/* Étape 2FA */}
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-full bg-[#E6F2F2] flex items-center justify-center text-xl shrink-0">
-                  🔐
+                <div className="w-10 h-10 rounded-full bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6] shrink-0">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
                 </div>
                 <div>
                   <h1 className="text-base font-semibold text-[#1F2937]">

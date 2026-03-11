@@ -185,7 +185,6 @@ export default function HistoryPage() {
               </div>
             ) : !jobs.length ? (
               <div className="text-center py-12">
-                <p className="text-3xl mb-2">📋</p>
                 <p className="text-gray-500 text-sm">Aucune demande trouvée</p>
                 <Link href="/dashboard/new-job" className="mt-3 inline-block">
                   <Button variant="outline" size="sm">Créer une demande</Button>
@@ -209,13 +208,13 @@ export default function HistoryPage() {
                           </span>
                           {job.urgencyLevel === "URGENT" && (
                             <span className="text-xs text-red-600 bg-red-50 border border-red-200 px-1.5 py-0.5 rounded-md font-medium">
-                              ⚡ Urgent
+                              Urgent
                             </span>
                           )}
                         </div>
                         <p className="text-xs text-gray-500 line-clamp-1">{job.description}</p>
                         <p className="text-xs text-gray-400">
-                          📍 {job.city} · {format(new Date(job.createdAt), "d MMM yyyy", { locale: fr })}
+                          {job.city} · {format(new Date(job.createdAt), "d MMM yyyy", { locale: fr })}
                         </p>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
@@ -289,7 +288,7 @@ export default function HistoryPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 mb-0.5">Urgence</p>
-                  <p className="text-[#1F2937]">{selectedJob.urgencyLevel === "URGENT" ? "⚡ Urgente" : "Standard"}</p>
+                  <p className="text-[#1F2937]">{selectedJob.urgencyLevel === "URGENT" ? "Urgente" : "Standard"}</p>
                 </div>
                 {selectedJob.estimatedPrice && (
                   <div>

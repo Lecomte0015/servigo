@@ -81,7 +81,7 @@ export default function AdminArtisansPage() {
           >
             {f === "pending"  ? "En attente"
              : f === "approved" ? "Approuvés"
-             : f === "cert"     ? "📄 Docs à vérifier"
+             : f === "cert"     ? "Docs à vérifier"
              : "Tous"}
           </button>
         ))}
@@ -116,16 +116,16 @@ export default function AdminArtisansPage() {
                       {artisan.isApproved ? "Approuvé" : "En attente"}
                     </Badge>
                     {artisan.emergencyAvailable && (
-                      <Badge variant="info">⚡ Urgences</Badge>
+                      <Badge variant="info">Urgences</Badge>
                     )}
                     {artisan.insuranceCertUrl && !artisan.insuranceVerified && (
-                      <Badge variant="warning">📄 Assurance à vérifier</Badge>
+                      <Badge variant="warning">Assurance à vérifier</Badge>
                     )}
                     {artisan.insuranceCertUrl && artisan.insuranceVerified && (
-                      <Badge variant="success">✅ Assurance vérifiée</Badge>
+                      <Badge variant="success">Assurance vérifiée</Badge>
                     )}
                     {artisan.user.isBlocked && (
-                      <Badge variant="neutral">🔴 Suspendu</Badge>
+                      <Badge variant="neutral">Suspendu</Badge>
                     )}
                   </div>
                   <p className="text-xs text-gray-500">
@@ -133,9 +133,9 @@ export default function AdminArtisansPage() {
                     {artisan.user.email}
                   </p>
                   <p className="text-xs text-gray-400">
-                    📍 {artisan.city} · RC: {artisan.rcNumber}
+                    {artisan.city} · RC: {artisan.rcNumber}
                     {artisan.ratingCount > 0 &&
-                      ` · ⭐ ${artisan.ratingAverage.toFixed(1)} (${artisan.ratingCount} avis)`}
+                      ` · ${artisan.ratingAverage.toFixed(1)}/5 (${artisan.ratingCount} avis)`}
                   </p>
                   <div className="flex gap-1 flex-wrap mt-1">
                     {artisan.services.map((s) => (

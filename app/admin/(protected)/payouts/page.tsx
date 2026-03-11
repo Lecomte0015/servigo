@@ -134,7 +134,7 @@ export default function AdminPayoutsPage() {
 
       {/* ── Process instructions ── */}
       <div className="bg-[#F4F7F7] border border-[#D1E5E5] rounded-[10px] px-4 py-3 text-xs text-gray-500">
-        🏦 <strong>Procédure :</strong> Passez le statut à <em>En traitement</em> pendant l&apos;exécution du virement bancaire,
+        <strong>Procédure :</strong> Passez le statut à <em>En traitement</em> pendant l&apos;exécution du virement bancaire,
         puis <em>Viré</em> une fois confirmé. L&apos;artisan reçoit une notification à chaque étape.
       </div>
 
@@ -171,7 +171,6 @@ export default function AdminPayoutsPage() {
               </div>
             ) : payouts.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-3xl mb-2">✅</p>
                 <p className="text-gray-400 text-sm">Aucun retrait dans cette catégorie</p>
               </div>
             ) : (
@@ -200,7 +199,7 @@ export default function AdminPayoutsPage() {
                           {p.artisan.companyName}
                         </p>
                         <p className="text-xs text-gray-400 truncate">
-                          {p.artisan.user.firstName} {p.artisan.user.lastName} · 📍 {p.artisan.city}
+                          {p.artisan.user.firstName} {p.artisan.user.lastName} · {p.artisan.city}
                         </p>
                       </div>
                       <span className="text-sm font-semibold text-[#1CA7A6] shrink-0">
@@ -317,7 +316,7 @@ export default function AdminPayoutsPage() {
                       loading={actioning}
                       onClick={() => handleAction("COMPLETED")}
                     >
-                      ✅ Confirmer le virement
+                      Confirmer le virement
                     </Button>
                     <Button
                       size="sm"
@@ -334,8 +333,8 @@ export default function AdminPayoutsPage() {
                 {(selected.status === "COMPLETED" || selected.status === "FAILED") && (
                   <div className="bg-[#F4F7F7] rounded-[8px] px-3 py-2 text-xs text-gray-500">
                     {selected.status === "COMPLETED"
-                      ? "✅ Ce retrait a été traité et viré avec succès."
-                      : "❌ Ce retrait a échoué ou a été refusé."}
+                      ? "Ce retrait a été traité et viré avec succès."
+                      : "Ce retrait a échoué ou a été refusé."}
                     {selected.processedAt && (
                       <p className="mt-0.5">
                         Le {format(new Date(selected.processedAt), "d MMM yyyy", { locale: fr })}

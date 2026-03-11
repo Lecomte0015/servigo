@@ -125,7 +125,6 @@ export default function AdminPaymentsPage() {
               </div>
             ) : !payments.length ? (
               <div className="text-center py-12">
-                <p className="text-3xl mb-2">💳</p>
                 <p className="text-gray-400 text-sm">Aucun paiement</p>
               </div>
             ) : (
@@ -154,7 +153,7 @@ export default function AdminPaymentsPage() {
                           </div>
                           <div className="min-w-0">
                             <p className="text-sm text-[#1F2937] truncate">{p.job.category.name}</p>
-                            <p className="text-xs text-gray-400 truncate">📍 {p.job.city}</p>
+                            <p className="text-xs text-gray-400 truncate">{p.job.city}</p>
                           </div>
                           <span className="text-sm font-semibold text-[#1CA7A6] shrink-0">
                             {p.amount.toFixed(0)} CHF

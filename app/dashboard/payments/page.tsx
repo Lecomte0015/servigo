@@ -95,7 +95,9 @@ export default function ClientPaymentsPage() {
 
       {/* Info strip */}
       <div className="bg-[#F4F7F7] border border-[#D1E5E5] rounded-[10px] px-4 py-3 flex items-start gap-3">
-        <span>🔒</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 text-[#1CA7A6] shrink-0">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
         <p className="text-xs text-gray-500">
           Vos paiements sont sécurisés par <strong>Stripe</strong>. Le montant est pré-autorisé à la création de la demande et capturé uniquement à la confirmation de la mission.
         </p>
@@ -107,7 +109,6 @@ export default function ClientPaymentsPage() {
           <Card padding="none">
             {!payments.length ? (
               <div className="text-center py-12">
-                <p className="text-3xl mb-2">💳</p>
                 <p className="text-gray-400 text-sm">Aucun paiement pour l&apos;instant</p>
                 <p className="text-xs text-gray-400 mt-1">Vos transactions apparaîtront ici après votre première demande</p>
               </div>
@@ -131,7 +132,7 @@ export default function ClientPaymentsPage() {
                           {p.categoryIcon} {p.category}
                         </p>
                         <p className="text-xs text-gray-400 truncate">
-                          📍 {p.city}
+                          {p.city}
                           {p.artisan && ` · ${p.artisan.companyName}`}
                         </p>
                       </div>
@@ -166,7 +167,7 @@ export default function ClientPaymentsPage() {
                 <div>
                   <p className="text-xs text-gray-400 mb-0.5">Mission</p>
                   <p className="font-medium text-[#1F2937]">{selected.categoryIcon} {selected.category}</p>
-                  <p className="text-xs text-gray-400">📍 {selected.city}</p>
+                  <p className="text-xs text-gray-400">{selected.city}</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 mb-0.5">Statut mission</p>

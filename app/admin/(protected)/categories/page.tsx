@@ -148,7 +148,7 @@ export default function AdminCategoriesPage() {
           size="sm"
           onClick={() => { setShowForm(!showForm); setEditingId(null); setForm(EMPTY_FORM); setError(null); }}
         >
-          {showForm && !editingId ? "Annuler" : "➕ Ajouter"}
+          {showForm && !editingId ? "Annuler" : "+ Ajouter"}
         </Button>
       </div>
 
@@ -251,7 +251,13 @@ export default function AdminCategoriesPage() {
                     {cat.imageUrl ? (
                       <Image src={cat.imageUrl} alt={cat.name} fill className="object-cover" sizes="56px" />
                     ) : (
-                      <span className="text-2xl">{cat.icon ?? "📦"}</span>
+                      {cat.icon ? (
+                        <span className="text-2xl">{cat.icon}</span>
+                      ) : (
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        </svg>
+                      )}
                     )}
                   </div>
 
@@ -287,19 +293,19 @@ export default function AdminCategoriesPage() {
                   <div className="flex flex-wrap gap-1 shrink-0">
                     <button onClick={() => handleEdit(cat)}
                       className="text-xs px-2 py-1 rounded-[6px] border border-[#D1E5E5] text-gray-500 hover:border-[#1CA7A6] hover:text-[#1CA7A6] transition-colors">
-                      ✏️
+                      Modifier
                     </button>
                     <button
                       onClick={() => { setPendingUploadId(cat.id); fileInputRef.current?.click(); }}
                       disabled={uploadingId === cat.id}
                       title="Uploader une image"
                       className="text-xs px-2 py-1 rounded-[6px] border border-[#D1E5E5] text-gray-500 hover:border-[#1CA7A6] hover:text-[#1CA7A6] transition-colors disabled:opacity-40">
-                      {uploadingId === cat.id ? "⏳" : "🖼️"}
+                      {uploadingId === cat.id ? "…" : "Image"}
                     </button>
                     {cat.imageUrl && (
                       <button onClick={() => handleRemoveImage(cat.id)}
                         className="text-xs px-2 py-1 rounded-[6px] border border-[#D1E5E5] text-gray-500 hover:border-red-300 hover:text-red-500 transition-colors">
-                        ✕img
+                        Retirer img
                       </button>
                     )}
                     <button
@@ -307,7 +313,7 @@ export default function AdminCategoriesPage() {
                       disabled={deletingId === cat.id || cat._count.jobRequests > 0}
                       title={cat._count.jobRequests > 0 ? "Des missions utilisent cette catégorie" : "Supprimer"}
                       className="text-xs px-2 py-1 rounded-[6px] border border-[#D1E5E5] text-gray-500 hover:border-red-300 hover:text-red-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-                      🗑️
+                      Supprimer
                     </button>
                   </div>
                 </div>

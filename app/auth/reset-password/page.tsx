@@ -62,7 +62,11 @@ function ResetPasswordForm() {
           <div className="bg-white rounded-[12px] p-8 shadow-sm border border-[#D1E5E5]">
             {success ? (
               <div className="text-center">
-                <p className="text-4xl mb-3">✅</p>
+                <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center text-green-600 mx-auto mb-3">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                </div>
                 <h1 className="text-lg font-semibold text-[#1F2937] mb-1">
                   Mot de passe réinitialisé !
                 </h1>

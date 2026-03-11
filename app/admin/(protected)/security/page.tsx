@@ -119,7 +119,7 @@ export default function AdminSecurityPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>🔐 Double authentification (2FA)</CardTitle>
+            <CardTitle>Double authentification (2FA)</CardTitle>
             {!loading && status && (
               <Badge variant={status.totpEnabled ? "success" : "neutral"}>
                 {status.totpEnabled ? "Activée" : "Désactivée"}
@@ -140,7 +140,11 @@ export default function AdminSecurityPage() {
             /* ── 2FA activée → proposer de désactiver ──────────────────────── */
             <>
               <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-[10px]">
-                <span className="text-2xl">✅</span>
+                <div className="text-green-600 shrink-0">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                </div>
                 <div>
                   <p className="text-sm font-semibold text-green-800">
                     Double authentification active
@@ -267,7 +271,11 @@ export default function AdminSecurityPage() {
 
               {setupStep === "done" && (
                 <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-[10px]">
-                  <span className="text-2xl">🎉</span>
+                  <div className="text-green-600 shrink-0">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                  </div>
                   <div>
                     <p className="text-sm font-semibold text-green-800">
                       2FA activée avec succès !

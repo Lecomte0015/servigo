@@ -271,7 +271,9 @@ export default function ProProfilePage() {
                 onClick={() => fileInputRef.current?.click()}
                 className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
               >
-                <span className="text-white text-xs font-medium">✏️</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
               </div>
             </div>
             <button
@@ -303,12 +305,14 @@ export default function ProProfilePage() {
                 {profile?.user.firstName} {profile?.user.lastName}
               </p>
               {profile?.isApproved ? (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
-                  ✓ Vérifié
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                  Vérifié
                 </span>
               ) : (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                  ⏳ En attente
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                  En attente
                 </span>
               )}
             </div>
@@ -448,7 +452,12 @@ export default function ProProfilePage() {
             /* Document présent */
             <div className="flex items-start justify-between gap-3 p-4 bg-[#F4F7F7] rounded-[10px] border border-[#D1E5E5]">
               <div className="flex items-center gap-3 min-w-0">
-                <span className="text-2xl shrink-0">📄</span>
+                <div className="w-10 h-10 rounded-[8px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6] shrink-0">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                </div>
                 <div className="min-w-0">
                   <a
                     href={profile.insuranceCertUrl}
@@ -460,12 +469,14 @@ export default function ProProfilePage() {
                   </a>
                   <div className="mt-1">
                     {profile.insuranceVerified ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
-                        ✅ Vérifiée par GoServi
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                        Vérifiée par GoServi
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                        🕐 En attente de vérification
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                        En attente de vérification
                       </span>
                     )}
                   </div>
@@ -505,7 +516,12 @@ export default function ProProfilePage() {
                 </>
               ) : (
                 <>
-                  <span className="text-3xl">📄</span>
+                  <div className="w-12 h-12 rounded-xl bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6]">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+                    </svg>
+                  </div>
                   <span className="text-sm font-medium text-[#1CA7A6]">
                     Téléverser l&apos;attestation d&apos;assurance
                   </span>

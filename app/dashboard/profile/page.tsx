@@ -323,7 +323,9 @@ export default function ClientProfilePage() {
       <Card padding="md">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6]">
-            🔒
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
           </div>
           <div>
             <p className="text-sm font-medium text-[#1F2937]">Compte vérifié</p>

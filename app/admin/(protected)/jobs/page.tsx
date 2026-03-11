@@ -151,7 +151,6 @@ export default function AdminJobsPage() {
               </div>
             ) : !jobs.length ? (
               <div className="text-center py-12">
-                <p className="text-3xl mb-2">📋</p>
                 <p className="text-gray-400 text-sm">Aucune demande</p>
               </div>
             ) : (
@@ -179,10 +178,10 @@ export default function AdminJobsPage() {
                             {job.category.name}
                           </span>
                           {job.urgencyLevel === "URGENT" && (
-                            <span className="text-xs text-red-500 shrink-0">⚡</span>
+                            <span className="text-xs text-red-500 shrink-0 font-medium">Urgent</span>
                           )}
                         </div>
-                        <p className="text-xs text-gray-400 truncate">📍 {job.city}</p>
+                        <p className="text-xs text-gray-400 truncate">{job.city}</p>
                       </div>
                       <div className="min-w-0">
                         <p className="text-xs text-gray-600 truncate">
@@ -239,7 +238,7 @@ export default function AdminJobsPage() {
                   <JobStatusBadge status={selectedJob.status} />
                   {selectedJob.urgencyLevel === "URGENT" && (
                     <span className="text-xs bg-red-50 text-red-600 border border-red-200 px-1.5 py-0.5 rounded-md font-medium">
-                      ⚡ Urgent
+                      Urgent
                     </span>
                   )}
                 </div>

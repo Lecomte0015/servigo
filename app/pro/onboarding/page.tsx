@@ -19,9 +19,9 @@ interface ServiceEntry {
 }
 
 const STEPS = [
-  { label: "Votre activité", icon: "🏢" },
-  { label: "Vos services", icon: "🔧" },
-  { label: "Confirmation", icon: "✅" },
+  { label: "Votre activité" },
+  { label: "Vos services" },
+  { label: "Confirmation" },
 ];
 
 /** Fourchettes de tarifs horaires et suppléments urgence — marché suisse (CHF) */
@@ -153,7 +153,7 @@ export default function ArtisanOnboardingPage() {
       {/* Top bar */}
       <header className="bg-white border-b border-[#D1E5E5] h-14 flex items-center px-4 sticky top-0 z-10">
         <Link href="/" className="font-bold text-[#1CA7A6] flex items-center gap-1 text-base">
-          <span>⚡</span> GoServi
+          GoServi
         </Link>
         <span className="mx-3 text-gray-300">|</span>
         <span className="text-sm text-gray-500">Configuration de votre compte artisan</span>
@@ -223,7 +223,7 @@ export default function ArtisanOnboardingPage() {
                 className="flex items-center justify-between p-4 border border-[#D1E5E5] rounded-[10px] cursor-pointer hover:border-[#1CA7A6] transition-colors"
               >
                 <div>
-                  <p className="text-sm font-medium text-[#1F2937]">⚡ Disponible pour les urgences</p>
+                  <p className="text-sm font-medium text-[#1F2937]">Disponible pour les urgences</p>
                   <p className="text-xs text-gray-500 mt-0.5">Vous acceptez des missions urgentes, même le soir et le week-end</p>
                 </div>
                 <div className={`w-11 h-6 rounded-full transition-colors flex-shrink-0 ml-3 relative ${emergency ? "bg-[#1CA7A6]" : "bg-gray-200"}`}>
@@ -249,7 +249,11 @@ export default function ArtisanOnboardingPage() {
 
               {/* Commission info */}
               <div className="bg-[#E6F2F2] rounded-[8px] px-3 py-2.5 flex items-start gap-2 text-xs text-[#178F8E]">
-                <span className="mt-0.5">💡</span>
+                <div className="w-4 h-4 rounded-full bg-[#1CA7A6] flex items-center justify-center text-white shrink-0 mt-0.5">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                </div>
                 <p>
                   GoServi prélève <strong>15% de commission</strong> sur chaque mission.
                   Les fourchettes indiquées sont les tarifs <strong>bruts</strong> pratiqués sur le marché suisse — pensez à les intégrer dans votre calcul.
@@ -268,7 +272,13 @@ export default function ArtisanOnboardingPage() {
                         onClick={() => toggleCategory(cat.id)}
                         className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#F4F7F7] transition-colors"
                       >
-                        <span className="text-xl">{cat.icon ?? "🔧"}</span>
+                        {cat.icon ? (
+                          <span className="text-xl">{cat.icon}</span>
+                        ) : (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="text-[#1CA7A6] shrink-0">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                          </svg>
+                        )}
                         <span className="text-sm font-medium text-[#1F2937] flex-1">{cat.name}</span>
                         <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${selected ? "bg-[#1CA7A6] border-[#1CA7A6]" : "border-gray-300"}`}>
                           {selected && <span className="text-white text-xs font-bold">✓</span>}
@@ -330,7 +340,7 @@ export default function ArtisanOnboardingPage() {
           {step === 2 && (
             <div className="bg-white rounded-[12px] border border-[#D1E5E5] p-6 flex flex-col gap-5 shadow-sm">
               <div>
-                <h2 className="text-lg font-semibold text-[#1F2937]">✅ Tout est prêt !</h2>
+                <h2 className="text-lg font-semibold text-[#1F2937]">Tout est prêt !</h2>
                 <p className="text-sm text-gray-500 mt-0.5">Voici un résumé de votre configuration</p>
               </div>
 
@@ -341,7 +351,7 @@ export default function ArtisanOnboardingPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Urgences</span>
-                  <span className="font-medium text-[#1F2937]">{emergency ? "⚡ Oui" : "Non"}</span>
+                  <span className="font-medium text-[#1F2937]">{emergency ? "Oui" : "Non"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Services</span>
@@ -350,7 +360,7 @@ export default function ArtisanOnboardingPage() {
               </div>
 
               <div className="bg-[#E6F2F2] rounded-[10px] p-4 text-sm text-[#178F8E]">
-                <p className="font-medium mb-1">🔍 Validation en cours</p>
+                <p className="font-medium mb-1">Validation en cours</p>
                 <p>Notre équipe va vérifier votre dossier (RC, assurances) et vous notifier sous 24h ouvrées.</p>
               </div>
 

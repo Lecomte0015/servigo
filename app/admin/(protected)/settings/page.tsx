@@ -9,15 +9,15 @@ import { DEFAULT_SETTINGS } from "@/lib/site-settings";
 
 type Tab = "apparence" | "hero" | "stats" | "steps" | "garanties" | "pro" | "footer" | "legal";
 
-const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: "apparence", label: "Apparence", icon: "🎨" },
-  { id: "hero", label: "Hero", icon: "🏠" },
-  { id: "stats", label: "Statistiques", icon: "📊" },
-  { id: "steps", label: "Étapes", icon: "📝" },
-  { id: "garanties", label: "Garanties", icon: "🛡️" },
-  { id: "pro", label: "CTA Pro", icon: "👷" },
-  { id: "footer", label: "Footer", icon: "📄" },
-  { id: "legal", label: "Pages légales", icon: "⚖️" },
+const TABS: { id: Tab; label: string }[] = [
+  { id: "apparence", label: "Apparence" },
+  { id: "hero", label: "Hero" },
+  { id: "stats", label: "Statistiques" },
+  { id: "steps", label: "Étapes" },
+  { id: "garanties", label: "Garanties" },
+  { id: "pro", label: "CTA Pro" },
+  { id: "footer", label: "Footer" },
+  { id: "legal", label: "Pages légales" },
 ];
 
 export default function AdminSettingsPage() {
@@ -100,7 +100,6 @@ export default function AdminSettingsPage() {
                 : "bg-white text-gray-600 border-[#D1E5E5] hover:border-[#1CA7A6] hover:text-[#1CA7A6]"
             }`}
           >
-            <span>{t.icon}</span>
             {t.label}
           </button>
         ))}
@@ -522,7 +521,11 @@ export default function AdminSettingsPage() {
       {activeTab === "legal" && (
         <div className="flex flex-col gap-5">
           <div className="bg-[#F4F7F7] border border-[#D1E5E5] rounded-[12px] px-4 py-3 text-sm text-gray-600 flex gap-2 items-start">
-            <span className="text-lg shrink-0">💡</span>
+            <div className="w-6 h-6 rounded-full bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6] shrink-0 mt-0.5">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
             <div>
               <p className="font-semibold text-[#1F2937] mb-0.5">Syntaxe Markdown supportée</p>
               <p className="text-xs text-gray-500">

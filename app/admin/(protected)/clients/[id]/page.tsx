@@ -132,7 +132,7 @@ export default function AdminClientDetailPage() {
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-xl font-semibold text-[#1F2937]">{client.firstName} {client.lastName}</h1>
-              {isBlocked && <Badge variant="neutral">🔴 Suspendu</Badge>}
+              {isBlocked && <Badge variant="neutral">Suspendu</Badge>}
             </div>
             <p className="text-sm text-gray-500">{client.email}</p>
           </div>
@@ -174,8 +174,9 @@ export default function AdminClientDetailPage() {
           {/* Bloquer / Débloquer */}
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <p className="text-sm font-medium text-[#1F2937]">
-                {isBlocked ? "🔴 Compte suspendu" : "🟢 Compte actif"}
+              <p className="text-sm font-medium text-[#1F2937] flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full shrink-0 ${isBlocked ? "bg-red-500" : "bg-green-500"}`} />
+                {isBlocked ? "Compte suspendu" : "Compte actif"}
               </p>
               <p className="text-xs text-gray-400 mt-0.5">
                 {isBlocked
@@ -210,7 +211,7 @@ export default function AdminClientDetailPage() {
                   onClick={() => setConfirmDelete(true)}
                   className="text-sm px-4 py-2 rounded-[8px] font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors shrink-0"
                 >
-                  🗑 Supprimer le compte
+                  Supprimer le compte
                 </button>
               </div>
             ) : (
@@ -260,7 +261,7 @@ export default function AdminClientDetailPage() {
                     </span>
                     <JobStatusBadge status={job.status} />
                   </div>
-                  <p className="text-xs text-gray-400">📍 {job.city} · {format(new Date(job.createdAt), "d MMM yyyy", { locale: fr })}</p>
+                  <p className="text-xs text-gray-400">{job.city} · {format(new Date(job.createdAt), "d MMM yyyy", { locale: fr })}</p>
                   {job.assignment && (
                     <p className="text-xs text-gray-500 mt-0.5">Artisan: {job.assignment.artisan.companyName}</p>
                   )}

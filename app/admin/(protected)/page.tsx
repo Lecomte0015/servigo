@@ -13,6 +13,40 @@ interface Stats {
   platformRevenue: number;
 }
 
+// ── Stat icons ────────────────────────────────────────────────────────────────
+const IcoUsers = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+);
+const IcoWrench = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+  </svg>
+);
+const IcoClock = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+  </svg>
+);
+const IcoClipboard = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+    <rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
+  </svg>
+);
+const IcoCheckCircle = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+  </svg>
+);
+const IcoTrendingUp = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+  </svg>
+);
+
 export default function AdminPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,16 +60,18 @@ export default function AdminPage() {
 
   const kpis = stats
     ? [
-        { label: "Clients inscrits", value: stats.totalUsers, icon: "👤", color: "text-blue-600" },
-        { label: "Artisans actifs", value: stats.totalArtisans, icon: "🔧", color: "text-[#1CA7A6]" },
-        { label: "En attente validation", value: stats.pendingArtisans, icon: "⏳", color: "text-amber-600" },
-        { label: "Missions totales", value: stats.totalJobs, icon: "📋", color: "text-gray-700" },
-        { label: "Missions terminées", value: stats.completedJobs, icon: "✅", color: "text-green-600" },
+        { label: "Clients inscrits", value: stats.totalUsers, icon: <IcoUsers />, bg: "bg-blue-50", color: "text-blue-600", iconColor: "text-blue-500" },
+        { label: "Artisans actifs", value: stats.totalArtisans, icon: <IcoWrench />, bg: "bg-[#E6F2F2]", color: "text-[#1CA7A6]", iconColor: "text-[#1CA7A6]" },
+        { label: "En attente validation", value: stats.pendingArtisans, icon: <IcoClock />, bg: "bg-amber-50", color: "text-amber-600", iconColor: "text-amber-500" },
+        { label: "Missions totales", value: stats.totalJobs, icon: <IcoClipboard />, bg: "bg-gray-100", color: "text-gray-700", iconColor: "text-gray-500" },
+        { label: "Missions terminées", value: stats.completedJobs, icon: <IcoCheckCircle />, bg: "bg-green-50", color: "text-green-600", iconColor: "text-green-500" },
         {
           label: "Revenus plateforme",
           value: `${stats.platformRevenue.toFixed(0)} CHF`,
-          icon: "💶",
+          icon: <IcoTrendingUp />,
+          bg: "bg-[#E6F2F2]",
           color: "text-[#1CA7A6]",
+          iconColor: "text-[#1CA7A6]",
         },
       ]
     : [];
@@ -61,7 +97,9 @@ export default function AdminPage() {
                     <p className="text-xs text-gray-500">{kpi.label}</p>
                     <p className={`text-2xl font-bold mt-1 ${kpi.color}`}>{kpi.value}</p>
                   </div>
-                  <span className="text-2xl">{kpi.icon}</span>
+                  <div className={`w-9 h-9 rounded-[8px] ${kpi.bg} flex items-center justify-center ${kpi.iconColor} shrink-0`}>
+                    {kpi.icon}
+                  </div>
                 </div>
               </Card>
             ))}

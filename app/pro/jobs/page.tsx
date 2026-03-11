@@ -101,7 +101,11 @@ export default function ProJobsPage() {
 
       {isPending && (
         <div className="bg-amber-50 border border-amber-200 rounded-[10px] px-4 py-3 flex items-center gap-3">
-          <span className="text-xl">⏳</span>
+          <div className="shrink-0 text-amber-500">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
           <div>
             <p className="text-sm font-medium text-amber-800">Profil en attente de validation</p>
             <p className="text-xs text-amber-600">Vous pourrez accepter des missions une fois validé.</p>
@@ -136,7 +140,6 @@ export default function ProJobsPage() {
               </div>
             ) : !jobs.length ? (
               <div className="text-center py-12">
-                <p className="text-3xl mb-2">🔧</p>
                 <p className="text-gray-500 text-sm">Aucune mission trouvée</p>
               </div>
             ) : (
@@ -157,14 +160,14 @@ export default function ProJobsPage() {
                           </span>
                           {job.urgencyLevel === "URGENT" && (
                             <span className="text-xs bg-red-50 text-red-600 border border-red-200 px-1.5 py-0.5 rounded-md font-medium">
-                              ⚡ Urgent
+                              Urgent
                             </span>
                           )}
                           <JobStatusBadge status={job.status} />
                         </div>
                         <p className="text-xs text-gray-500 line-clamp-1">{job.description}</p>
                         <p className="text-xs text-gray-400">
-                          📍 {job.city} · {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true, locale: fr })}
+                          {job.city} · {formatDistanceToNow(new Date(job.createdAt), { addSuffix: true, locale: fr })}
                         </p>
                         {job.estimatedPrice && (
                           <p className="text-sm font-semibold text-[#1CA7A6]">

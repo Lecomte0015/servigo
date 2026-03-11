@@ -22,10 +22,14 @@ function SelectedArtisanBanner({
   return (
     <div className="flex items-center justify-between gap-3 bg-[#E6F2F2] border border-[#1CA7A6] rounded-[10px] px-4 py-3">
       <div className="flex items-center gap-2">
-        <span className="text-2xl">🎯</span>
+        <div className="w-8 h-8 rounded-full bg-[#1CA7A6] flex items-center justify-center text-white shrink-0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+          </svg>
+        </div>
         <div>
           <p className="text-sm font-semibold text-[#1CA7A6]">Demande directe à {name}</p>
-          {city && <p className="text-xs text-gray-500">📍 {city}</p>}
+          {city && <p className="text-xs text-gray-500">{city}</p>}
         </div>
       </div>
       <button type="button" onClick={onClear} className="text-xs text-gray-400 hover:text-gray-600 underline">
@@ -164,7 +168,13 @@ function NewJobForm() {
             {categories.map((cat) => (
               <button key={cat.id} onClick={() => handleCategorySelect(cat.id)}
                 className={`flex items-center gap-3 p-3 rounded-[8px] border text-left transition-all hover:border-[#1CA7A6] hover:bg-[#E6F2F2] ${selectedCategory === cat.id ? "border-[#1CA7A6] bg-[#E6F2F2]" : "border-[#D1E5E5] bg-white"}`}>
-                <span className="text-2xl">{cat.icon ?? "🔧"}</span>
+                {cat.icon ? (
+                  <span className="text-2xl">{cat.icon}</span>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="text-[#1CA7A6]">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                  </svg>
+                )}
                 <span className="text-sm font-medium text-[#1F2937]">{cat.name}</span>
               </button>
             ))}
@@ -191,7 +201,17 @@ function NewJobForm() {
                     <label key={level} className="cursor-pointer">
                       <input type="radio" value={level} className="sr-only" {...register("urgencyLevel")} />
                       <div className={`p-3 rounded-[8px] border text-center transition-all ${urgencyLevel === level ? "border-[#1CA7A6] bg-[#E6F2F2]" : "border-[#D1E5E5]"}`}>
-                        <p className="text-lg">{level === "URGENT" ? "⚡" : "📅"}</p>
+                        <div className="flex justify-center mb-0.5 text-[#1CA7A6]">
+                          {level === "URGENT" ? (
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                          ) : (
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                          )}
+                        </div>
                         <p className="text-sm font-medium text-[#1F2937]">{level === "URGENT" ? "Urgent" : "Standard"}</p>
                         <p className="text-xs text-gray-500">{level === "URGENT" ? "< 30 minutes" : "Planifié"}</p>
                       </div>
@@ -250,7 +270,11 @@ function NewJobForm() {
       {step === 3 && (
         <Card>
           <div className="text-center py-6">
-            <div className="text-5xl mb-3">✅</div>
+            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-600 mx-auto mb-3">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
             <h2 className="text-lg font-semibold text-[#1F2937]">Demande envoyée !</h2>
             <p className="text-sm text-gray-500 mt-2">
               {targetArtisanName ? `Votre demande a été envoyée directement à ${targetArtisanName}.` : "Nous recherchons un artisan disponible…"}
@@ -268,7 +292,11 @@ function NewJobForm() {
 
       {step < 3 && !targetArtisanId && (
         <div className="flex items-center gap-2 text-xs text-gray-400">
-          <span>🗺️</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+            <line x1="9" y1="3" x2="9" y2="18"/>
+            <line x1="15" y1="6" x2="15" y2="21"/>
+          </svg>
           <p>Vous pouvez aussi <a href="/artisans" className="text-[#1CA7A6] hover:underline font-medium">parcourir la carte des artisans</a> pour choisir votre prestataire.</p>
         </div>
       )}

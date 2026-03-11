@@ -20,10 +20,10 @@ interface PaymentMethod {
 }
 
 const BRAND_ICONS: Record<string, string> = {
-  visa: "💳",
-  mastercard: "💳",
-  amex: "💳",
-  discover: "💳",
+  visa: "VISA",
+  mastercard: "MC",
+  amex: "AMEX",
+  discover: "DISC",
 };
 
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -151,7 +151,7 @@ export default function PaymentMethodsPage() {
         </div>
         {stripeReady && (
           <Button size="sm" onClick={() => setShowForm(!showForm)}>
-            {showForm ? "Annuler" : "➕ Ajouter"}
+            {showForm ? "Annuler" : "+ Ajouter"}
           </Button>
         )}
       </div>
@@ -159,7 +159,11 @@ export default function PaymentMethodsPage() {
       {/* Stripe not configured */}
       {!stripeReady && (
         <div className="bg-amber-50 border border-amber-200 rounded-[10px] px-4 py-4 flex items-start gap-3">
-          <span className="text-2xl mt-0.5">🔧</span>
+          <div className="text-amber-600 shrink-0 mt-0.5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
           <div>
             <p className="text-sm font-semibold text-amber-800">
               Paiement en ligne non encore activé
@@ -193,7 +197,6 @@ export default function PaymentMethodsPage() {
             </div>
           ) : !methods.length ? (
             <div className="text-center py-10">
-              <p className="text-3xl mb-2">💳</p>
               <p className="text-sm text-gray-500">Aucune carte enregistrée</p>
               <p className="text-xs text-gray-400 mt-1">
                 Ajoutez une carte pour accélérer vos paiements
@@ -204,9 +207,9 @@ export default function PaymentMethodsPage() {
               {methods.map((m) => (
                 <div key={m.id} className="flex items-center justify-between gap-3 px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">
-                      {BRAND_ICONS[m.brand] ?? "💳"}
-                    </span>
+                    <div className="w-10 h-7 rounded bg-[#1F2937] flex items-center justify-center text-[10px] font-bold text-white tracking-wide shrink-0">
+                      {BRAND_ICONS[m.brand] ?? "CARD"}
+                    </div>
                     <div>
                       <p className="text-sm font-semibold text-[#1F2937] capitalize">
                         {m.brand} •••• {m.last4}
@@ -221,7 +224,7 @@ export default function PaymentMethodsPage() {
                     disabled={deletingId === m.id}
                     className="text-xs px-2.5 py-1.5 rounded-[6px] border border-[#D1E5E5] text-gray-500 hover:border-red-300 hover:text-red-500 transition-colors disabled:opacity-40"
                   >
-                    {deletingId === m.id ? "…" : "🗑️"}
+                    {deletingId === m.id ? "…" : "Supprimer"}
                   </button>
                 </div>
               ))}
@@ -232,7 +235,9 @@ export default function PaymentMethodsPage() {
 
       {/* Security note */}
       <div className="flex items-start gap-2 text-xs text-gray-400">
-        <span>🔒</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
         <p>
           Vos données bancaires sont chiffrées et stockées de façon sécurisée par Stripe.
           GoServi n'a jamais accès à vos numéros de carte complets.

@@ -197,7 +197,17 @@ export default function AdminArtisanDetailPage() {
   if (done) {
     return (
       <div className="text-center py-20">
-        <p className="text-4xl mb-3">{done === "approved" ? "✅" : "❌"}</p>
+        <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 ${done === "approved" ? "bg-green-100 text-green-600" : "bg-red-100 text-red-500"}`}>
+          {done === "approved" ? (
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          ) : (
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+          )}
+        </div>
         <p className="text-lg font-semibold text-[#1F2937]">
           {done === "approved" ? "Artisan approuvé !" : "Demande refusée"}
         </p>
@@ -235,7 +245,7 @@ export default function AdminArtisanDetailPage() {
                 {artisan.isApproved ? "Approuvé" : "En attente"}
               </Badge>
               {isBlocked && (
-                <Badge variant="neutral">🔴 Suspendu</Badge>
+                <Badge variant="neutral">Suspendu</Badge>
               )}
             </div>
             <p className="text-sm text-gray-500 mt-0.5">
@@ -303,11 +313,11 @@ export default function AdminArtisanDetailPage() {
             </div>
             <div>
               <span className="text-xs text-gray-400">Ville</span>
-              <p className="text-[#1F2937]">📍 {artisan.city}</p>
+              <p className="text-[#1F2937]">{artisan.city}</p>
             </div>
             <div>
               <span className="text-xs text-gray-400">Urgences</span>
-              <p className="text-[#1F2937]">{artisan.emergencyAvailable ? "⚡ Disponible" : "Non"}</p>
+              <p className="text-[#1F2937]">{artisan.emergencyAvailable ? "Disponible" : "Non"}</p>
             </div>
             <div>
               <span className="text-xs text-gray-400">Inscrit le</span>
@@ -316,7 +326,12 @@ export default function AdminArtisanDetailPage() {
             {artisan.ratingCount > 0 && (
               <div>
                 <span className="text-xs text-gray-400">Note</span>
-                <p className="text-[#1F2937]">⭐ {artisan.ratingAverage.toFixed(1)} ({artisan.ratingCount} avis)</p>
+                <p className="text-[#1F2937] flex items-center gap-1">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                  {artisan.ratingAverage.toFixed(1)} ({artisan.ratingCount} avis)
+                </p>
               </div>
             )}
           </div>
@@ -356,7 +371,12 @@ export default function AdminArtisanDetailPage() {
         <div className="flex items-start justify-between gap-4 flex-wrap">
           {/* Infos document */}
           <div className="flex items-center gap-3 min-w-0">
-            <span className="text-2xl shrink-0">📄</span>
+            <div className="w-10 h-10 rounded-[8px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6] shrink-0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+              </svg>
+            </div>
             <div className="min-w-0">
               <p className="text-xs text-gray-400 mb-0.5">Attestation d&apos;assurance RC Pro</p>
               {artisan.insuranceCertUrl ? (
@@ -365,23 +385,25 @@ export default function AdminArtisanDetailPage() {
                   disabled={certLoading}
                   className="text-sm font-medium text-[#1CA7A6] hover:underline text-left disabled:opacity-50"
                 >
-                  {certLoading ? "Chargement…" : "📂 Consulter le document →"}
+                  {certLoading ? "Chargement…" : "Consulter le document →"}
                 </button>
               ) : (
                 <p className="text-sm text-gray-400 italic">Aucun document fourni</p>
               )}
               <div className="mt-1.5">
                 {insVerified ? (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
-                    ✅ Vérifiée
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                    Vérifiée
                   </span>
                 ) : artisan.insuranceCertUrl ? (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                    🕐 En attente de vérification
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                    En attente de vérification
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">
-                    — Aucun document
+                    Aucun document
                   </span>
                 )}
               </div>
@@ -462,8 +484,9 @@ export default function AdminArtisanDetailPage() {
           {/* Bloc / Débloquer */}
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <p className="text-sm font-medium text-[#1F2937]">
-                {isBlocked ? "🔴 Compte suspendu" : "🟢 Compte actif"}
+              <p className="text-sm font-medium text-[#1F2937] flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full shrink-0 ${isBlocked ? "bg-red-500" : "bg-green-500"}`} />
+                {isBlocked ? "Compte suspendu" : "Compte actif"}
               </p>
               <p className="text-xs text-gray-400 mt-0.5">
                 {isBlocked
@@ -498,7 +521,7 @@ export default function AdminArtisanDetailPage() {
                   onClick={() => setConfirmDelete(true)}
                   className="text-sm px-4 py-2 rounded-[8px] font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors shrink-0"
                 >
-                  🗑 Supprimer le compte
+                  Supprimer le compte
                 </button>
               </div>
             ) : (
@@ -550,7 +573,15 @@ export default function AdminArtisanDetailPage() {
             {artisan.services.map((s) => (
               <div key={s.category.name} className="py-3 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">{s.category.icon ?? "🔧"}</span>
+                  {s.category.icon ? (
+                    <span className="text-base shrink-0">{s.category.icon}</span>
+                  ) : (
+                    <div className="w-7 h-7 rounded-[6px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6] shrink-0">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                      </svg>
+                    </div>
+                  )}
                   <div>
                     <p className="text-sm font-medium text-[#1F2937]">{s.category.name}</p>
                     <p className="text-xs text-gray-400">Urgence : +{s.emergencyFee} CHF/h</p>
@@ -580,7 +611,7 @@ export default function AdminArtisanDetailPage() {
                     <span className="text-sm font-medium text-[#1F2937]">{a.job.category.name}</span>
                     <JobStatusBadge status={a.job.status} />
                   </div>
-                  <p className="text-xs text-gray-400 truncate">📍 {a.job.city}</p>
+                  <p className="text-xs text-gray-400 truncate">{a.job.city}</p>
                   {a.completedAt && (
                     <p className="text-xs text-gray-400 mt-0.5">
                       Terminée le {format(new Date(a.completedAt), "d MMM yyyy", { locale: fr })}

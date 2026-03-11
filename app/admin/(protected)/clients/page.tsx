@@ -64,7 +64,6 @@ export default function AdminClientsPage() {
           </div>
         ) : !clients.length ? (
           <div className="text-center py-12">
-            <p className="text-3xl mb-2">👤</p>
             <p className="text-gray-400 text-sm">Aucun client trouvé</p>
           </div>
         ) : (
@@ -93,8 +92,9 @@ export default function AdminClientsPage() {
                           {client.firstName} {client.lastName}
                         </p>
                         {client.isBlocked && (
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-500 border border-gray-200 shrink-0">
-                            🔴 Suspendu
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-500 border border-gray-200 shrink-0">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+                            Suspendu
                           </span>
                         )}
                       </div>
