@@ -17,14 +17,56 @@ export async function GET(req: NextRequest) {
   const page = parseInt(searchParams.get("page") ?? "1");
   const limit = parseInt(searchParams.get("limit") ?? "10");
   const skip = (page - 1) * limit;
+  const statusFilter = searchParams.get("status") ?? undefined;
 
   try {
-    const where =
-      payload.role === "CLIENT"
-        ? { clientId: payload.userId }
-        : payload.role === "ARTISAN"
-        ? { assignment: { artisan: { userId: payload.userId } } }
-        : {};
+    let where: Record<string, unknown> = {};
+
+    if (payload.role === "CLIENT") {
+      where = { clientId: payload.userId, ...(statusFilter ? { status: statusFilter } : {}) };
+    } else if (payload.role === "ARTISAN") {
+      // Fetch artisan profile to know their city and active categories
+      const artisanProfile = await prisma.artisanProfile.findUnique({
+        where: { userId: payload.userId },
+        select: {
+          id: true,
+          city: true,
+          isApproved: true,
+          services: { where: { isActive: true }, select: { categoryId: true } },
+        },
+      });
+
+      const categoryIds = artisanProfile?.services.map((s) => s.categoryId) ?? [];
+
+      // An artisan sees:
+      // 1. Jobs they are (or were) assigned to
+      // 2. MATCHING jobs directly targeted at them (demande directe via carte)
+      // 3. MATCHING jobs in their city for their categories, with no specific target (matching standard)
+      const matchingConditions: unknown[] = [
+        { assignment: { artisan: { userId: payload.userId } } },
+      ];
+
+      if (artisanProfile?.isApproved) {
+        matchingConditions.push({
+          status: "MATCHING",
+          targetArtisanId: artisanProfile.id,
+        });
+
+        if (artisanProfile.city && categoryIds.length > 0) {
+          matchingConditions.push({
+            status: "MATCHING",
+            city: artisanProfile.city,
+            categoryId: { in: categoryIds },
+            targetArtisanId: null, // Exclude direct requests meant for another artisan
+          });
+        }
+      }
+
+      where = {
+        OR: matchingConditions,
+        ...(statusFilter ? { status: statusFilter } : {}),
+      };
+    }
 
     const [jobs, total] = await Promise.all([
       prisma.jobRequest.findMany({

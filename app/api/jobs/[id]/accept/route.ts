@@ -41,6 +41,10 @@ export async function POST(
     if (job.assignment) {
       return apiError("Demande déjà assignée");
     }
+    // If it's a direct request, only the targeted artisan can accept it
+    if (job.targetArtisanId && job.targetArtisanId !== artisan.id) {
+      return apiError("Cette demande est réservée à un autre artisan");
+    }
 
     // Assign job
     const [updatedJob] = await prisma.$transaction([
