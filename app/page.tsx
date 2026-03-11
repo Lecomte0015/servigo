@@ -6,6 +6,49 @@ import { HomeSearchBar } from "@/components/home/HomeSearchBar";
 import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/site-settings";
 
+// ── Icônes SVG (remplacent les emojis pour un rendu professionnel) ────────────
+const STEP_ICONS: Record<string, React.ReactNode> = {
+  edit: (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  ),
+  bell: (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    </svg>
+  ),
+  check: (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+  ),
+};
+
+const GUARANTEE_ICONS: Record<string, React.ReactNode> = {
+  shield: (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <polyline points="9 12 11 14 15 10" />
+    </svg>
+  ),
+  payment: (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+      <line x1="1" y1="10" x2="23" y2="10" />
+      <line x1="5" y1="15" x2="9" y2="15" />
+    </svg>
+  ),
+  star: (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  ),
+};
+
 // Revalidate every 60 seconds (ISR) so homepage reflects CMS changes quickly
 export const revalidate = 60;
 
@@ -275,8 +318,8 @@ export default async function HomePage() {
           <div className="hidden md:block absolute top-10 left-[calc(16.67%+40px)] right-[calc(16.67%+40px)] h-0.5 bg-[#D1E5E5]" />
           {howItWorks.steps.map((step, i) => (
             <div key={i} className="flex flex-col items-center text-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-[#E6F2F2] border-2 border-[#D1E5E5] flex items-center justify-center text-4xl relative z-10 shadow-sm">
-                {step.icon}
+              <div className="w-20 h-20 rounded-full bg-[#E6F2F2] border-2 border-[#D1E5E5] flex items-center justify-center relative z-10 shadow-sm" style={{ color: settings.primaryColor }}>
+                {STEP_ICONS[step.icon] ?? <span className="text-3xl">{step.icon}</span>}
               </div>
               <p
                 className="text-xs font-bold tracking-widest uppercase"
@@ -319,7 +362,9 @@ export default async function HomePage() {
                 key={i}
                 className="bg-white rounded-[16px] p-6 border border-[#D1E5E5] flex flex-col gap-3 hover:shadow-md transition-shadow"
               >
-                <span className="text-4xl">{g.icon}</span>
+                <div className="w-12 h-12 rounded-xl bg-[#E6F2F2] flex items-center justify-center shrink-0" style={{ color: settings.primaryColor }}>
+                  {GUARANTEE_ICONS[g.icon] ?? <span className="text-2xl">{g.icon}</span>}
+                </div>
                 <h3 className="font-bold text-[#1F2937] text-lg">{g.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{g.desc}</p>
               </div>
@@ -344,7 +389,9 @@ export default async function HomePage() {
             <ul className="flex flex-col gap-2 text-sm text-white/90">
               {proCta.benefits.map((item) => (
                 <li key={item} className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold shrink-0">✓</span>
+                  <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
                   {item}
                 </li>
               ))}
@@ -361,7 +408,14 @@ export default async function HomePage() {
 
           {/* Right — stat panel */}
           <div className="bg-[#E6F2F2] md:w-72 p-8 flex flex-col justify-center items-center gap-6 text-center">
-            <span className="text-7xl">👷</span>
+            <div className="w-20 h-20 rounded-full bg-white/60 flex items-center justify-center" style={{ color: settings.primaryColor }}>
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+                <path d="M7 7h10M8.5 4.5 7 7M15.5 4.5 17 7"/>
+                <path d="M6.5 7h11"/>
+              </svg>
+            </div>
             <div>
               <p className="text-3xl font-extrabold text-[#1F2937]">{proCta.statValue}</p>
               <p className="text-sm text-gray-500">{proCta.statLabel}</p>

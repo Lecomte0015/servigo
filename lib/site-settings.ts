@@ -104,17 +104,17 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
     ctaText: "Créer une demande maintenant →",
     steps: [
       {
-        icon: "📝",
+        icon: "edit",
         title: "Décrivez votre besoin",
         desc: "Choisissez le type d'intervention et décrivez votre problème en 30 secondes.",
       },
       {
-        icon: "🔔",
+        icon: "bell",
         title: "Un artisan vous répond",
         desc: "Notre algorithme contacte les meilleurs artisans disponibles près de chez vous.",
       },
       {
-        icon: "✅",
+        icon: "check",
         title: "Intervention & paiement",
         desc: "L'artisan intervient, vous confirmez la fin et le paiement est capturé via Stripe.",
       },
@@ -126,17 +126,17 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
     subtitle: "GoServi s'engage pour une expérience irréprochable",
     items: [
       {
-        icon: "🛡️",
+        icon: "shield",
         title: "Artisans vérifiés",
         desc: "Chaque artisan est contrôlé par notre équipe : assurance RC, qualifications, antécédents.",
       },
       {
-        icon: "💳",
+        icon: "payment",
         title: "Paiement sécurisé",
         desc: "Pré-autorisation Stripe. Vous ne payez qu'après validation de l'intervention terminée.",
       },
       {
-        icon: "⭐",
+        icon: "star",
         title: "Satisfaction garantie",
         desc: "Un problème ? Notre équipe est disponible 7j/7 pour vous accompagner et résoudre tout litige.",
       },
