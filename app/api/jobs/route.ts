@@ -91,6 +91,13 @@ export async function GET(req: NextRequest) {
           },
           payment: { select: { status: true, amount: true } },
           review: { select: { rating: true, comment: true } },
+          _count: {
+            select: {
+              messages: {
+                where: { readAt: null, senderId: { not: payload.userId } },
+              },
+            },
+          },
         },
       }),
       prisma.jobRequest.count({ where }),

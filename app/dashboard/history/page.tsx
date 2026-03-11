@@ -36,6 +36,7 @@ interface Job {
     rating: number;
     comment: string | null;
   } | null;
+  _count?: { messages: number };
 }
 
 const STATUS_FILTERS = [
@@ -218,7 +219,14 @@ export default function HistoryPage() {
                         </p>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <JobStatusBadge status={job.status} />
+                        <div className="flex items-center gap-1.5">
+                          <JobStatusBadge status={job.status} />
+                          {(job._count?.messages ?? 0) > 0 && (
+                            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#1CA7A6] text-white text-[10px] font-bold leading-none">
+                              {job._count!.messages}
+                            </span>
+                          )}
+                        </div>
                         {job.estimatedPrice && (
                           <span className="text-sm font-semibold text-[#1CA7A6]">
                             {job.estimatedPrice.toFixed(0)} CHF
@@ -352,7 +360,7 @@ export default function HistoryPage() {
                 )}
 
                 {/* Messagerie in-app */}
-                {selectedJob.assignment && user && (
+                {["MATCHING", "ASSIGNED", "IN_PROGRESS"].includes(selectedJob.status) && user && (
                   <div className="border-t border-[#E6F2F2] pt-3 -mx-4 -mb-4">
                     <div style={{ height: "360px", display: "flex", flexDirection: "column" }}>
                       <Chat

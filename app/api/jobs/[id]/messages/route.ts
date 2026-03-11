@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiError, apiNotFound, apiServerError } from "@/lib/api-response";
+import { createNotification } from "@/services/notification";
 import { jobLogger } from "@/lib/logger";
 
 /** GET /api/jobs/[id]/messages — Fetch messages for a job (client or artisan of that job) */
@@ -100,6 +101,7 @@ export async function POST(
       where: { id: jobId },
       include: {
         assignment: { select: { artisan: { select: { userId: true } } } },
+        targetArtisan: { select: { userId: true } },
       },
     });
 
@@ -148,6 +150,24 @@ export async function POST(
         sender: { select: { id: true, firstName: true, lastName: true, role: true } },
       },
     });
+
+    // Notify the other party (non-blocking)
+    // For assigned jobs: client ↔ assigned artisan
+    // For MATCHING direct requests: client ↔ targeted artisan
+    const assignedArtisanUserId = job.assignment?.artisan.userId ?? job.targetArtisan?.userId ?? null;
+    const recipientId =
+      auth.payload.userId === job.clientId
+        ? assignedArtisanUserId
+        : job.clientId;
+
+    if (recipientId) {
+      const senderName = `${message.sender.firstName} ${message.sender.lastName}`.trim();
+      createNotification({
+        userId: recipientId,
+        type: "MESSAGE_RECEIVED",
+        message: `Nouveau message de ${senderName} : "${content.slice(0, 60)}${content.length > 60 ? "…" : ""}"`,
+      }).catch(() => {});
+    }
 
     return apiSuccess(message, 201);
   } catch (err) {
