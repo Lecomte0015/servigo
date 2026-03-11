@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import { getCategoryIcon } from "@/components/ui/CategoryIcon";
 
 interface Category {
   id: string;
@@ -250,12 +251,8 @@ export default function AdminCategoriesPage() {
                   >
                     {cat.imageUrl ? (
                       <Image src={cat.imageUrl} alt={cat.name} fill className="object-cover" sizes="56px" />
-                    ) : cat.icon ? (
-                      <span className="text-2xl">{cat.icon}</span>
                     ) : (
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                      </svg>
+                      <span className="text-[#1CA7A6]">{getCategoryIcon(cat.slug, 22)}</span>
                     )}
                   </div>
 

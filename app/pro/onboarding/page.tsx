@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import { getCategoryIcon } from "@/components/ui/CategoryIcon";
 
 interface Category {
   id: string;
@@ -272,13 +273,7 @@ export default function ArtisanOnboardingPage() {
                         onClick={() => toggleCategory(cat.id)}
                         className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#F4F7F7] transition-colors"
                       >
-                        {cat.icon ? (
-                          <span className="text-xl">{cat.icon}</span>
-                        ) : (
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="text-[#1CA7A6] shrink-0">
-                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-                          </svg>
-                        )}
+                        <span className="text-[#1CA7A6] shrink-0">{getCategoryIcon(cat.slug, 18)}</span>
                         <span className="text-sm font-medium text-[#1F2937] flex-1">{cat.name}</span>
                         <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${selected ? "bg-[#1CA7A6] border-[#1CA7A6]" : "border-gray-300"}`}>
                           {selected && <span className="text-white text-xs font-bold">✓</span>}

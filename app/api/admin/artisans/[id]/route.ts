@@ -31,7 +31,7 @@ export async function GET(
         },
         services: {
           include: {
-            category: { select: { name: true, icon: true } },
+            category: { select: { name: true, slug: true, icon: true } },
           },
           orderBy: { category: { name: "asc" } },
         },

@@ -30,7 +30,7 @@ export async function GET(
           orderBy: { createdAt: "desc" },
           take: 20,
           include: {
-            category: { select: { name: true, icon: true } },
+            category: { select: { name: true, slug: true, icon: true } },
             assignment: {
               include: {
                 artisan: { select: { companyName: true } },

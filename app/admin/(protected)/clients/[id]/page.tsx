@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { JobStatusBadge, Badge } from "@/components/ui/Badge";
+import { getCategoryIcon } from "@/components/ui/CategoryIcon";
 
 interface Payment {
   amount: number;
@@ -19,7 +20,7 @@ interface ClientJob {
   status: string;
   city: string;
   createdAt: string;
-  category: { name: string; icon: string | null };
+  category: { name: string; slug: string; icon: string | null };
   assignment: { artisan: { companyName: string } } | null;
   payment: Payment | null;
 }
@@ -256,8 +257,9 @@ export default function AdminClientDetailPage() {
               <div key={job.id} className="py-3 flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                    <span className="text-[#1CA7A6] shrink-0">{getCategoryIcon(job.category.slug, 14)}</span>
                     <span className="text-sm font-medium text-[#1F2937]">
-                      {job.category.icon} {job.category.name}
+                      {job.category.name}
                     </span>
                     <JobStatusBadge status={job.status} />
                   </div>

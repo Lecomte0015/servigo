@@ -8,6 +8,7 @@ import { fr } from "date-fns/locale";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge, JobStatusBadge } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
+import { getCategoryIcon } from "@/components/ui/CategoryIcon";
 
 interface ArtisanDetail {
   id: string;
@@ -35,7 +36,7 @@ interface ArtisanDetail {
     basePrice: number;
     emergencyFee: number;
     isActive: boolean;
-    category: { name: string; icon: string | null };
+    category: { name: string; slug: string; icon: string | null };
   }>;
   assignments: Array<{
     acceptedAt: string | null;
@@ -573,15 +574,9 @@ export default function AdminArtisanDetailPage() {
             {artisan.services.map((s) => (
               <div key={s.category.name} className="py-3 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
-                  {s.category.icon ? (
-                    <span className="text-base shrink-0">{s.category.icon}</span>
-                  ) : (
-                    <div className="w-7 h-7 rounded-[6px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6] shrink-0">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-                      </svg>
-                    </div>
-                  )}
+                  <div className="w-7 h-7 rounded-[6px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6] shrink-0">
+                    {getCategoryIcon(s.category.slug, 14)}
+                  </div>
                   <div>
                     <p className="text-sm font-medium text-[#1F2937]">{s.category.name}</p>
                     <p className="text-xs text-gray-400">Urgence : +{s.emergencyFee} CHF/h</p>
