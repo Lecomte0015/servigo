@@ -141,6 +141,12 @@ const IconSettings = () => (
   </svg>
 );
 
+const IconMessage = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
 const IconLogout = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -174,6 +180,7 @@ const ADMIN_NAV: NavItem[] = [
   { href: "/admin/clients", label: "Clients", icon: <IconUsers /> },
   { href: "/admin/artisans", label: "Artisans", icon: <IconWrench /> },
   { href: "/admin/jobs", label: "Missions", icon: <IconClipboard /> },
+  { href: "/admin/messages", label: "Messages", icon: <IconMessage /> },
   { href: "/admin/payments", label: "Paiements", icon: <IconCreditCard /> },
   { href: "/admin/payouts", label: "Retraits", icon: <IconBank /> },
   { href: "/admin/categories", label: "Catégories", icon: <IconTag /> },

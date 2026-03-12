@@ -179,6 +179,23 @@ export async function POST(
       }).catch(() => {});
     }
 
+    // Alerte admin si un fichier est partagé (non-bloquant)
+    if (fileUrl) {
+      const admins = await prisma.user.findMany({
+        where: { role: "ADMIN" },
+        select: { id: true },
+      });
+      const shortId = jobId.slice(0, 8).toUpperCase();
+      const filePreview = fileName ? ` (${fileName})` : "";
+      admins.forEach((admin) =>
+        createNotification({
+          userId: admin.id,
+          type: "FILE_SHARED_IN_CHAT",
+          message: `📎 Fichier partagé dans la mission #${shortId}${filePreview}`,
+        }).catch(() => {})
+      );
+    }
+
     return apiSuccess(message, 201);
   } catch (err) {
     jobLogger.error({ err }, "Send message error");

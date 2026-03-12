@@ -60,6 +60,7 @@ export default function Chat({ jobId, currentUserId, jobStatus }: ChatProps) {
   const [sendError, setSendError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<string | null>(null);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const [flaggedIds, setFlaggedIds] = useState<Set<string>>(new Set());
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isActive = ACTIVE_STATUSES.includes(jobStatus);
@@ -170,6 +171,21 @@ export default function Chat({ jobId, currentUserId, jobStatus }: ChatProps) {
     }
   };
 
+  // ── Flag message ─────────────────────────────────────────────────────────
+  const handleFlagMessage = async (msgId: string) => {
+    if (flaggedIds.has(msgId)) return;
+    try {
+      const res = await fetch(`/api/jobs/${jobId}/messages/${msgId}/flag`, {
+        method: "PATCH",
+      });
+      if (res.ok) {
+        setFlaggedIds((prev) => new Set([...prev, msgId]));
+      }
+    } catch {
+      // silent
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -237,13 +253,19 @@ export default function Chat({ jobId, currentUserId, jobStatus }: ChatProps) {
             const hasImage = isImage(msg.fileUrl, msg.fileName);
             const hasFile = msg.fileUrl && !hasImage;
 
+            const isFlagged = flaggedIds.has(msg.id);
+
             return (
-              <div key={msg.id} style={{ display: "flex", flexDirection: "column", alignItems: isMine ? "flex-end" : "flex-start" }}>
+              <div
+                key={msg.id}
+                className="group"
+                style={{ display: "flex", flexDirection: "column", alignItems: isMine ? "flex-end" : "flex-start" }}
+              >
                 <span style={{ fontSize: 11, color: "#9CA3AF", marginBottom: 3, paddingLeft: isMine ? 0 : 4, paddingRight: isMine ? 4 : 0 }}>
                   {isMine ? "Vous" : `${msg.sender.firstName} ${msg.sender.lastName}`}
                 </span>
 
-                <div style={{ maxWidth: "75%", display: "flex", flexDirection: "column", gap: 4 }}>
+                <div style={{ maxWidth: "75%", display: "flex", flexDirection: "column", gap: 4, position: "relative" }}>
                   {/* Image attachment */}
                   {hasImage && (
                     <img
@@ -292,10 +314,32 @@ export default function Chat({ jobId, currentUserId, jobStatus }: ChatProps) {
                   )}
                 </div>
 
-                <span style={{ fontSize: 10, color: "#9CA3AF", marginTop: 3, paddingLeft: isMine ? 0 : 4, paddingRight: isMine ? 4 : 0 }}>
-                  {format(new Date(msg.createdAt), "HH:mm", { locale: fr })}
-                  {isMine && msg.readAt && " · Lu ✓"}
-                </span>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 3 }}>
+                  <span style={{ fontSize: 10, color: "#9CA3AF", paddingLeft: isMine ? 0 : 4, paddingRight: isMine ? 4 : 0 }}>
+                    {format(new Date(msg.createdAt), "HH:mm", { locale: fr })}
+                    {isMine && msg.readAt && " · Lu ✓"}
+                  </span>
+
+                  {/* Bouton Signaler — visible uniquement si message d'autrui */}
+                  {!isMine && (
+                    <button
+                      onClick={() => handleFlagMessage(msg.id)}
+                      disabled={isFlagged}
+                      title={isFlagged ? "Message signalé" : "Signaler ce message"}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{
+                        background: "none", border: "none", cursor: isFlagged ? "default" : "pointer",
+                        padding: "0 2px", fontSize: 12,
+                        color: isFlagged ? "#F97316" : "#D1D5DB",
+                        transition: "color 0.15s, opacity 0.15s",
+                      }}
+                      onMouseEnter={(e) => { if (!isFlagged) (e.currentTarget as HTMLButtonElement).style.color = "#F97316"; }}
+                      onMouseLeave={(e) => { if (!isFlagged) (e.currentTarget as HTMLButtonElement).style.color = "#D1D5DB"; }}
+                    >
+                      🚩
+                    </button>
+                  )}
+                </div>
               </div>
             );
           })

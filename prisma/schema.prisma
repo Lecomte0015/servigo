@@ -242,6 +242,8 @@ model Message {
   fileUrl   String?   // URL Supabase Storage (photo ou fichier joint)
   fileName  String?   // nom original du fichier
   readAt    DateTime? // null = non lu
+  flagged   Boolean   @default(false) // signalé par un utilisateur
+  flaggedAt DateTime?                  // horodatage du signalement
   createdAt DateTime  @default(now())
 
   job    JobRequest @relation(fields: [jobId], references: [id], onDelete: Cascade)
@@ -249,6 +251,7 @@ model Message {
 
   @@index([jobId, createdAt])
   @@index([senderId])
+  @@index([flagged])
 }
 
 // ─────────────────────────────────────────

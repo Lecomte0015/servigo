@@ -99,7 +99,8 @@ export type NotificationType =
   | "INSURANCE_CERT_UPLOADED"   // admin alerté quand artisan uploade son attestation
   | "INSURANCE_VERIFIED"        // artisan alerté quand admin valide son attestation
   | "INSURANCE_UNVERIFIED"      // artisan alerté quand admin révoque la vérification
-  | "MESSAGE_RECEIVED";         // client ou artisan alerté d'un nouveau message
+  | "MESSAGE_RECEIVED"          // client ou artisan alerté d'un nouveau message
+  | "FILE_SHARED_IN_CHAT";      // admin alerté quand un fichier est partagé dans un chat
 
 export interface NotificationPayload {
   userId: string;
