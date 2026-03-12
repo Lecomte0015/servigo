@@ -92,9 +92,15 @@ export async function POST(
   try {
     const body = await req.json();
     const content = (body.content ?? "").trim();
+    const fileUrl: string | null = body.fileUrl ?? null;
+    const fileName: string | null = body.fileName ?? null;
 
-    if (!content || content.length > 2000) {
-      return apiError("Message invalide (1-2000 caractères)");
+    // At least one of text or file must be present
+    if (!content && !fileUrl) {
+      return apiError("Message invalide : texte ou fichier requis");
+    }
+    if (content.length > 2000) {
+      return apiError("Message trop long (max 2000 caractères)");
     }
 
     const job = await prisma.jobRequest.findUnique({
@@ -145,6 +151,7 @@ export async function POST(
         jobId,
         senderId: auth.payload.userId,
         content,
+        ...(fileUrl ? { fileUrl, fileName } : {}),
       },
       include: {
         sender: { select: { id: true, firstName: true, lastName: true, role: true } },
@@ -162,10 +169,13 @@ export async function POST(
 
     if (recipientId) {
       const senderName = `${message.sender.firstName} ${message.sender.lastName}`.trim();
+      const preview = fileUrl
+        ? `${senderName} a partagé un fichier${content ? ` : "${content.slice(0, 40)}"` : ""}`
+        : `Nouveau message de ${senderName} : "${content.slice(0, 60)}${content.length > 60 ? "…" : ""}"`;
       createNotification({
         userId: recipientId,
         type: "MESSAGE_RECEIVED",
-        message: `Nouveau message de ${senderName} : "${content.slice(0, 60)}${content.length > 60 ? "…" : ""}"`,
+        message: preview,
       }).catch(() => {});
     }
 
