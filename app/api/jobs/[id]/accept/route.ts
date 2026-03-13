@@ -66,6 +66,7 @@ export async function POST(
       userId: job.clientId,
       type: "JOB_ASSIGNED",
       message: `Un artisan a accepté votre demande et sera bientôt chez vous.`,
+      link: "/dashboard/history",
     });
 
     // Send email to client (non-blocking)

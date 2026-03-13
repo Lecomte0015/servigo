@@ -58,6 +58,7 @@ export async function POST(
         userId: job.assignment.artisan.userId,
         type: "PAYMENT_CAPTURED",
         message: "Intervention complétée. Le paiement vous sera versé sous 2-3 jours.",
+        link: "/pro/wallet",
       });
     }
 

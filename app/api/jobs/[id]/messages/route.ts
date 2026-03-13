@@ -172,10 +172,15 @@ export async function POST(
       const preview = fileUrl
         ? `${senderName} a partagé un fichier${content ? ` : "${content.slice(0, 40)}"` : ""}`
         : `Nouveau message de ${senderName} : "${content.slice(0, 60)}${content.length > 60 ? "…" : ""}"`;
+      // Lien selon le rôle de l'expéditeur (le destinataire est l'autre partie)
+      const msgLink = auth.payload.role === "CLIENT"
+        ? "/pro/jobs"           // artisan reçoit → va voir ses missions
+        : "/dashboard/history"; // client reçoit → va voir son historique
       createNotification({
         userId: recipientId,
         type: "MESSAGE_RECEIVED",
         message: preview,
+        link: msgLink,
       }).catch(() => {});
     }
 
@@ -192,6 +197,7 @@ export async function POST(
           userId: admin.id,
           type: "FILE_SHARED_IN_CHAT",
           message: `📎 Fichier partagé dans la mission #${shortId}${filePreview}`,
+          link: `/admin/messages/${jobId}`,
         }).catch(() => {})
       );
     }

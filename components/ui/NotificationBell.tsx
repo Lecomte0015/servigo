@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -8,14 +9,37 @@ interface Notification {
   id: string;
   type: string;
   message: string;
+  link: string | null;
   read: boolean;
   createdAt: string;
 }
+
+const TYPE_ICON: Record<string, string> = {
+  JOB_MATCHED:             "🔔",
+  JOB_ASSIGNED:            "✅",
+  JOB_STARTED:             "🔧",
+  JOB_COMPLETED:           "🎉",
+  JOB_CANCELLED:           "❌",
+  PROFILE_APPROVED:        "✅",
+  PROFILE_REJECTED:        "⚠️",
+  REVIEW_RECEIVED:         "⭐",
+  PAYMENT_CAPTURED:        "💰",
+  PAYOUT_REQUESTED:        "🏦",
+  PAYOUT_PROCESSING:       "🔄",
+  PAYOUT_COMPLETED:        "✅",
+  PAYOUT_FAILED:           "⚠️",
+  INSURANCE_CERT_UPLOADED: "📄",
+  INSURANCE_VERIFIED:      "🛡️",
+  INSURANCE_UNVERIFIED:    "⚠️",
+  MESSAGE_RECEIVED:        "💬",
+  FILE_SHARED_IN_CHAT:     "📎",
+};
 
 export function NotificationBell({ align = "right" }: { align?: "left" | "right" }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -27,17 +51,23 @@ export function NotificationBell({ align = "right" }: { align?: "left" | "right"
     } catch {}
   };
 
-  const markAllRead = async () => {
-    const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
-    if (!unreadIds.length) return;
+  const markRead = async (ids: string[]) => {
+    if (!ids.length) return;
     try {
       await fetch("/api/notifications", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: unreadIds }),
+        body: JSON.stringify({ ids }),
       });
-      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+      setNotifications((prev) =>
+        prev.map((n) => (ids.includes(n.id) ? { ...n, read: true } : n))
+      );
     } catch {}
+  };
+
+  const markAllRead = () => {
+    const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
+    markRead(unreadIds);
   };
 
   // Poll every 30s
@@ -65,15 +95,10 @@ export function NotificationBell({ align = "right" }: { align?: "left" | "right"
     }
   };
 
-  const typeIcon: Record<string, string> = {
-    JOB_MATCHED: "🔔",
-    JOB_ASSIGNED: "✅",
-    JOB_STARTED: "🔧",
-    JOB_COMPLETED: "🎉",
-    JOB_CANCELLED: "❌",
-    PROFILE_APPROVED: "✅",
-    PROFILE_REJECTED: "⚠️",
-    NEW_REVIEW: "⭐",
+  const handleNotificationClick = (n: Notification) => {
+    if (!n.read) markRead([n.id]);
+    setOpen(false);
+    if (n.link) router.push(n.link);
   };
 
   return (
@@ -99,10 +124,7 @@ export function NotificationBell({ align = "right" }: { align?: "left" | "right"
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#E6F2F2]">
             <p className="text-sm font-semibold text-[#1F2937]">Notifications</p>
             {unreadCount > 0 && (
-              <button
-                onClick={markAllRead}
-                className="text-xs text-[#1CA7A6] hover:underline"
-              >
+              <button onClick={markAllRead} className="text-xs text-[#1CA7A6] hover:underline">
                 Tout marquer lu
               </button>
             )}
@@ -118,18 +140,26 @@ export function NotificationBell({ align = "right" }: { align?: "left" | "right"
               notifications.map((n) => (
                 <div
                   key={n.id}
-                  className={`flex items-start gap-3 px-4 py-3 border-b border-[#F4F7F7] last:border-0 transition-colors ${
-                    !n.read ? "bg-[#F4FBFB]" : ""
-                  }`}
+                  onClick={() => handleNotificationClick(n)}
+                  className={[
+                    "flex items-start gap-3 px-4 py-3 border-b border-[#F4F7F7] last:border-0 transition-colors select-none",
+                    !n.read ? "bg-[#F4FBFB]" : "",
+                    n.link ? "cursor-pointer hover:bg-[#EFF9F9] active:bg-[#E6F2F2]" : "",
+                  ].join(" ")}
                 >
                   <span className="text-lg leading-none mt-0.5 shrink-0">
-                    {typeIcon[n.type] ?? "📌"}
+                    {TYPE_ICON[n.type] ?? "📌"}
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm text-[#1F2937] leading-snug">{n.message}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      {format(new Date(n.createdAt), "d MMM à HH:mm", { locale: fr })}
-                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <p className="text-xs text-gray-400">
+                        {format(new Date(n.createdAt), "d MMM à HH:mm", { locale: fr })}
+                      </p>
+                      {n.link && (
+                        <span className="text-xs text-[#1CA7A6] font-medium">Voir →</span>
+                      )}
+                    </div>
                   </div>
                   {!n.read && (
                     <span className="w-2 h-2 rounded-full bg-[#1CA7A6] shrink-0 mt-1.5" />

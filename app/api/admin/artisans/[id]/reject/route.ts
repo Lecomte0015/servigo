@@ -33,6 +33,7 @@ export async function POST(
       userId: artisan.userId,
       type: "PROFILE_REJECTED",
       message: `Votre demande d'inscription a été refusée. Motif : ${reason}. Contactez le support.`,
+      link: "/pro/profile",
     });
 
     sendArtisanRejectedEmail(artisan.user.email, artisan.user.firstName, reason).catch((err) => adminLogger.error({ err }, "Email send failed"));

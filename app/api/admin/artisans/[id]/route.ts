@@ -4,6 +4,8 @@ import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiNotFound, apiServerError, apiError } from "@/lib/api-response";
 import { createAuditLog } from "@/lib/audit-log";
 import { blockUser, unblockUser } from "@/lib/session";
+import { createNotification } from "@/services/notification";
+import { sendAccountSuspendedEmail } from "@/lib/email";
 import { adminLogger } from "@/lib/logger";
 
 export async function GET(
@@ -86,7 +88,7 @@ export async function PATCH(
   try {
     const artisan = await prisma.artisanProfile.findUnique({
       where: { id },
-      select: { userId: true, companyName: true },
+      select: { userId: true, companyName: true, user: { select: { email: true, firstName: true } } },
     });
 
     if (!artisan) return apiNotFound("Artisan introuvable");
@@ -109,6 +111,17 @@ export async function PATCH(
       targetId: id,
       targetType: "artisan",
     }).catch(() => {});
+
+    // Email + notification si suspension (non-bloquant)
+    if (blocked) {
+      createNotification({
+        userId: artisan.userId,
+        type: "JOB_CANCELLED", // closest type for account suspension context
+        message: "⚠️ Votre compte a été suspendu par l'équipe GoServi. Contactez le support.",
+        link: undefined,
+      }).catch(() => {});
+      sendAccountSuspendedEmail(artisan.user.email, artisan.user.firstName).catch(() => {});
+    }
 
     return apiSuccess({ isBlocked: blocked });
   } catch (err) {

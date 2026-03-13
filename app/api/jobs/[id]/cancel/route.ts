@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiError, apiNotFound, apiServerError } from "@/lib/api-response";
 import { createNotification } from "@/services/notification";
+import { sendJobCancelledClientEmail, sendJobCancelledArtisanEmail } from "@/lib/email";
 import { jobLogger } from "@/lib/logger";
 
 export async function POST(
@@ -20,7 +21,9 @@ export async function POST(
       where: { id },
       include: {
         payment: true,
-        assignment: { include: { artisan: true } },
+        assignment: { include: { artisan: { include: { user: { select: { email: true, firstName: true } } } } } },
+        client: { select: { email: true, firstName: true } },
+        category: { select: { name: true } },
       },
     });
 
@@ -51,13 +54,32 @@ export async function POST(
       data: { status: "CANCELLED" },
     });
 
-    // Notify artisan if one was assigned
+    // Email de confirmation au client (non-bloquant)
+    if (job.client?.email) {
+      sendJobCancelledClientEmail(
+        job.client.email,
+        job.client.firstName,
+        job.category?.name ?? "Service",
+        job.city
+      ).catch(() => {});
+    }
+
+    // Notify artisan + email si une mission était assignée
     if (job.assignment) {
       await createNotification({
         userId: job.assignment.artisan.userId,
         type: "JOB_CANCELLED",
         message: "Une mission qui vous était assignée a été annulée par le client.",
+        link: "/pro/jobs",
       });
+      if (job.assignment.artisan.user?.email) {
+        sendJobCancelledArtisanEmail(
+          job.assignment.artisan.user.email,
+          job.assignment.artisan.user.firstName,
+          job.category?.name ?? "Service",
+          job.city
+        ).catch(() => {});
+      }
     }
 
     return apiSuccess({ cancelled: true });

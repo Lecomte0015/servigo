@@ -39,6 +39,7 @@ export async function POST(
       userId: job.clientId,
       type: "JOB_STARTED",
       message: "🚗 L'artisan est en route vers votre adresse. Préparez-vous à l'accueillir !",
+      link: "/dashboard/history",
     });
 
     return apiSuccess({ status: "IN_PROGRESS" });

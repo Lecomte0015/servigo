@@ -32,6 +32,7 @@ export async function POST(
       userId: artisan.userId,
       type: "PROFILE_APPROVED",
       message: "Votre profil a été validé ! Vous pouvez maintenant accepter des missions.",
+      link: "/pro/jobs",
     });
 
     sendArtisanApprovedEmail(artisan.user.email, artisan.user.firstName).catch((err) => adminLogger.error({ err }, "Email send failed"));

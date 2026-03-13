@@ -126,6 +126,7 @@ export async function POST(req: NextRequest) {
               userId: admin.id,
               type: "INSURANCE_CERT_UPLOADED",
               message: `📄 ${artisan.user.firstName} ${artisan.user.lastName} a uploadé son attestation d'assurance RC Pro. À vérifier dans le back-office.`,
+              link: `/admin/artisans/${artisan.id}`,
             })
           )
         )

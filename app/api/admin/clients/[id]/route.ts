@@ -4,6 +4,7 @@ import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiNotFound, apiServerError, apiError } from "@/lib/api-response";
 import { createAuditLog } from "@/lib/audit-log";
 import { blockUser, unblockUser } from "@/lib/session";
+import { sendAccountSuspendedEmail } from "@/lib/email";
 import { adminLogger } from "@/lib/logger";
 
 export async function GET(
@@ -78,7 +79,7 @@ export async function PATCH(
   try {
     const client = await prisma.user.findUnique({
       where: { id, role: "CLIENT" },
-      select: { id: true },
+      select: { id: true, email: true, firstName: true },
     });
 
     if (!client) return apiNotFound("Client introuvable");
@@ -101,6 +102,11 @@ export async function PATCH(
       targetId: id,
       targetType: "client",
     }).catch(() => {});
+
+    // Email si suspension (non-bloquant)
+    if (blocked) {
+      sendAccountSuspendedEmail(client.email, client.firstName).catch(() => {});
+    }
 
     return apiSuccess({ isBlocked: blocked });
   } catch (err) {

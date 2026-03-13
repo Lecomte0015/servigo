@@ -321,6 +321,7 @@ model Notification {
   userId    String
   type      String
   message   String
+  link      String?  // URL de redirection au clic (ex: /dashboard/history)
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
 

@@ -106,4 +106,5 @@ export interface NotificationPayload {
   userId: string;
   type: NotificationType;
   message: string;
+  link?: string; // URL de redirection au clic
 }

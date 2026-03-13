@@ -269,7 +269,94 @@ export async function sendReviewRequestEmail(
   await sendEmail(to, "⭐ Comment s'est passée votre intervention avec " + artisanCompanyName + " ?", html);
 }
 
-// ─── 8. Statut payout artisan ───────────────────────────────────────────────
+// ─── 8. Mission annulée — confirmation au client ───────────────────────────
+
+export async function sendJobCancelledClientEmail(
+  to: string,
+  firstName: string,
+  category: string,
+  city: string
+): Promise<void> {
+  const html = baseTemplate(`
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700">Mission annulée</h2>
+    <p style="color:#6B7280;line-height:1.7;margin:0 0 16px">Bonjour ${firstName},<br>Votre demande de <strong>${category}</strong> à <strong>${city}</strong> a bien été annulée.</p>
+    ${infoBox("#FEF2F2", "#FCA5A5", "#991B1B", "Si un paiement avait été pré-autorisé, il sera <strong>intégralement libéré</strong> sous 3-5 jours ouvrés selon votre banque.")}
+    <p style="color:#6B7280;line-height:1.7;margin:0 0 24px">Vous pouvez poster une nouvelle demande à tout moment.</p>
+    ${btn(`${APP_URL}/dashboard/new-job`, "Nouvelle demande")}
+  `);
+  await sendEmail(to, `❌ Mission annulée — ${category} à ${city}`, html);
+}
+
+// ─── 9. Mission annulée — notification à l'artisan ──────────────────────────
+
+export async function sendJobCancelledArtisanEmail(
+  to: string,
+  firstName: string,
+  category: string,
+  city: string
+): Promise<void> {
+  const html = baseTemplate(`
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700">Mission annulée par le client</h2>
+    <p style="color:#6B7280;line-height:1.7;margin:0 0 16px">Bonjour ${firstName},<br>La mission <strong>${category}</strong> à <strong>${city}</strong> a été annulée par le client.</p>
+    ${infoBox("#FFFBEB", "#FDE68A", "#92400E", "Si vous étiez en route, vous pouvez contacter le support GoServi si nécessaire.")}
+    ${btn(`${APP_URL}/pro/jobs`, "Voir les missions disponibles")}
+  `);
+  await sendEmail(to, `❌ Mission annulée — ${category} à ${city}`, html);
+}
+
+// ─── 10. Attestation assurance vérifiée ─────────────────────────────────────
+
+export async function sendInsuranceVerifiedEmail(
+  to: string,
+  firstName: string
+): Promise<void> {
+  const html = baseTemplate(`
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="display:inline-block;width:60px;height:60px;background:#D1FAE5;border-radius:50%;line-height:60px;font-size:28px">✅</div>
+    </div>
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700;text-align:center">Assurance RC Pro vérifiée !</h2>
+    <p style="color:#6B7280;line-height:1.7;text-align:center;margin:0 0 20px">Bonjour ${firstName},<br>Votre attestation d'assurance RC Professionnelle a été <strong>vérifiée et validée</strong> par notre équipe. Votre profil est maintenant complet.</p>
+    ${infoBox("#F0FDF4", "#86EFAC", "#166534", "🛡️ Le badge <strong>\"Assurance vérifiée\"</strong> est désormais visible sur votre profil, ce qui augmente la confiance des clients.")}
+    <div style="text-align:center">${btn(`${APP_URL}/pro/profile`, "Voir mon profil")}</div>
+  `);
+  await sendEmail(to, "✅ Attestation d'assurance RC Pro validée — GoServi", html);
+}
+
+// ─── 11. Attestation assurance refusée ──────────────────────────────────────
+
+export async function sendInsuranceUnverifiedEmail(
+  to: string,
+  firstName: string,
+  reason?: string
+): Promise<void> {
+  const html = baseTemplate(`
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700">Action requise — Attestation d'assurance</h2>
+    <p style="color:#6B7280;line-height:1.7;margin:0 0 16px">Bonjour ${firstName},<br>Notre équipe n'a pas pu valider votre attestation d'assurance RC Professionnelle.</p>
+    ${reason ? infoBox("#FEF2F2", "#FCA5A5", "#991B1B", `<strong>Motif :</strong> ${reason}`) : infoBox("#FFFBEB", "#FDE68A", "#92400E", "Le document fourni ne correspond pas à nos critères de validation.")}
+    <p style="color:#6B7280;line-height:1.7;margin:0 0 24px">Veuillez uploader un nouveau document valide depuis votre profil.</p>
+    ${btn(`${APP_URL}/pro/profile`, "Mettre à jour mon attestation")}
+    <p style="color:#9CA3AF;font-size:12px;margin-top:16px">Des questions ? Contactez-nous à <a href="mailto:support@goservi.ch" style="color:#1CA7A6">support@goservi.ch</a></p>
+  `);
+  await sendEmail(to, "⚠️ Attestation d'assurance — Action requise", html);
+}
+
+// ─── 12. Compte suspendu ─────────────────────────────────────────────────────
+
+export async function sendAccountSuspendedEmail(
+  to: string,
+  firstName: string
+): Promise<void> {
+  const html = baseTemplate(`
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700">Votre compte a été suspendu</h2>
+    <p style="color:#6B7280;line-height:1.7;margin:0 0 16px">Bonjour ${firstName},<br>Votre compte GoServi a été temporairement <strong>suspendu</strong> suite à une vérification de notre équipe.</p>
+    ${infoBox("#FEF2F2", "#FCA5A5", "#991B1B", "Tant que votre compte est suspendu, vous ne pouvez plus accéder à la plateforme ni effectuer de transactions.")}
+    <p style="color:#6B7280;line-height:1.7;margin:0 0 24px">Si vous pensez qu'il s'agit d'une erreur, contactez notre support dans les plus brefs délais.</p>
+    ${btn("mailto:support@goservi.ch", "Contacter le support")}
+  `);
+  await sendEmail(to, "⚠️ Votre compte GoServi a été suspendu", html);
+}
+
+// ─── 13. Statut payout artisan ───────────────────────────────────────────────
 
 export async function sendPayoutStatusEmail(
   to: string,

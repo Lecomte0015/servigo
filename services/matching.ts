@@ -67,6 +67,7 @@ export async function matchArtisans(
           userId: artisan.user.id,
           type: "JOB_MATCHED",
           message: `Nouvelle demande à ${city} — Acceptez vite !`,
+          link: "/pro/jobs",
         }),
         job
           ? sendNewJobEmail(
@@ -116,6 +117,7 @@ export async function notifyTargetArtisan(
       userId: artisan.user.id,
       type: "JOB_MATCHED",
       message: `Un client vous a envoyé une demande directe — Acceptez vite !`,
+      link: "/pro/jobs",
     }),
     job
       ? sendNewJobEmail(

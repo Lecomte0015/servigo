@@ -7,6 +7,7 @@ export async function createNotification(payload: NotificationPayload): Promise<
       userId: payload.userId,
       type: payload.type,
       message: payload.message,
+      ...(payload.link ? { link: payload.link } : {}),
     },
   });
 }

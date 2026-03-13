@@ -12,6 +12,7 @@ import { requireAuth } from "@/lib/auth-guard";
 import { createAuditLog } from "@/lib/audit-log";
 import { createNotification } from "@/services/notification";
 import { apiSuccess, apiError, apiNotFound, apiServerError } from "@/lib/api-response";
+import { sendInsuranceVerifiedEmail, sendInsuranceUnverifiedEmail } from "@/lib/email";
 import { adminLogger } from "@/lib/logger";
 
 export async function PATCH(
@@ -39,7 +40,7 @@ export async function PATCH(
   try {
     const artisan = await prisma.artisanProfile.findUnique({
       where: { id },
-      select: { id: true, insuranceCertUrl: true, userId: true },
+      select: { id: true, insuranceCertUrl: true, userId: true, user: { select: { email: true, firstName: true } } },
     });
 
     if (!artisan) return apiNotFound("Artisan introuvable");
@@ -62,7 +63,15 @@ export async function PATCH(
         : reason
           ? `❌ Votre attestation d'assurance a été refusée. Motif : ${reason}. Veuillez uploader un nouveau document.`
           : "⚠️ La vérification de votre attestation d'assurance a été révoquée. Veuillez uploader un nouveau document.",
+      link: "/pro/profile",
     }).catch(() => {});
+
+    // Email à l'artisan (non-bloquant)
+    if (verified) {
+      sendInsuranceVerifiedEmail(artisan.user.email, artisan.user.firstName).catch(() => {});
+    } else {
+      sendInsuranceUnverifiedEmail(artisan.user.email, artisan.user.firstName, reason).catch(() => {});
+    }
 
     // Audit log non-bloquant
     createAuditLog({

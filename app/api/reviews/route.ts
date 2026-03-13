@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
       userId: job.assignment.artisan.userId,
       type: "REVIEW_RECEIVED",
       message: `Vous avez reçu un avis ${rating}/5.`,
+      link: "/pro/profile",
     });
 
     return apiSuccess(review, 201);
