@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -38,8 +39,13 @@ const TYPE_ICON: Record<string, string> = {
 export function NotificationBell({ align = "right" }: { align?: "left" | "right" }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [dropPos, setDropPos] = useState({ top: 0, left: 0 });
+  const [mounted, setMounted] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const dropRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  useEffect(() => { setMounted(true); }, []);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -77,10 +83,13 @@ export function NotificationBell({ align = "right" }: { align?: "left" | "right"
     return () => clearInterval(interval);
   }, []);
 
-  // Close on outside click
+  // Close on outside click — check both button and portal dropdown
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      const clickedButton = buttonRef.current?.contains(target);
+      const clickedDrop = dropRef.current?.contains(target);
+      if (!clickedButton && !clickedDrop) {
         setOpen(false);
       }
     };
@@ -89,8 +98,19 @@ export function NotificationBell({ align = "right" }: { align?: "left" | "right"
   }, []);
 
   const handleOpen = () => {
-    setOpen((o) => !o);
-    if (!open && unreadCount > 0) {
+    const willOpen = !open;
+    if (willOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const dropWidth = 320; // w-80 = 20rem = 320px
+      setDropPos({
+        top: rect.bottom + 8,
+        left: align === "left"
+          ? Math.max(4, rect.left)
+          : Math.max(4, rect.right - dropWidth),
+      });
+    }
+    setOpen(willOpen);
+    if (willOpen && unreadCount > 0) {
       setTimeout(markAllRead, 1500);
     }
   };
@@ -101,9 +121,72 @@ export function NotificationBell({ align = "right" }: { align?: "left" | "right"
     if (n.link) router.push(n.link);
   };
 
+  const dropdown = open ? (
+    <div
+      ref={dropRef}
+      style={{
+        position: "fixed",
+        top: dropPos.top,
+        left: dropPos.left,
+        width: 320,
+        zIndex: 9999,
+      }}
+      className="bg-white border border-[#D1E5E5] rounded-[12px] shadow-xl overflow-hidden"
+    >
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E6F2F2]">
+        <p className="text-sm font-semibold text-[#1F2937]">Notifications</p>
+        {unreadCount > 0 && (
+          <button onClick={markAllRead} className="text-xs text-[#1CA7A6] hover:underline">
+            Tout marquer lu
+          </button>
+        )}
+      </div>
+
+      <div className="max-h-80 overflow-y-auto">
+        {notifications.length === 0 ? (
+          <div className="py-8 text-center">
+            <p className="text-2xl mb-1">🔔</p>
+            <p className="text-sm text-gray-400">Aucune notification</p>
+          </div>
+        ) : (
+          notifications.map((n) => (
+            <div
+              key={n.id}
+              onClick={() => handleNotificationClick(n)}
+              className={[
+                "flex items-start gap-3 px-4 py-3 border-b border-[#F4F7F7] last:border-0 transition-colors select-none",
+                !n.read ? "bg-[#F4FBFB]" : "",
+                n.link ? "cursor-pointer hover:bg-[#EFF9F9] active:bg-[#E6F2F2]" : "",
+              ].join(" ")}
+            >
+              <span className="text-lg leading-none mt-0.5 shrink-0">
+                {TYPE_ICON[n.type] ?? "📌"}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm text-[#1F2937] leading-snug">{n.message}</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <p className="text-xs text-gray-400">
+                    {format(new Date(n.createdAt), "d MMM à HH:mm", { locale: fr })}
+                  </p>
+                  {n.link && (
+                    <span className="text-xs text-[#1CA7A6] font-medium">Voir →</span>
+                  )}
+                </div>
+              </div>
+              {!n.read && (
+                <span className="w-2 h-2 rounded-full bg-[#1CA7A6] shrink-0 mt-1.5" />
+              )}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  ) : null;
+
   return (
-    <div ref={ref} className="relative">
+    <>
       <button
+        ref={buttonRef}
         onClick={handleOpen}
         className="relative w-9 h-9 flex items-center justify-center rounded-[8px] hover:bg-[#F4F7F7] transition-colors text-gray-500"
         aria-label="Notifications"
@@ -119,57 +202,7 @@ export function NotificationBell({ align = "right" }: { align?: "left" | "right"
         )}
       </button>
 
-      {open && (
-        <div className={`absolute ${align === "left" ? "left-0" : "right-0"} top-11 w-80 bg-white border border-[#D1E5E5] rounded-[12px] shadow-xl z-50 overflow-hidden`}>
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[#E6F2F2]">
-            <p className="text-sm font-semibold text-[#1F2937]">Notifications</p>
-            {unreadCount > 0 && (
-              <button onClick={markAllRead} className="text-xs text-[#1CA7A6] hover:underline">
-                Tout marquer lu
-              </button>
-            )}
-          </div>
-
-          <div className="max-h-80 overflow-y-auto">
-            {notifications.length === 0 ? (
-              <div className="py-8 text-center">
-                <p className="text-2xl mb-1">🔔</p>
-                <p className="text-sm text-gray-400">Aucune notification</p>
-              </div>
-            ) : (
-              notifications.map((n) => (
-                <div
-                  key={n.id}
-                  onClick={() => handleNotificationClick(n)}
-                  className={[
-                    "flex items-start gap-3 px-4 py-3 border-b border-[#F4F7F7] last:border-0 transition-colors select-none",
-                    !n.read ? "bg-[#F4FBFB]" : "",
-                    n.link ? "cursor-pointer hover:bg-[#EFF9F9] active:bg-[#E6F2F2]" : "",
-                  ].join(" ")}
-                >
-                  <span className="text-lg leading-none mt-0.5 shrink-0">
-                    {TYPE_ICON[n.type] ?? "📌"}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm text-[#1F2937] leading-snug">{n.message}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <p className="text-xs text-gray-400">
-                        {format(new Date(n.createdAt), "d MMM à HH:mm", { locale: fr })}
-                      </p>
-                      {n.link && (
-                        <span className="text-xs text-[#1CA7A6] font-medium">Voir →</span>
-                      )}
-                    </div>
-                  </div>
-                  {!n.read && (
-                    <span className="w-2 h-2 rounded-full bg-[#1CA7A6] shrink-0 mt-1.5" />
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
-    </div>
+      {mounted && createPortal(dropdown, document.body)}
+    </>
   );
 }
