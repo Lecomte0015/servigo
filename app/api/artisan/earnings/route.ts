@@ -69,10 +69,22 @@ export async function GET(req: NextRequest) {
       byMonth[key].count++;
     }
 
-    const monthlyBreakdown = Object.entries(byMonth)
-      .sort(([a], [b]) => b.localeCompare(a))
-      .slice(0, 6)
-      .map(([month, data]) => ({ month, ...data }));
+    // Always include last 6 months (even if 0), in chronological order
+    // Compute YYYY-MM string directly to avoid UTC/local timezone shift
+    const now = new Date();
+    const last6: string[] = [];
+    for (let i = 5; i >= 0; i--) {
+      let year = now.getFullYear();
+      let month = now.getMonth() - i; // 0-indexed
+      while (month < 0) { month += 12; year--; }
+      last6.push(`${year}-${String(month + 1).padStart(2, "0")}`);
+    }
+    const monthlyBreakdown = last6.map((month) => ({
+      month,
+      gross: byMonth[month]?.gross ?? 0,
+      net: byMonth[month]?.net ?? 0,
+      count: byMonth[month]?.count ?? 0,
+    }));
 
     return apiSuccess({
       summary: {

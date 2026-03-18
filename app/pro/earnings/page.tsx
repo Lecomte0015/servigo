@@ -68,7 +68,7 @@ export default function ProEarningsPage() {
     );
   }
 
-  const maxMonthly = data?.monthlyBreakdown.reduce((m, b) => Math.max(m, b.net), 1) ?? 1;
+  const maxMonthly = Math.max(data?.monthlyBreakdown.reduce((m, b) => Math.max(m, b.net), 0) ?? 0, 1);
 
   return (
     <div className="flex flex-col gap-5">
@@ -150,13 +150,13 @@ export default function ProEarningsPage() {
       </div>
 
       {/* Monthly bar chart */}
-      {data?.monthlyBreakdown.length ? (
+      {data && (
         <Card>
           <CardHeader>
             <CardTitle>Revenus par mois (6 derniers)</CardTitle>
           </CardHeader>
           <div className="flex items-end gap-3 h-32">
-            {data.monthlyBreakdown.map((m) => (
+            {data?.monthlyBreakdown.map((m) => (
               <div key={m.month} className="flex-1 flex flex-col items-center gap-1">
                 <span className="text-xs font-medium text-[#1CA7A6]">{m.net.toFixed(0)}</span>
                 <div
@@ -170,11 +170,11 @@ export default function ProEarningsPage() {
             ))}
           </div>
           <div className="mt-3 flex gap-4 text-xs text-gray-400">
-            <span>Missions : {data.monthlyBreakdown.reduce((s, m) => s + m.count, 0)}</span>
-            <span>Brut total : {data.monthlyBreakdown.reduce((s, m) => s + m.gross, 0).toFixed(0)} CHF</span>
+            <span>Missions : {data?.monthlyBreakdown.reduce((s, m) => s + m.count, 0)}</span>
+            <span>Brut total : {data?.monthlyBreakdown.reduce((s, m) => s + m.gross, 0).toFixed(0)} CHF</span>
           </div>
         </Card>
-      ) : null}
+      )}
 
       {/* Transactions */}
       <Card>
