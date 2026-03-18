@@ -31,7 +31,6 @@ export async function matchArtisans(
     where: {
       city,
       isApproved: true,
-      emergencyAvailable: true,
       services: {
         some: {
           categoryId,
@@ -51,11 +50,7 @@ export async function matchArtisans(
   });
 
   if (artisans.length === 0) {
-    // No artisan available — update job status back to PENDING
-    await prisma.jobRequest.update({
-      where: { id: jobId },
-      data: { status: "PENDING" },
-    });
+    // No artisan available locally — job stays MATCHING so artisans can still discover it
     return;
   }
 
@@ -141,7 +136,6 @@ export async function getAvailableArtisans(categoryId: string, city: string) {
     where: {
       city,
       isApproved: true,
-      emergencyAvailable: true,
       services: { some: { categoryId, isActive: true } },
     },
     orderBy: { ratingAverage: "desc" },

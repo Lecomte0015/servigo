@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
 
         if (artisanProfile.city && categoryIds.length > 0) {
           matchingConditions.push({
-            status: "MATCHING",
+            status: { in: ["MATCHING", "PENDING"] },
             city: artisanProfile.city,
             categoryId: { in: categoryIds },
             targetArtisanId: null, // Exclude direct requests meant for another artisan
