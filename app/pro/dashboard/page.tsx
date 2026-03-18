@@ -18,6 +18,7 @@ interface Job {
   createdAt: string;
   category: { name: string };
   client: { firstName: string; lastName: string; phone: string | null };
+  payment?: { status: string } | null;
 }
 
 export default function ProDashboardPage() {
@@ -164,7 +165,7 @@ export default function ProDashboardPage() {
                       Accepter
                     </Button>
                   )}
-                  {job.status === "ASSIGNED" && (
+                  {job.status === "ASSIGNED" && job.payment?.status === "CAPTURED" && (
                     <Button
                       size="sm"
                       variant="secondary"
@@ -173,6 +174,11 @@ export default function ProDashboardPage() {
                     >
                       Démarrer
                     </Button>
+                  )}
+                  {job.status === "ASSIGNED" && job.payment?.status !== "CAPTURED" && (
+                    <span className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-md px-2 py-1 whitespace-nowrap">
+                      ⏳ Paiement en attente
+                    </span>
                   )}
                   {job.status === "IN_PROGRESS" && (
                     <Button
