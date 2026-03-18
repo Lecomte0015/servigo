@@ -18,13 +18,21 @@ export async function POST(
   try {
     const job = await prisma.jobRequest.findUnique({
       where: { id: jobId },
-      include: { assignment: { include: { artisan: true } } },
+      include: {
+        assignment: { include: { artisan: true } },
+        payment: { select: { status: true } },
+      },
     });
 
     if (!job) return apiNotFound();
     if (job.status !== "ASSIGNED") return apiError("Statut invalide");
     if (job.assignment?.artisan.userId !== payload.userId) {
       return apiError("Accès refusé", 403);
+    }
+
+    // Bloquer le démarrage si le client n'a pas encore payé
+    if (job.payment?.status !== "CAPTURED") {
+      return apiError("Le client doit régler la mission avant que vous puissiez démarrer", 402);
     }
 
     await prisma.$transaction([

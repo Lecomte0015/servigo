@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { constructWebhookEvent } from "@/lib/stripe";
 import { webhookLogger } from "@/lib/logger";
+import { createNotification } from "@/services/notification";
 import Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -104,6 +105,20 @@ export async function POST(req: NextRequest) {
               ...(session.payment_intent ? { stripePaymentIntentId: session.payment_intent as string } : {}),
             },
           });
+
+          // Notifier l'artisan assigné que le paiement est reçu → il peut démarrer
+          const job = await prisma.jobRequest.findUnique({
+            where: { id: jobId },
+            include: { assignment: { select: { artisan: { select: { userId: true } } } } },
+          });
+          if (job?.assignment?.artisan?.userId) {
+            createNotification({
+              userId: job.assignment.artisan.userId,
+              type: "PAYMENT_CAPTURED",
+              message: "✅ Le client a réglé la mission. Vous pouvez démarrer l'intervention.",
+              link: "/pro/jobs",
+            }).catch(() => {});
+          }
         }
         break;
       }
