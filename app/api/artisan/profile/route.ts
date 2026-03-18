@@ -3,6 +3,7 @@ import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiForbidden, apiServerError } from "@/lib/api-response";
 import { prisma } from "@/lib/prisma";
 import { geocodeCity } from "@/lib/geocoding";
+import { normalizeCity } from "@/lib/normalize";
 import { z } from "zod";
 
 const updateSchema = z.object({
@@ -69,7 +70,7 @@ export async function PATCH(req: NextRequest) {
     // Geocode city if it changed (async, don't block)
     let geoData: { latitude?: number; longitude?: number } = {};
     if (profileData.city) {
-      const coords = await geocodeCity(profileData.city);
+      const coords = await geocodeCity(normalizeCity(profileData.city));
       if (coords) {
         geoData = { latitude: coords.lat, longitude: coords.lng };
       }
@@ -80,7 +81,7 @@ export async function PATCH(req: NextRequest) {
       data: {
         ...(profileData.companyName && { companyName: profileData.companyName }),
         ...(profileData.description !== undefined && { description: profileData.description }),
-        ...(profileData.city && { city: profileData.city }),
+        ...(profileData.city && { city: normalizeCity(profileData.city) }),
         ...(profileData.emergencyAvailable !== undefined && {
           emergencyAvailable: profileData.emergencyAvailable,
         }),

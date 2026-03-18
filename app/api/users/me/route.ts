@@ -3,12 +3,13 @@ import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiError, apiServerError } from "@/lib/api-response";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { normalizeCity } from "@/lib/normalize";
 
 const updateSchema = z.object({
   firstName: z.string().min(1).max(50).optional(),
   lastName: z.string().min(1).max(50).optional(),
   phone: z.string().max(20).optional().nullable(),
-  city: z.string().max(50).optional().nullable(),
+  city: z.string().trim().max(50).optional().nullable(),
 });
 
 export async function PATCH(req: NextRequest) {
@@ -28,7 +29,7 @@ export async function PATCH(req: NextRequest) {
         ...(parsed.data.firstName && { firstName: parsed.data.firstName }),
         ...(parsed.data.lastName && { lastName: parsed.data.lastName }),
         phone: parsed.data.phone ?? undefined,
-        city: parsed.data.city ?? undefined,
+        city: parsed.data.city ? normalizeCity(parsed.data.city) : (parsed.data.city ?? undefined),
       },
       select: {
         id: true,

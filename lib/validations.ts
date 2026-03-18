@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normalizeCity } from "@/lib/normalize";
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
 
@@ -17,7 +18,7 @@ export const registerClientSchema = z.object({
 export const registerArtisanSchema = registerClientSchema.extend({
   companyName: z.string().min(2, "Nom entreprise requis"),
   rcNumber: z.string().min(3, "Numéro RC requis"),
-  city: z.string().min(2, "Ville requise"),
+  city: z.string().trim().min(2, "Ville requise").transform(normalizeCity),
   description: z.string().optional(),
 });
 
@@ -32,7 +33,7 @@ export const createJobSchema = z.object({
   categoryId: z.string().uuid("Catégorie invalide"),
   description: z.string().min(10, "Description trop courte (min 10 caractères)"),
   address: z.string().min(5, "Adresse requise"),
-  city: z.string().min(2, "Ville requise"),
+  city: z.string().trim().min(2, "Ville requise").transform(normalizeCity),
   urgencyLevel: z.enum(["STANDARD", "URGENT"]),
   scheduledAt: z.string().optional(), // date planifiée (STANDARD uniquement)
   targetArtisanId: z.string().uuid().optional(), // demande directe depuis la carte
