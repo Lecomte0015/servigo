@@ -33,9 +33,13 @@ export async function POST(
     if (job.status !== "IN_PROGRESS") return apiError("Statut invalide");
     if (!job.payment) return apiError("Paiement introuvable");
 
-    // Capture Stripe payment (stripePaymentIntentId may be null if Stripe not configured)
+    // Capture Stripe payment (best-effort — intent may have expired after 7 days)
     if (job.payment.stripePaymentIntentId) {
-      await capturePaymentIntent(job.payment.stripePaymentIntentId);
+      try {
+        await capturePaymentIntent(job.payment.stripePaymentIntentId);
+      } catch (stripeErr) {
+        jobLogger.warn({ stripeErr, jobId }, "Stripe capture failed — proceeding with manual payout");
+      }
     }
 
     const now = new Date();
