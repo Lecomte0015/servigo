@@ -405,7 +405,7 @@ function HistoryPageInner() {
                 )}
 
                 {/* Actions */}
-                {["MATCHING", "ASSIGNED"].includes(selectedJob.status) && selectedJob.payment?.status === "PENDING" && (
+                {["MATCHING", "ASSIGNED"].includes(selectedJob.status) && ["PENDING", "AUTHORIZED"].includes(selectedJob.payment?.status ?? "") && (
                   <Button
                     size="sm"
                     loading={paying === selectedJob.id}
@@ -414,13 +414,6 @@ function HistoryPageInner() {
                   >
                     💳 Payer maintenant ({selectedJob.payment?.amount?.toFixed(0)} CHF)
                   </Button>
-                )}
-
-                {["MATCHING", "ASSIGNED", "IN_PROGRESS"].includes(selectedJob.status) && selectedJob.payment?.status === "AUTHORIZED" && (
-                  <div className="mt-1 flex items-center gap-1.5 text-xs text-green-700 bg-green-50 border border-green-200 rounded-[8px] px-3 py-2">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    Paiement autorisé — sera prélevé à la fin
-                  </div>
                 )}
 
                 {selectedJob.status === "IN_PROGRESS" && (

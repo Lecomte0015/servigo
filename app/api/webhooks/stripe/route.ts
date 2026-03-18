@@ -98,7 +98,11 @@ export async function POST(req: NextRequest) {
         if (jobId && session.payment_status === "paid") {
           await prisma.payment.updateMany({
             where: { jobId },
-            data: { status: "CAPTURED" },
+            data: {
+              status: "CAPTURED",
+              // Stocke le PI ID pour remboursements éventuels
+              ...(session.payment_intent ? { stripePaymentIntentId: session.payment_intent as string } : {}),
+            },
           });
         }
         break;

@@ -34,6 +34,7 @@ export async function POST(
     if (job.payment.status === "CAPTURED") {
       return apiError("Paiement déjà effectué");
     }
+    // AUTHORIZED = ancien PI (capture_method:manual), peut être expiré — on permet re-payer via Checkout
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
