@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -50,7 +50,7 @@ const STATUS_FILTERS = [
   { value: "CANCELLED", label: "Annulées" },
 ];
 
-export default function HistoryPage() {
+function HistoryPageInner() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -527,5 +527,13 @@ export default function HistoryPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function HistoryPage() {
+  return (
+    <Suspense>
+      <HistoryPageInner />
+    </Suspense>
   );
 }
