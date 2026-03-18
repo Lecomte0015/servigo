@@ -44,7 +44,20 @@ export default function ProJobsPage() {
   const [page, setPage] = useState(1);
   const [actioning, setActioning] = useState<string | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [hasServices, setHasServices] = useState<boolean | null>(null);
+  const [hasCity, setHasCity] = useState<boolean | null>(null);
   const limit = 10;
+
+  useEffect(() => {
+    fetch("/api/artisan/profile")
+      .then((r) => r.json())
+      .then((j) => {
+        const profile = j.data;
+        setHasServices(profile?.services?.some((s: { isActive: boolean }) => s.isActive) ?? false);
+        setHasCity(!!profile?.city);
+      })
+      .catch(() => {});
+  }, []);
 
   const fetchJobs = () => {
     setLoading(true);
@@ -113,6 +126,44 @@ export default function ProJobsPage() {
         </div>
       )}
 
+      {!isPending && hasServices === false && (
+        <div className="bg-blue-50 border border-blue-200 rounded-[10px] px-4 py-3 flex items-start gap-3">
+          <div className="shrink-0 text-blue-500 mt-0.5">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-blue-800">Aucun service configuré</p>
+            <p className="text-xs text-blue-600 mt-0.5">
+              Vous devez ajouter vos spécialités dans votre profil pour voir les missions disponibles.
+            </p>
+            <a href="/pro/profile" className="inline-block mt-2 text-xs font-medium text-blue-700 underline underline-offset-2 hover:text-blue-900">
+              Configurer mon profil →
+            </a>
+          </div>
+        </div>
+      )}
+
+      {!isPending && hasServices === true && hasCity === false && (
+        <div className="bg-amber-50 border border-amber-200 rounded-[10px] px-4 py-3 flex items-start gap-3">
+          <div className="shrink-0 text-amber-500 mt-0.5">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-amber-800">Ville non renseignée</p>
+            <p className="text-xs text-amber-600 mt-0.5">
+              Ajoutez votre ville dans votre profil pour voir les missions disponibles dans votre secteur.
+            </p>
+            <a href="/pro/profile" className="inline-block mt-2 text-xs font-medium text-amber-700 underline underline-offset-2 hover:text-amber-900">
+              Configurer mon profil →
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Filters */}
       <div className="flex gap-2 flex-wrap">
         {STATUS_FILTERS.map((f) => (
@@ -139,8 +190,13 @@ export default function ProJobsPage() {
                 <div className="animate-spin w-6 h-6 border-2 border-[#1CA7A6] border-t-transparent rounded-full" />
               </div>
             ) : !jobs.length ? (
-              <div className="text-center py-12">
+              <div className="text-center py-12 px-4">
                 <p className="text-gray-500 text-sm">Aucune mission trouvée</p>
+                {!statusFilter && hasServices && hasCity && (
+                  <p className="text-gray-400 text-xs mt-1">
+                    Les nouvelles demandes dans votre ville et votre spécialité apparaîtront ici.
+                  </p>
+                )}
               </div>
             ) : (
               <div className="divide-y divide-[#E6F2F2]">

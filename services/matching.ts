@@ -29,7 +29,7 @@ export async function matchArtisans(
 
   const artisans = await prisma.artisanProfile.findMany({
     where: {
-      city,
+      city: { equals: city, mode: "insensitive" },
       isApproved: true,
       services: {
         some: {
@@ -134,7 +134,7 @@ export async function notifyTargetArtisan(
 export async function getAvailableArtisans(categoryId: string, city: string) {
   return prisma.artisanProfile.findMany({
     where: {
-      city,
+      city: { equals: city, mode: "insensitive" },
       isApproved: true,
       services: { some: { categoryId, isActive: true } },
     },

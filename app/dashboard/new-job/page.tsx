@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -43,6 +44,7 @@ function SelectedArtisanBanner({
 function NewJobForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user } = useAuth();
 
   const preArtisanId   = searchParams.get("artisanId") ?? "";
   const preArtisanName = searchParams.get("artisanName") ?? "";
@@ -63,8 +65,13 @@ function NewJobForm() {
     formState: { errors, isSubmitting },
   } = useForm<CreateJobInput>({
     resolver: zodResolver(createJobSchema),
-    defaultValues: { city: preCity || "Lausanne", urgencyLevel: "URGENT" },
+    defaultValues: { city: preCity || user?.city || "", urgencyLevel: "URGENT" },
   });
+
+  // Pré-remplir la ville depuis le profil client dès qu'elle est disponible
+  useEffect(() => {
+    if (!preCity && user?.city) setValue("city", user.city);
+  }, [user?.city, preCity, setValue]);
 
   const urgencyLevel = watch("urgencyLevel");
 

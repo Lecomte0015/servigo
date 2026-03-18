@@ -17,6 +17,7 @@ export async function GET() {
         firstName: true,
         lastName: true,
         phone: true,
+        city: true,
         avatarUrl: true,
         isVerified: true,
         totpEnabled: true,

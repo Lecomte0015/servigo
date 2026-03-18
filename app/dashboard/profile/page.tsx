@@ -11,6 +11,7 @@ interface ProfileData {
   lastName: string;
   email: string;
   phone: string;
+  city: string;
 }
 
 interface PasswordData {
@@ -30,6 +31,7 @@ export default function ClientProfilePage() {
     lastName: "",
     email: "",
     phone: "",
+    city: "",
   });
   const [passwords, setPasswords] = useState<PasswordData>({
     current: "",
@@ -48,6 +50,7 @@ export default function ClientProfilePage() {
         lastName: user.lastName ?? "",
         email: user.email ?? "",
         phone: user.phone ?? "",
+        city: user.city ?? "",
       });
       if (user.avatarUrl) setAvatarPreview(user.avatarUrl);
     }
@@ -94,6 +97,7 @@ export default function ClientProfilePage() {
           firstName: profile.firstName,
           lastName: profile.lastName,
           phone: profile.phone,
+          city: profile.city || null,
         }),
       });
       const json = await res.json();
@@ -248,6 +252,13 @@ export default function ClientProfilePage() {
             value={profile.phone}
             onChange={(e) => setProfile((p) => ({ ...p, phone: e.target.value }))}
             placeholder="+41 79 000 00 00"
+          />
+          <Input
+            label="Ville"
+            value={profile.city}
+            onChange={(e) => setProfile((p) => ({ ...p, city: e.target.value }))}
+            placeholder="Lausanne"
+            helperText="Pré-remplit automatiquement vos futures demandes"
           />
 
           {profileMsg && (
