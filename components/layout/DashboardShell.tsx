@@ -206,25 +206,26 @@ export function DashboardShell({
   // Si Zustand a user=null (ex: logout raté qui a vidé l'état client mais pas
   // le cookie), on récupère les données depuis /api/auth/me au montage du shell.
   useEffect(() => {
-    if (!user) {
-      fetch("/api/auth/me")
-        .then((r) => (r.ok ? r.json() : null))
-        .then((j) => {
-          if (j?.success && j?.data) {
-            setUser({
-              id: j.data.id,
-              email: j.data.email,
-              role: j.data.role,
-              firstName: j.data.firstName,
-              lastName: j.data.lastName,
-              isApproved: j.data.artisanProfile?.isApproved ?? null,
-              phone: j.data.phone ?? null,
-              avatarUrl: j.data.avatarUrl ?? null,
-            });
-          }
-        })
-        .catch(() => {});
-    }
+    fetch("/api/auth/me")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (j?.success && j?.data) {
+          setUser({
+            id: j.data.id,
+            email: j.data.email,
+            role: j.data.role,
+            firstName: j.data.firstName,
+            lastName: j.data.lastName,
+            isApproved: j.data.artisanProfile?.isApproved ?? null,
+            phone: j.data.phone ?? null,
+            city: j.data.city ?? null,
+            avatarUrl: j.data.avatarUrl ?? null,
+          });
+        } else if (!j?.success) {
+          setUser(null);
+        }
+      })
+      .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
