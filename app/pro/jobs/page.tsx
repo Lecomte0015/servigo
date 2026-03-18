@@ -233,7 +233,7 @@ export default function ProJobsPage() {
                       </div>
 
                       <div className="flex flex-col gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-                        {job.status === "MATCHING" && !isPending && (
+                        {(job.status === "MATCHING" || job.status === "PENDING") && !isPending && (
                           <Button
                             size="sm"
                             loading={actioning === job.id}
@@ -355,7 +355,7 @@ export default function ProJobsPage() {
                 )}
 
                 {/* Messagerie in-app */}
-                {user && ["ASSIGNED", "IN_PROGRESS", "MATCHING"].includes(selectedJob.status) && (
+                {user && ["ASSIGNED", "IN_PROGRESS", "MATCHING", "PENDING"].includes(selectedJob.status) && (
                   <div className="border-t border-[#E6F2F2] pt-3 -mx-4 -mb-4">
                     <div style={{ height: "360px", display: "flex", flexDirection: "column" }}>
                       <Chat

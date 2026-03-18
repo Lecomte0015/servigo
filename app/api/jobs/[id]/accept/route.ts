@@ -35,7 +35,7 @@ export async function POST(
     });
 
     if (!job) return apiNotFound("Demande introuvable");
-    if (job.status !== "MATCHING") {
+    if (job.status !== "MATCHING" && job.status !== "PENDING") {
       return apiError("Cette demande n'est plus disponible");
     }
     if (job.assignment) {
