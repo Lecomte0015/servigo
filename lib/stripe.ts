@@ -82,7 +82,7 @@ export async function refundPayment(
 }
 
 /**
- * Crée une session Stripe Checkout (carte + Twint).
+ * Crée une session Stripe Checkout (carte).
  * Paiement immédiat — pas de pré-auth.
  * Le jobId est passé en metadata pour identifier le job dans le webhook.
  */
@@ -94,7 +94,7 @@ export async function createCheckoutSession(
 ): Promise<Stripe.Checkout.Session> {
   return stripe.checkout.sessions.create({
     mode: "payment",
-    payment_method_types: ["card", "twint"],
+    payment_method_types: ["card"],
     line_items: [
       {
         price_data: {
