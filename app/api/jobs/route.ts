@@ -4,7 +4,7 @@ import { requireAuth } from "@/lib/auth-guard";
 import { createJobSchema } from "@/lib/validations";
 import { apiSuccess, apiError, apiServerError } from "@/lib/api-response";
 import { matchArtisans, notifyTargetArtisan } from "@/services/matching";
-import { createPaymentIntent, isStripeConfigured, PLATFORM_FEE_PERCENT } from "@/lib/stripe";
+import { PLATFORM_FEE_PERCENT } from "@/lib/stripe";
 import { createNotification } from "@/services/notification";
 import { jobLogger } from "@/lib/logger";
 
@@ -148,18 +148,7 @@ export async function POST(req: NextRequest) {
 
     const platformFee = estimatedPrice * PLATFORM_FEE_PERCENT;
 
-    // Create Stripe PaymentIntent only if Stripe is configured
-    const stripeReady = isStripeConfigured();
-    let paymentIntentId: string | null = null;
-    let clientSecret: string | null = null;
-
-    if (stripeReady) {
-      const paymentIntent = await createPaymentIntent(estimatedPrice, "temp");
-      paymentIntentId = paymentIntent.id;
-      clientSecret = paymentIntent.client_secret;
-    }
-
-    // Create job + payment atomically
+    // Create job + payment atomically (paiement collecté via Stripe Checkout à l'assignation)
     const job = await prisma.$transaction(async (tx) => {
       const newJob = await tx.jobRequest.create({
         data: {
@@ -179,10 +168,10 @@ export async function POST(req: NextRequest) {
       await tx.payment.create({
         data: {
           jobId: newJob.id,
-          stripePaymentIntentId: paymentIntentId,
+          stripePaymentIntentId: null,
           amount: estimatedPrice,
           platformFee,
-          status: stripeReady ? "AUTHORIZED" : "PENDING",
+          status: "PENDING",
         },
       });
 
@@ -198,7 +187,7 @@ export async function POST(req: NextRequest) {
       matchArtisans(job.id, categoryId, city).catch((err) => jobLogger.error({ err }, "matchArtisans failed"));
     }
 
-    return apiSuccess({ jobId: job.id, estimatedPrice, clientSecret }, 201);
+    return apiSuccess({ jobId: job.id, estimatedPrice }, 201);
   } catch (err) {
     jobLogger.error({ err }, "Create job error");
     return apiServerError();

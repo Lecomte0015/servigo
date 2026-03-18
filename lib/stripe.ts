@@ -81,6 +81,39 @@ export async function refundPayment(
   return stripe.refunds.create({ payment_intent: paymentIntentId });
 }
 
+/**
+ * Crée une session Stripe Checkout (carte + Twint).
+ * Paiement immédiat — pas de pré-auth.
+ * Le jobId est passé en metadata pour identifier le job dans le webhook.
+ */
+export async function createCheckoutSession(
+  amountChf: number,
+  jobId: string,
+  successUrl: string,
+  cancelUrl: string
+): Promise<Stripe.Checkout.Session> {
+  return stripe.checkout.sessions.create({
+    mode: "payment",
+    payment_method_types: ["card", "twint"],
+    line_items: [
+      {
+        price_data: {
+          currency: "chf",
+          product_data: {
+            name: "Mission GoServi",
+            description: `Réf. ${jobId.slice(0, 8).toUpperCase()}`,
+          },
+          unit_amount: Math.round(amountChf * 100),
+        },
+        quantity: 1,
+      },
+    ],
+    success_url: successUrl,
+    cancel_url: cancelUrl,
+    metadata: { jobId },
+  });
+}
+
 export function constructWebhookEvent(
   body: string | Buffer,
   signature: string

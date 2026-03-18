@@ -91,6 +91,19 @@ export async function POST(req: NextRequest) {
         break;
       }
 
+      // Paiement via Stripe Checkout (carte ou Twint)
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const jobId = session.metadata?.jobId;
+        if (jobId && session.payment_status === "paid") {
+          await prisma.payment.updateMany({
+            where: { jobId },
+            data: { status: "CAPTURED" },
+          });
+        }
+        break;
+      }
+
       case "charge.refunded": {
         const charge = event.data.object as Stripe.Charge;
         if (charge.payment_intent) {

@@ -234,9 +234,10 @@ export async function sendJobAcceptedEmail(
     <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700;text-align:center">Mission acceptée !</h2>
     <p style="color:#6B7280;line-height:1.7;text-align:center;margin:0 0 20px">Bonjour ${clientFirstName},<br><strong>${artisanCompany}</strong> a accepté votre mission.</p>
     ${artisanPhone ? infoBox("#F4F7F7", "#D1E5E5", "#374151", `📞 Vous pouvez contacter votre artisan au <strong>${artisanPhone}</strong> pour convenir des détails.`) : ""}
-    <div style="text-align:center">${btn(`${APP_URL}/dashboard/history`, "Voir ma mission")}</div>
+    ${infoBox("#EFF9F9", "#D1E5E5", "#0F766E", "💳 Pour confirmer la mission, procédez au paiement sécurisé. Vous pouvez payer par <strong>carte bancaire</strong> ou par <strong>Twint</strong>.")}
+    <div style="text-align:center">${btn(`${APP_URL}/dashboard/history`, "Payer et confirmer ma mission")}</div>
   `);
-  await sendEmail(to, `✅ Votre mission à ${city} a été acceptée`, html);
+  await sendEmail(to, `✅ Mission acceptée à ${city} — Paiement requis`, html);
 }
 
 // ─── 8. Invitation à laisser un avis post-mission ──────────────────────────

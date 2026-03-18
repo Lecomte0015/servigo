@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { JobStatusBadge } from "@/components/ui/Badge";
@@ -32,6 +33,7 @@ interface Job {
     startedAt: string | null;
     completedAt: string | null;
   } | null;
+  payment?: { status: string; amount: number } | null;
   review?: {
     rating: number;
     comment: string | null;
@@ -50,6 +52,7 @@ const STATUS_FILTERS = [
 
 export default function HistoryPage() {
   const { user } = useAuth();
+  const searchParams = useSearchParams();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -58,6 +61,8 @@ export default function HistoryPage() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [completing, setCompleting] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [paying, setPaying] = useState<string | null>(null);
+  const paymentResult = searchParams.get("payment"); // "success" | "cancelled"
   const [reviewState, setReviewState] = useState<{
     jobId: string;
     rating: number;
@@ -124,6 +129,19 @@ export default function HistoryPage() {
     }
   };
 
+  const handlePay = useCallback(async (jobId: string) => {
+    setPaying(jobId);
+    try {
+      const res = await fetch(`/api/jobs/${jobId}/payment-link`, { method: "POST" });
+      const json = await res.json();
+      if (json.data?.url) {
+        window.location.href = json.data.url;
+      }
+    } finally {
+      setPaying(null);
+    }
+  }, []);
+
   const handleReview = async () => {
     if (!reviewState) return;
     const { jobId, rating, comment } = reviewState;
@@ -157,6 +175,20 @@ export default function HistoryPage() {
           <Button size="sm">+ Nouvelle demande</Button>
         </Link>
       </div>
+
+      {/* Payment result banner */}
+      {paymentResult === "success" && (
+        <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-800 text-sm px-4 py-3 rounded-[10px]">
+          <span>✓</span>
+          <span>Paiement confirmé ! Votre mission est en cours de traitement.</span>
+        </div>
+      )}
+      {paymentResult === "cancelled" && (
+        <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-sm px-4 py-3 rounded-[10px]">
+          <span>⚠</span>
+          <span>Paiement annulé. Vous pouvez réessayer depuis le détail de votre mission.</span>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex gap-2 flex-wrap">
@@ -373,6 +405,17 @@ export default function HistoryPage() {
                 )}
 
                 {/* Actions */}
+                {selectedJob.status === "ASSIGNED" && selectedJob.payment?.status === "PENDING" && (
+                  <Button
+                    size="sm"
+                    loading={paying === selectedJob.id}
+                    onClick={() => handlePay(selectedJob.id)}
+                    className="mt-1"
+                  >
+                    💳 Payer maintenant ({selectedJob.payment?.amount?.toFixed(0)} CHF)
+                  </Button>
+                )}
+
                 {selectedJob.status === "IN_PROGRESS" && (
                   <Button
                     size="sm"
