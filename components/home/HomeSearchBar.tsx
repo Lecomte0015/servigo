@@ -125,7 +125,7 @@ export function HomeSearchBar({ categories, placeholder, ctaText, primaryColor }
 
       {/* ── Dropdown ───────────────────────────────────────────────────────── */}
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#D1E5E5] rounded-[14px] shadow-2xl z-50 overflow-hidden">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#D1E5E5] rounded-[14px] shadow-2xl z-[100] overflow-hidden">
 
           {filtered.length === 0 ? (
             <div className="px-5 py-5 text-center">

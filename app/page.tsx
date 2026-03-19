@@ -141,7 +141,7 @@ export default async function HomePage() {
 
       {/* ─── Hero ──────────────────────────────────────────────────────── */}
       <section
-        className="pt-14 pb-20 px-4 overflow-hidden"
+        className="pt-14 pb-20 px-4"
         style={{
           background: `linear-gradient(to bottom, ${hero.bgFrom.startsWith("#") ? hero.bgFrom : "#E6F2F2"}, ${hero.bgTo.startsWith("#") ? hero.bgTo : "#ffffff"})`,
         }}
