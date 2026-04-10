@@ -213,7 +213,7 @@ function ServicesSection({
                   {service.basePrice} CHF/h · Urgence: +{service.emergencyFee} CHF
                 </p>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-3 shrink-0">
                 {/* Toggle actif/inactif */}
                 <button
                   type="button"
@@ -239,7 +239,7 @@ function ServicesSection({
                   type="button"
                   onClick={() => handleDelete(service)}
                   disabled={deleting === service.id}
-                  className="text-gray-300 hover:text-red-400 transition-colors disabled:opacity-50"
+                  className="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50 p-1"
                   title="Supprimer"
                 >
                   {deleting === service.id ? (
