@@ -78,8 +78,8 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
   darkColor: "#178F8E",
   fontFamily: "Inter",
   hero: {
-    badge: "Artisans disponibles maintenant à Genève",
-    title: "Tous les artisans de Genève,",
+    badge: "Artisans disponibles partout en Suisse romande",
+    title: "Des artisans en Suisse romande,",
     titleHighlight: "en moins de 30 min",
     subtitle:
       "GoServi met en relation les particuliers avec des artisans locaux vérifiés pour toutes vos interventions urgentes — 24h/24, 7j/7.",
@@ -95,7 +95,7 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
     { value: "98%", label: "Clients satisfaits" },
   ],
   popularServices: {
-    title: "Services populaires à Genève",
+    title: "Services populaires en Suisse romande",
     subtitle: "Des artisans qualifiés disponibles pour toutes vos urgences",
   },
   howItWorks: {
@@ -146,7 +146,7 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
     badge: "Vous êtes professionnel ?",
     title: "Développez votre activité avec GoServi",
     subtitle:
-      "Rejoignez notre réseau d'artisans vérifiés à Genève. Recevez des missions qualifiées, gérez votre agenda et soyez payé rapidement.",
+      "Rejoignez notre réseau d'artisans vérifiés en Suisse romande. Recevez des missions qualifiées, gérez votre agenda et soyez payé rapidement.",
     benefits: [
       "Inscription gratuite",
       "Missions urgentes et standard",
@@ -159,9 +159,9 @@ export const DEFAULT_SETTINGS: SiteSettingsData = {
     revenueLabel: "de revenus/mois en moyenne",
   },
   footer: {
-    tagline: "La marketplace des artisans de confiance à Genève.",
-    location: "Genève, Suisse",
-    copyright: "GoServi Sàrl — Genève, Suisse",
+    tagline: "La marketplace des artisans de confiance en Suisse romande.",
+    location: "Suisse romande",
+    copyright: "GoServi Sàrl — Suisse romande",
   },
   legalPages: {
     mentionsLegales: "",
