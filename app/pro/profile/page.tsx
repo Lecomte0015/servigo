@@ -658,7 +658,7 @@ export default function ProProfilePage() {
               }`}
             >
               <span
-                className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                className={`absolute top-1 left-0 w-4 h-4 bg-white rounded-full shadow transition-transform ${
                   form.emergencyAvailable ? "translate-x-6" : "translate-x-1"
                 }`}
               />
