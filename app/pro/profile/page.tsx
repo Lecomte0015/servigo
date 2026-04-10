@@ -5,6 +5,260 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 
+// ── Types ──────────────────────────────────────────────────────────────────────
+interface Category {
+  id: string;
+  name: string;
+  icon?: string | null;
+  slug: string;
+}
+
+interface ServiceItem {
+  id: string;
+  basePrice: number;
+  emergencyFee: number;
+  isActive: boolean;
+  category: { name: string; slug: string };
+}
+
+// ── Sous-composant : gestion des spécialités ──────────────────────────────────
+function ServicesSection({
+  services,
+  onServicesChange,
+}: {
+  services: ServiceItem[];
+  onServicesChange: (services: ServiceItem[]) => void;
+}) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [adding, setAdding] = useState(false);
+  const [selectedCatId, setSelectedCatId] = useState("");
+  const [basePrice, setBasePrice] = useState("100");
+  const [emergencyFee, setEmergencyFee] = useState("50");
+  const [saving, setSaving] = useState(false);
+  const [toggling, setToggling] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [svcMsg, setSvcMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((r) => r.json())
+      .then((j) => setCategories(j.data ?? []))
+      .catch(() => {});
+  }, []);
+
+  const existingSlugs = new Set(services.map((s) => s.category.slug));
+  const availableCategories = categories.filter((c) => !existingSlugs.has(c.slug));
+
+  const handleAdd = async () => {
+    if (!selectedCatId) return;
+    setSaving(true);
+    setSvcMsg(null);
+    try {
+      const res = await fetch("/api/artisan/services", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          categoryId: selectedCatId,
+          basePrice: parseFloat(basePrice) || 0,
+          emergencyFee: parseFloat(emergencyFee) || 0,
+        }),
+      });
+      if (res.ok) {
+        // Recharge le profil complet pour avoir les données à jour
+        const profileRes = await fetch("/api/artisan/profile");
+        const profileJson = await profileRes.json();
+        onServicesChange(profileJson.data?.services ?? []);
+        setAdding(false);
+        setSelectedCatId("");
+        setBasePrice("100");
+        setEmergencyFee("50");
+        setSvcMsg({ type: "success", text: "Spécialité ajoutée !" });
+      } else {
+        const json = await res.json().catch(() => ({}));
+        setSvcMsg({ type: "error", text: json.error ?? "Erreur lors de l'ajout." });
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleToggle = async (service: ServiceItem) => {
+    setToggling(service.id);
+    try {
+      const res = await fetch(`/api/artisan/services/${service.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isActive: !service.isActive }),
+      });
+      if (res.ok) {
+        onServicesChange(
+          services.map((s) => s.id === service.id ? { ...s, isActive: !s.isActive } : s)
+        );
+      }
+    } finally {
+      setToggling(null);
+    }
+  };
+
+  const handleDelete = async (service: ServiceItem) => {
+    if (!confirm(`Supprimer la spécialité "${service.category.name}" ?`)) return;
+    setDeleting(service.id);
+    try {
+      const res = await fetch(`/api/artisan/services/${service.id}`, { method: "DELETE" });
+      if (res.ok) {
+        onServicesChange(services.filter((s) => s.id !== service.id));
+        setSvcMsg({ type: "success", text: `"${service.category.name}" supprimé.` });
+      }
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle>Mes spécialités</CardTitle>
+          {!adding && availableCategories.length > 0 && (
+            <button
+              type="button"
+              onClick={() => { setAdding(true); setSvcMsg(null); }}
+              className="text-xs font-medium text-[#1CA7A6] border border-[#D1E5E5] px-3 py-1.5 rounded-[8px] hover:bg-[#F4F7F7] transition-colors"
+            >
+              + Ajouter
+            </button>
+          )}
+        </div>
+      </CardHeader>
+
+      <div className="flex flex-col gap-3">
+        {/* Formulaire d'ajout */}
+        {adding && (
+          <div className="p-3 bg-[#F4F7F7] rounded-[10px] border border-[#D1E5E5] flex flex-col gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Spécialité</label>
+              <select
+                value={selectedCatId}
+                onChange={(e) => setSelectedCatId(e.target.value)}
+                className="w-full px-3 py-2 bg-white border border-[#D1E5E5] rounded-[8px] text-sm text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#1CA7A6]"
+              >
+                <option value="">Choisir une spécialité…</option>
+                {availableCategories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.icon} {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Prix de base (CHF/h)</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={basePrice}
+                  onChange={(e) => setBasePrice(e.target.value)}
+                  className="w-full px-3 py-2 bg-white border border-[#D1E5E5] rounded-[8px] text-sm text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#1CA7A6]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Supplément urgence (CHF)</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={emergencyFee}
+                  onChange={(e) => setEmergencyFee(e.target.value)}
+                  className="w-full px-3 py-2 bg-white border border-[#D1E5E5] rounded-[8px] text-sm text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#1CA7A6]"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button size="sm" loading={saving} onClick={handleAdd} disabled={!selectedCatId}>
+                Enregistrer
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => setAdding(false)} disabled={saving}>
+                Annuler
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Message */}
+        {svcMsg && (
+          <div className={`text-sm px-3 py-2 rounded-[8px] ${
+            svcMsg.type === "success"
+              ? "bg-green-50 text-green-700 border border-green-200"
+              : "bg-red-50 text-red-700 border border-red-200"
+          }`}>
+            {svcMsg.text}
+          </div>
+        )}
+
+        {/* Liste des services */}
+        {services.length === 0 && !adding ? (
+          <p className="text-sm text-gray-400 text-center py-4">
+            Aucune spécialité configurée. Cliquez sur &quot;+ Ajouter&quot; pour commencer.
+          </p>
+        ) : (
+          services.map((service) => (
+            <div
+              key={service.id}
+              className={`flex items-center justify-between gap-3 p-3 rounded-[8px] border transition-opacity ${
+                service.isActive ? "border-[#D1E5E5] bg-white" : "border-gray-200 bg-gray-50 opacity-60"
+              }`}
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-[#1F2937]">{service.category.name}</p>
+                <p className="text-xs text-gray-400">
+                  {service.basePrice} CHF/h · Urgence: +{service.emergencyFee} CHF
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Toggle actif/inactif */}
+                <button
+                  type="button"
+                  onClick={() => handleToggle(service)}
+                  disabled={toggling === service.id}
+                  className={`relative w-9 h-5 rounded-full transition-colors disabled:opacity-50 ${
+                    service.isActive ? "bg-[#1CA7A6]" : "bg-gray-300"
+                  }`}
+                  title={service.isActive ? "Désactiver" : "Activer"}
+                >
+                  {toggling === service.id ? (
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <span className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                    </span>
+                  ) : (
+                    <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                      service.isActive ? "translate-x-4" : "translate-x-0.5"
+                    }`} />
+                  )}
+                </button>
+                {/* Supprimer */}
+                <button
+                  type="button"
+                  onClick={() => handleDelete(service)}
+                  disabled={deleting === service.id}
+                  className="text-gray-300 hover:text-red-400 transition-colors disabled:opacity-50"
+                  title="Supprimer"
+                >
+                  {deleting === service.id ? (
+                    <span className="w-4 h-4 border border-gray-400 border-t-transparent rounded-full animate-spin block" />
+                  ) : (
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </Card>
+  );
+}
+
 interface ArtisanProfile {
   id: string;
   companyName: string;
@@ -543,41 +797,10 @@ export default function ProProfilePage() {
       </Card>
 
       {/* Services */}
-      {profile?.services.length ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Services proposés</CardTitle>
-          </CardHeader>
-          <div className="flex flex-col gap-2">
-            {profile.services.map((service) => (
-              <div
-                key={service.id}
-                className={`flex items-center justify-between p-3 rounded-[8px] border ${
-                  service.isActive
-                    ? "border-[#D1E5E5] bg-white"
-                    : "border-gray-200 bg-gray-50 opacity-60"
-                }`}
-              >
-                <div>
-                  <p className="text-sm font-medium text-[#1F2937]">{service.category.name}</p>
-                  <p className="text-xs text-gray-400">
-                    Base: {service.basePrice} CHF/h · Urgence: +{service.emergencyFee} CHF
-                  </p>
-                </div>
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    service.isActive
-                      ? "bg-green-50 text-green-700"
-                      : "bg-gray-100 text-gray-500"
-                  }`}
-                >
-                  {service.isActive ? "Actif" : "Inactif"}
-                </span>
-              </div>
-            ))}
-          </div>
-        </Card>
-      ) : null}
+      <ServicesSection
+        services={profile?.services ?? []}
+        onServicesChange={(services) => setProfile((p) => p ? { ...p, services } : p)}
+      />
     </div>
   );
 }
