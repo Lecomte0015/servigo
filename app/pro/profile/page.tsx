@@ -229,7 +229,7 @@ function ServicesSection({
                       <span className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
                     </span>
                   ) : (
-                    <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                    <span className={`absolute top-1 left-0 w-4 h-4 bg-white rounded-full shadow transition-transform ${
                       service.isActive ? "translate-x-6" : "translate-x-1"
                     }`} />
                   )}
