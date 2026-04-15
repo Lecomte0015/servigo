@@ -95,16 +95,30 @@ const FOOTER_LINKS = [
     links: [
       { label: "Comment ça marche ?", href: "/comment-ca-marche" },
       { label: "Nos services", href: "/services" },
+      { label: "Artisans par ville", href: "/trouver-artisan" },
       { label: "S'inscrire", href: "/auth/register" },
       { label: "Se connecter", href: "/auth/login" },
+    ],
+  },
+  {
+    title: "Villes",
+    links: [
+      { label: "Artisan Genève", href: "/trouver-artisan/geneve" },
+      { label: "Artisan Lausanne", href: "/trouver-artisan/lausanne" },
+      { label: "Artisan Fribourg", href: "/trouver-artisan/fribourg" },
+      { label: "Artisan Neuchâtel", href: "/trouver-artisan/neuchatel" },
+      { label: "Artisan Sion", href: "/trouver-artisan/sion" },
+      { label: "Toutes les villes →", href: "/trouver-artisan" },
     ],
   },
   {
     title: "Professionnels",
     links: [
       { label: "Devenir artisan", href: "/devenir-artisan" },
-      { label: "Créer un compte pro", href: "/auth/register" },
-      { label: "Espace artisan", href: "/auth/login" },
+      { label: "Plombier — rejoindre", href: "/devenir-artisan/plombier" },
+      { label: "Électricien — rejoindre", href: "/devenir-artisan/electricien" },
+      { label: "Serrurier — rejoindre", href: "/devenir-artisan/serrurier" },
+      { label: "Tous les métiers →", href: "/devenir-artisan" },
     ],
   },
   {
@@ -433,7 +447,7 @@ export default async function HomePage() {
 
       {/* ─── Footer ────────────────────────────────────────────────────── */}
       <footer className="bg-[#1F2937] text-white">
-        <div className="max-w-[1200px] mx-auto px-4 pt-14 pb-10 grid grid-cols-2 md:grid-cols-4 gap-10">
+        <div className="max-w-[1200px] mx-auto px-4 pt-14 pb-10 grid grid-cols-2 md:grid-cols-5 gap-10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
             <Link href="/" aria-label="GoServi — Accueil" className="inline-flex">
@@ -477,7 +491,7 @@ export default async function HomePage() {
         <div className="border-t border-white/10">
           <div className="max-w-[1200px] mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
             <span>© {new Date().getFullYear()} {footer.copyright}</span>
-            <span>Réalisé avec à Genève</span>
+            <span>Réalisé avec ❤️ en Suisse romande</span>
           </div>
         </div>
       </footer>

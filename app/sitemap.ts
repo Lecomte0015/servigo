@@ -67,12 +67,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const artisanPages: MetadataRoute.Sitemap = artisans.map((a) => ({
-    url: `${APP_URL}/artisans/${a.slug}`,
-    lastModified: a.createdAt,
-    changeFrequency: "weekly" as const,
-    priority: 0.7,
+  const artisanPages: MetadataRoute.Sitemap = artisans
+    .filter((a) => a.slug)
+    .map((a) => ({
+      url: `${APP_URL}/artisans/${a.slug}`,
+      lastModified: a.createdAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
+
+  // Pages SEO par métier
+  const TRADE_SLUGS = ["plombier", "electricien", "serrurier", "chauffagiste", "couvreur", "menuisier", "peintre", "nettoyage"];
+  const tradePages: MetadataRoute.Sitemap = TRADE_SLUGS.map((slug) => ({
+    url: `${APP_URL}/devenir-artisan/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
   }));
 
-  return [...staticPages, ...artisanPages];
+  // Pages SEO par ville
+  const CITY_SLUGS = ["geneve", "lausanne", "fribourg", "neuchatel", "sion", "bienne", "yverdon", "montreux", "nyon", "morges", "la-chaux-de-fonds", "martigny"];
+  const cityPages: MetadataRoute.Sitemap = CITY_SLUGS.map((slug) => ({
+    url: `${APP_URL}/trouver-artisan/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.85,
+  }));
+
+  return [...staticPages, ...tradePages, ...cityPages, ...artisanPages];
 }
