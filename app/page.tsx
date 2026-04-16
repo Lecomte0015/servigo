@@ -122,6 +122,16 @@ const FOOTER_LINKS = [
     ],
   },
   {
+    title: "Blog & Guides",
+    links: [
+      { label: "Blog GoServi", href: "/blog" },
+      { label: "Urgence plomberie", href: "/blog/urgence-plomberie-suisse-romande" },
+      { label: "Prix artisans 2025", href: "/blog/prix-artisan-suisse-romande" },
+      { label: "Choisir un artisan", href: "/blog/choisir-artisan-qualifie-suisse" },
+      { label: "Tous les guides →", href: "/blog" },
+    ],
+  },
+  {
     title: "GoServi",
     links: [
       { label: "À propos", href: "/a-propos" },

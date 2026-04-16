@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { BLOG_POSTS } from "@/lib/blog-posts";
 
 const APP_URL = "https://goservi.ch";
 
@@ -47,6 +48,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }));
 
+  // Pages blog
+  const blogIndex: MetadataRoute.Sitemap = [
+    { url: `${APP_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
+  ];
+  const blogPages: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => ({
+    url: `${APP_URL}/blog/${post.slug}`,
+    lastModified: new Date(post.updatedAt ?? post.publishedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
   // Profils artisans — protégé par try/catch pour ne jamais faire crasher le sitemap
   let artisanPages: MetadataRoute.Sitemap = [];
   try {
@@ -66,5 +78,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Prisma indisponible — on continue sans les profils artisans
   }
 
-  return [...staticPages, ...tradePages, ...cityPages, ...artisanPages];
+  return [...staticPages, ...tradePages, ...cityPages, ...blogIndex, ...blogPages, ...artisanPages];
 }
