@@ -357,7 +357,61 @@ export async function sendAccountSuspendedEmail(
   await sendEmail(to, "⚠️ Votre compte GoServi a été suspendu", html);
 }
 
-// ─── 13. Statut payout artisan ───────────────────────────────────────────────
+// ─── 13. Nouvelle mission — notification admin ──────────────────────────────
+
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "contact@goservi.ch";
+
+export async function sendAdminNewJobEmail(
+  clientName: string,
+  clientEmail: string,
+  category: string,
+  city: string,
+  urgencyLevel: string,
+  estimatedPrice: number,
+  jobId: string
+): Promise<void> {
+  const isUrgent = urgencyLevel === "URGENT";
+  const html = baseTemplate(`
+    ${infoBox(
+      isUrgent ? "#FEF2F2" : "#EFF9F9",
+      isUrgent ? "#FCA5A5" : "#D1E5E5",
+      isUrgent ? "#991B1B" : "#0F766E",
+      `${isUrgent ? "🚨 <strong>Mission urgente</strong>" : "📋 <strong>Nouvelle mission</strong>"} — ${category} · 📍 ${city}`
+    )}
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700">Nouvelle demande client</h2>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+      <tr><td style="padding:6px 0;color:#6B7280;font-size:13px;width:40%">Client</td><td style="padding:6px 0;color:#1F2937;font-size:13px;font-weight:600">${clientName}</td></tr>
+      <tr><td style="padding:6px 0;color:#6B7280;font-size:13px">Email</td><td style="padding:6px 0;color:#1CA7A6;font-size:13px">${clientEmail}</td></tr>
+      <tr><td style="padding:6px 0;color:#6B7280;font-size:13px">Catégorie</td><td style="padding:6px 0;color:#1F2937;font-size:13px">${category}</td></tr>
+      <tr><td style="padding:6px 0;color:#6B7280;font-size:13px">Ville</td><td style="padding:6px 0;color:#1F2937;font-size:13px">${city}</td></tr>
+      <tr><td style="padding:6px 0;color:#6B7280;font-size:13px">Prix estimé</td><td style="padding:6px 0;color:#1F2937;font-size:13px;font-weight:600">${estimatedPrice.toFixed(2)} CHF</td></tr>
+    </table>
+    ${btn(`${APP_URL}/admin/jobs`, "Voir dans le back-office")}
+  `);
+  await sendEmail(ADMIN_EMAIL, `${isUrgent ? "🚨 Urgence" : "📋 Nouvelle mission"} — ${category} à ${city}`, html);
+}
+
+// ─── 14. Aucun artisan trouvé — alerte admin ────────────────────────────────
+
+export async function sendAdminNoMatchEmail(
+  category: string,
+  city: string,
+  jobId: string
+): Promise<void> {
+  const html = baseTemplate(`
+    ${infoBox("#FEF2F2", "#FCA5A5", "#991B1B", "⚠️ <strong>Aucun artisan disponible</strong> n'a été trouvé pour cette mission. Une intervention manuelle est requise.")}
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700">Matching échoué</h2>
+    <p style="color:#6B7280;line-height:1.7;margin:0 0 16px">
+      La demande <strong>${category}</strong> à <strong>${city}</strong> n'a trouvé aucun artisan approuvé avec ce service dans cette ville.
+      La mission reste en statut <strong>MATCHING</strong> — aucun artisan n'en est notifié.
+    </p>
+    <p style="color:#6B7280;font-size:13px;margin:0 0 24px">ID : <code style="background:#F4F7F7;padding:2px 6px;border-radius:4px">${jobId}</code></p>
+    ${btn(`${APP_URL}/admin/jobs`, "Gérer manuellement")}
+  `);
+  await sendEmail(ADMIN_EMAIL, `⚠️ Matching échoué — ${category} à ${city}`, html);
+}
+
+// ─── 15. Statut payout artisan ───────────────────────────────────────────────
 
 export async function sendPayoutStatusEmail(
   to: string,

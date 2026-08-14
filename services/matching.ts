@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { createNotification } from "@/services/notification";
-import { sendNewJobEmail } from "@/lib/email";
+import { sendNewJobEmail, sendAdminNoMatchEmail } from "@/lib/email";
 
 const MAX_ARTISANS_NOTIFIED = 5;
 
@@ -50,7 +50,12 @@ export async function matchArtisans(
   });
 
   if (artisans.length === 0) {
-    // No artisan available locally — job stays MATCHING so artisans can still discover it
+    // No artisan available locally — alert admin so they can handle it manually
+    sendAdminNoMatchEmail(
+      job?.category.name ?? categoryId,
+      city,
+      jobId
+    ).catch(() => {});
     return;
   }
 

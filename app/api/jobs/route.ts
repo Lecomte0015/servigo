@@ -6,6 +6,7 @@ import { apiSuccess, apiError, apiServerError } from "@/lib/api-response";
 import { matchArtisans, notifyTargetArtisan } from "@/services/matching";
 import { PLATFORM_FEE_PERCENT } from "@/lib/stripe";
 import { createNotification } from "@/services/notification";
+import { sendAdminNewJobEmail } from "@/lib/email";
 import { jobLogger } from "@/lib/logger";
 
 export async function GET(req: NextRequest) {
@@ -177,6 +178,25 @@ export async function POST(req: NextRequest) {
 
       return newJob;
     });
+
+    // Notify admin — async, don't block response
+    const clientUser = await prisma.user.findUnique({
+      where: { id: payload.userId },
+      select: { firstName: true, lastName: true, email: true },
+    });
+    const categoryRecord = await prisma.serviceCategory.findUnique({
+      where: { id: categoryId },
+      select: { name: true },
+    });
+    sendAdminNewJobEmail(
+      `${clientUser?.firstName ?? ""} ${clientUser?.lastName ?? ""}`.trim(),
+      clientUser?.email ?? "",
+      categoryRecord?.name ?? categoryId,
+      city,
+      urgencyLevel,
+      estimatedPrice,
+      job.id
+    ).catch((err) => jobLogger.error({ err }, "sendAdminNewJobEmail failed"));
 
     // Notify artisan(s) — async, don't block response
     if (targetArtisanId) {
