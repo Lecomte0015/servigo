@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth-guard";
 import { apiSuccess, apiError, apiNotFound, apiServerError } from "@/lib/api-response";
-import { capturePaymentIntent } from "@/lib/stripe";
 import { createNotification } from "@/services/notification";
 import { sendReviewRequestEmail } from "@/lib/email";
 import { jobLogger } from "@/lib/logger";
@@ -32,15 +31,8 @@ export async function POST(
     if (job.clientId !== payload.userId) return apiError("Accès refusé", 403);
     if (job.status !== "IN_PROGRESS") return apiError("Statut invalide");
     if (!job.payment) return apiError("Paiement introuvable");
-
-    // Capture Stripe payment (best-effort — intent may have expired after 7 days)
-    if (job.payment.stripePaymentIntentId) {
-      try {
-        await capturePaymentIntent(job.payment.stripePaymentIntentId);
-      } catch (stripeErr) {
-        jobLogger.warn({ stripeErr, jobId }, "Stripe capture failed — proceeding with manual payout");
-      }
-    }
+    // Payment is captured automatically by Stripe Checkout + webhook (checkout.session.completed).
+    // No manual capture needed here.
 
     const now = new Date();
 

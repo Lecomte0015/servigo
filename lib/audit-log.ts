@@ -32,7 +32,9 @@ export type AuditAction =
   // Gestion utilisateurs
   | "USER_BLOCKED"
   | "USER_UNBLOCKED"
-  | "USER_DELETED";
+  | "USER_DELETED"
+  // Paiements
+  | "PAYMENT_REFUNDED";
 
 export interface AuditLogParams {
   adminId: string;
@@ -88,6 +90,7 @@ export function auditActionLabel(action: AuditAction): string {
     USER_BLOCKED:       "Compte suspendu",
     USER_UNBLOCKED:     "Compte réactivé",
     USER_DELETED:       "Compte supprimé",
+    PAYMENT_REFUNDED:   "Paiement remboursé",
   };
   return labels[action] ?? action;
 }

@@ -31,19 +31,19 @@ export async function GET(req: NextRequest) {
       orderBy: { acceptedAt: "desc" },
     });
 
-    let availableBalance = 0;   // RELEASED payments → artisan can withdraw
-    let pendingBalance = 0;     // AUTHORIZED/CAPTURED → waiting for release
-    let totalEarned = 0;        // All-time net earnings
+    let grossAvailable = 0;  // RELEASED payments (before deducting past payouts)
+    let pendingBalance = 0;  // CAPTURED → waiting for job completion
+    let totalEarned = 0;     // All-time net earnings
 
     const transactions = assignments.map((a) => {
       const payment = a.job.payment;
       const gross = payment?.amount ?? 0;
-      const fee = gross * PLATFORM_FEE;
+      const fee = payment?.platformFee ?? gross * PLATFORM_FEE;
       const net = gross - fee;
 
       if (payment) {
         if (payment.status === "RELEASED") {
-          availableBalance += net;
+          grossAvailable += net;
           totalEarned += net;
         } else if (payment.status === "CAPTURED" || payment.status === "AUTHORIZED") {
           pendingBalance += net;
@@ -65,6 +65,14 @@ export async function GET(req: NextRequest) {
         completedAt: a.completedAt,
       };
     });
+
+    // Deduct already completed payouts so the displayed balance matches what's withdrawable
+    const completedPayouts = await prisma.payout.aggregate({
+      where: { artisanId: profile.id, status: "COMPLETED" },
+      _sum: { amount: true },
+    });
+    const alreadyPaidOut = completedPayouts._sum.amount ?? 0;
+    const availableBalance = Math.max(0, grossAvailable - alreadyPaidOut);
 
     return apiSuccess({
       availableBalance: parseFloat(availableBalance.toFixed(2)),
