@@ -6,6 +6,8 @@ import { fr } from "date-fns/locale";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 
+const REFUNDABLE = ["CAPTURED", "RELEASED"];
+
 interface Payment {
   id: string;
   amount: number;
@@ -52,6 +54,8 @@ export default function AdminPaymentsPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Payment | null>(null);
+  const [refunding, setRefunding] = useState(false);
+  const [refundError, setRefundError] = useState<string | null>(null);
   const limit = 20;
 
   const fetchPayments = () => {
@@ -70,6 +74,23 @@ export default function AdminPaymentsPage() {
 
   useEffect(() => { setPage(1); }, [statusFilter]);
   useEffect(() => { fetchPayments(); }, [statusFilter, page]);
+
+  const handleRefund = async () => {
+    if (!selected || !window.confirm(`Rembourser ${selected.amount.toFixed(2)} CHF à ${selected.job.client.firstName} ${selected.job.client.lastName} ? Cette action est irréversible.`)) return;
+    setRefunding(true);
+    setRefundError(null);
+    try {
+      const res = await fetch(`/api/admin/payments/${selected.job.id}/refund`, { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) { setRefundError(json.error ?? "Erreur lors du remboursement"); return; }
+      setSelected(null);
+      fetchPayments();
+    } catch {
+      setRefundError("Erreur réseau");
+    } finally {
+      setRefunding(false);
+    }
+  };
 
   const totalPages = Math.ceil(total / limit);
 
@@ -232,6 +253,22 @@ export default function AdminPaymentsPage() {
                   <p className="text-xs text-gray-400 mb-0.5">Date</p>
                   <p className="text-[#1F2937]">{format(new Date(selected.createdAt), "d MMMM yyyy à HH:mm", { locale: fr })}</p>
                 </div>
+
+                {REFUNDABLE.includes(selected.status) && (
+                  <div className="border-t border-[#E6F2F2] pt-3">
+                    {refundError && (
+                      <p className="text-xs text-red-500 mb-2">{refundError}</p>
+                    )}
+                    <button
+                      onClick={handleRefund}
+                      disabled={refunding}
+                      className="w-full py-2 px-3 rounded-[8px] text-sm font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {refunding ? "Remboursement en cours…" : `↩ Rembourser ${selected.amount.toFixed(2)} CHF`}
+                    </button>
+                    <p className="text-xs text-gray-400 mt-1.5 text-center">Le client sera remboursé sous 3-5 jours ouvrés</p>
+                  </div>
+                )}
               </div>
             </Card>
           </div>

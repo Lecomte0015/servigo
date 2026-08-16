@@ -143,6 +143,7 @@ export async function POST(req: NextRequest) {
         userId: auth.payload.userId,
         type: "PAYOUT_REQUESTED",
         message: `Votre demande de retrait de ${amount.toFixed(2)} CHF a été enregistrée et est en cours de traitement.`,
+        link: "/pro/wallet",
       }),
       // Alert all admins
       ...admins.map((admin) =>
@@ -150,6 +151,7 @@ export async function POST(req: NextRequest) {
           userId: admin.id,
           type: "PAYOUT_REQUESTED",
           message: `Un artisan a demandé un retrait de ${amount.toFixed(2)} CHF. Traitement manuel requis.`,
+          link: "/admin/payouts",
         })
       ),
     ]);

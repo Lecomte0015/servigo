@@ -75,7 +75,7 @@ export async function PATCH(
       FAILED:     `⚠️ Votre demande de retrait de ${amount.toFixed(2)} CHF n'a pas pu être traitée.${adminNotes ? " Motif : " + adminNotes : ""} Contactez le support.`,
     };
 
-    await createNotification({ userId: artisanUserId, type: `PAYOUT_${status}`, message: notifMessages[status] });
+    await createNotification({ userId: artisanUserId, type: `PAYOUT_${status}`, message: notifMessages[status], link: "/pro/wallet" });
     sendPayoutStatusEmail(artisanEmail, artisanName, amount, status, adminNotes).catch((err) => adminLogger.error({ err }, "Email send failed"));
 
     // ── Audit log ─────────────────────────────────────────────────────────
