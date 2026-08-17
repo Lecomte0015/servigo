@@ -72,6 +72,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: APP_URL,
   },
+  verification: {
+    other: { "msvalidate.01": "E4C02AE927F3A41014C0A6C0D8333590" },
+  },
 };
 
 const jsonLdOrg = {
