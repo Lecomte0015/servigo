@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
+import {
+  IconSmartphone, IconEuro, IconCalendar, IconStar, IconShieldCheck,
+  IconTrendingUp, IconDroplet, IconZap, IconLock, IconFlame,
+  IconHome, IconHammer, IconPaintbrush, IconSparkles, IconAward, StarRating,
+} from "@/components/ui/Icons";
 
 export const metadata: Metadata = {
   title: "Devenir artisan GoServi — Développez votre activité en Suisse romande",
@@ -16,36 +21,12 @@ export const metadata: Metadata = {
 };
 
 const ADVANTAGES = [
-  {
-    icon: "📱",
-    title: "Missions qualifiées",
-    desc: "Des clients sérieux, géolocalisés près de chez vous. Chaque demande est filtrée et payée d'avance.",
-  },
-  {
-    icon: "💰",
-    title: "Paiement garanti",
-    desc: "Le client paie avant l'intervention. Vous recevez votre argent dans les 48h après validation de la mission.",
-  },
-  {
-    icon: "📅",
-    title: "100% flexible",
-    desc: "Activez ou désactivez vos disponibilités en un clic. Aucun volume minimum, aucune obligation.",
-  },
-  {
-    icon: "⭐",
-    title: "Réputation digitale",
-    desc: "Vos avis clients s'accumulent sur votre profil. Plus d'avis = plus de missions = plus de revenus.",
-  },
-  {
-    icon: "🛡️",
-    title: "0 frais cachés",
-    desc: "Pas d'abonnement, pas de frais fixes. GoServi prélève 15% uniquement sur les missions réalisées.",
-  },
-  {
-    icon: "📈",
-    title: "+2 000 CHF/mois",
-    desc: "Nos artisans actifs génèrent en moyenne 2 000 CHF de revenus complémentaires par mois.",
-  },
+  { icon: <IconSmartphone size={24} />, title: "Missions qualifiées", desc: "Des clients sérieux, géolocalisés près de chez vous. Chaque demande est filtrée et payée d'avance." },
+  { icon: <IconEuro size={24} />, title: "Paiement garanti", desc: "Le client paie avant l'intervention. Vous recevez votre argent dans les 48h après validation de la mission." },
+  { icon: <IconCalendar size={24} />, title: "100% flexible", desc: "Activez ou désactivez vos disponibilités en un clic. Aucun volume minimum, aucune obligation." },
+  { icon: <IconStar size={24} />, title: "Réputation digitale", desc: "Vos avis clients s'accumulent sur votre profil. Plus d'avis = plus de missions = plus de revenus." },
+  { icon: <IconShieldCheck size={24} />, title: "0 frais cachés", desc: "Pas d'abonnement, pas de frais fixes. GoServi prélève 15% uniquement sur les missions réalisées." },
+  { icon: <IconTrendingUp size={24} />, title: "+2 000 CHF/mois", desc: "Nos artisans actifs génèrent en moyenne 2 000 CHF de revenus complémentaires par mois." },
 ];
 
 const STEPS = [
@@ -118,14 +99,14 @@ const FAQS = [
 ];
 
 const TRADES_LIST = [
-  { slug: "plombier", icon: "🚿", name: "Plombier" },
-  { slug: "electricien", icon: "⚡", name: "Électricien" },
-  { slug: "serrurier", icon: "🔐", name: "Serrurier" },
-  { slug: "chauffagiste", icon: "🔥", name: "Chauffagiste" },
-  { slug: "couvreur", icon: "🏠", name: "Couvreur" },
-  { slug: "menuisier", icon: "🪚", name: "Menuisier" },
-  { slug: "peintre", icon: "🎨", name: "Peintre" },
-  { slug: "nettoyage", icon: "🧹", name: "Nettoyage" },
+  { slug: "plombier", Icon: IconDroplet, name: "Plombier" },
+  { slug: "electricien", Icon: IconZap, name: "Électricien" },
+  { slug: "serrurier", Icon: IconLock, name: "Serrurier" },
+  { slug: "chauffagiste", Icon: IconFlame, name: "Chauffagiste" },
+  { slug: "couvreur", Icon: IconHome, name: "Couvreur" },
+  { slug: "menuisier", Icon: IconHammer, name: "Menuisier" },
+  { slug: "peintre", Icon: IconPaintbrush, name: "Peintre" },
+  { slug: "nettoyage", Icon: IconSparkles, name: "Nettoyage" },
 ];
 
 export default function DevenirArtisanPage() {
@@ -136,8 +117,8 @@ export default function DevenirArtisanPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1CA7A6] to-[#0e7c7b] text-white pt-14 pb-24 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <span className="inline-block bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full mb-5">
-            🏆 Réseau actif en Suisse romande · Commission 15% uniquement
+          <span className="inline-flex items-center gap-2 bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full mb-5">
+            <IconAward size={15} /> Réseau actif en Suisse romande · Commission 15% uniquement
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-5 leading-tight">
             Plus de clients.<br />Sans effort de prospection.
@@ -189,7 +170,7 @@ export default function DevenirArtisanPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {ADVANTAGES.map((a) => (
             <div key={a.title} className="flex gap-4 p-5 border border-[#D1E5E5] rounded-[14px] hover:border-[#1CA7A6] hover:shadow-sm transition-all">
-              <span className="text-3xl shrink-0">{a.icon}</span>
+              <span className="text-[#1CA7A6] shrink-0 mt-0.5">{a.icon}</span>
               <div>
                 <p className="font-semibold text-[#1F2937]">{a.title}</p>
                 <p className="text-sm text-gray-500 mt-1 leading-relaxed">{a.desc}</p>
@@ -240,9 +221,11 @@ export default function DevenirArtisanPage() {
             <Link
               key={t.slug}
               href={`/devenir-artisan/${t.slug}`}
-              className="flex flex-col items-center gap-2 p-5 border border-[#D1E5E5] rounded-[14px] hover:border-[#1CA7A6] hover:shadow-sm transition-all text-center"
+              className="flex flex-col items-center gap-3 p-5 border border-[#D1E5E5] rounded-[14px] hover:border-[#1CA7A6] hover:shadow-sm transition-all text-center"
             >
-              <span className="text-4xl">{t.icon}</span>
+              <span className="w-10 h-10 rounded-[10px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6]">
+                <t.Icon size={20} />
+              </span>
               <p className="font-medium text-[#1F2937] text-sm">{t.name}</p>
               <span className="text-xs text-[#1CA7A6]">Voir les missions →</span>
             </Link>
@@ -258,10 +241,8 @@ export default function DevenirArtisanPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {TESTIMONIALS.map((t) => (
               <div key={t.name} className="bg-white rounded-[14px] p-6 shadow-sm border border-[#D1E5E5]">
-                <div className="flex gap-0.5 mb-3">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <span key={i} className="text-yellow-400 text-lg">★</span>
-                  ))}
+                <div className="mb-3">
+                  <StarRating rating={t.rating} size={16} />
                 </div>
                 <p className="text-sm text-gray-600 leading-relaxed italic mb-4">&ldquo;{t.quote}&rdquo;</p>
                 <div>

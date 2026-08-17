@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
+import { TradeIcon, IconMapPin } from "@/components/ui/Icons";
 
 export const metadata: Metadata = {
   title: "Trouver un artisan en Suisse romande — GoServi",
@@ -9,29 +10,29 @@ export const metadata: Metadata = {
 };
 
 const CITIES = [
-  { slug: "geneve", name: "Genève", canton: "GE", icon: "🏙️" },
-  { slug: "lausanne", name: "Lausanne", canton: "VD", icon: "🏛️" },
-  { slug: "fribourg", name: "Fribourg", canton: "FR", icon: "🏰" },
-  { slug: "neuchatel", name: "Neuchâtel", canton: "NE", icon: "🌊" },
-  { slug: "sion", name: "Sion", canton: "VS", icon: "🏔️" },
-  { slug: "bienne", name: "Bienne", canton: "BE", icon: "⚙️" },
-  { slug: "yverdon", name: "Yverdon-les-Bains", canton: "VD", icon: "♨️" },
-  { slug: "montreux", name: "Montreux", canton: "VD", icon: "🎵" },
-  { slug: "nyon", name: "Nyon", canton: "VD", icon: "🌿" },
-  { slug: "morges", name: "Morges", canton: "VD", icon: "⛵" },
-  { slug: "la-chaux-de-fonds", name: "La Chaux-de-Fonds", canton: "NE", icon: "⏱️" },
-  { slug: "martigny", name: "Martigny", canton: "VS", icon: "🍇" },
+  { slug: "geneve", name: "Genève", canton: "GE" },
+  { slug: "lausanne", name: "Lausanne", canton: "VD" },
+  { slug: "fribourg", name: "Fribourg", canton: "FR" },
+  { slug: "neuchatel", name: "Neuchâtel", canton: "NE" },
+  { slug: "sion", name: "Sion", canton: "VS" },
+  { slug: "bienne", name: "Bienne", canton: "BE" },
+  { slug: "yverdon", name: "Yverdon-les-Bains", canton: "VD" },
+  { slug: "montreux", name: "Montreux", canton: "VD" },
+  { slug: "nyon", name: "Nyon", canton: "VD" },
+  { slug: "morges", name: "Morges", canton: "VD" },
+  { slug: "la-chaux-de-fonds", name: "La Chaux-de-Fonds", canton: "NE" },
+  { slug: "martigny", name: "Martigny", canton: "VS" },
 ];
 
 const SERVICES = [
-  { icon: "🚿", name: "Plombier", slug: "plombier" },
-  { icon: "⚡", name: "Électricien", slug: "electricien" },
-  { icon: "🔒", name: "Serrurier", slug: "serrurier" },
-  { icon: "🌡️", name: "Chauffagiste", slug: "chauffagiste" },
-  { icon: "🏠", name: "Couvreur", slug: "couvreur" },
-  { icon: "🔧", name: "Menuisier", slug: "menuisier" },
-  { icon: "🖌️", name: "Peintre", slug: "peintre" },
-  { icon: "🧹", name: "Nettoyage", slug: "nettoyage" },
+  { slug: "plombier", name: "Plombier" },
+  { slug: "electricien", name: "Électricien" },
+  { slug: "serrurier", name: "Serrurier" },
+  { slug: "chauffagiste", name: "Chauffagiste" },
+  { slug: "couvreur", name: "Couvreur" },
+  { slug: "menuisier", name: "Menuisier" },
+  { slug: "peintre", name: "Peintre" },
+  { slug: "nettoyage", name: "Nettoyage" },
 ];
 
 export default function TrouverArtisanPage() {
@@ -63,7 +64,9 @@ export default function TrouverArtisanPage() {
               href={`/trouver-artisan/${city.slug}`}
               className="flex flex-col items-center gap-2 p-4 border border-[#D1E5E5] rounded-[12px] hover:border-[#1CA7A6] hover:bg-[#F4F7F7] transition-all text-center group"
             >
-              <span className="text-3xl">{city.icon}</span>
+              <span className="w-10 h-10 rounded-full bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6]">
+                <IconMapPin size={18} />
+              </span>
               <p className="font-semibold text-[#1F2937] group-hover:text-[#1CA7A6] transition-colors text-sm">{city.name}</p>
               <span className="text-xs text-gray-400">Canton {city.canton}</span>
             </Link>
@@ -82,7 +85,9 @@ export default function TrouverArtisanPage() {
                 href={`/devenir-artisan/${s.slug}`}
                 className="flex items-center gap-3 p-4 bg-white border border-[#D1E5E5] rounded-[12px] hover:border-[#1CA7A6] hover:bg-[#E6F2F2] transition-all group"
               >
-                <span className="text-2xl">{s.icon}</span>
+                <span className="w-9 h-9 rounded-[8px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6] shrink-0">
+                  <TradeIcon slug={s.slug} size={18} />
+                </span>
                 <p className="font-medium text-[#1F2937] group-hover:text-[#1CA7A6] transition-colors text-sm">{s.name}</p>
               </Link>
             ))}

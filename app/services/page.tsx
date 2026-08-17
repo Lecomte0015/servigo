@@ -86,9 +86,15 @@ export default async function ServicesPage() {
                   className="h-24 flex items-center justify-center"
                   style={{ backgroundColor: cat.bgColor ?? "#F4F7F7" }}
                 >
-                  <span className="text-5xl group-hover:scale-110 transition-transform duration-300 select-none">
-                    {cat.icon ?? "🔧"}
-                  </span>
+                  {cat.icon ? (
+                    <span className="text-5xl group-hover:scale-110 transition-transform duration-300 select-none">
+                      {cat.icon}
+                    </span>
+                  ) : (
+                    <span className="text-[#1CA7A6] group-hover:scale-110 transition-transform duration-300">
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    </span>
+                  )}
                 </div>
               )}
 
@@ -132,16 +138,16 @@ export default async function ServicesPage() {
       <section className="bg-[#F4F7F7] py-8 px-4 text-center border-t border-[#D1E5E5]">
         <div className="max-w-3xl mx-auto flex flex-wrap justify-center gap-6 text-sm text-gray-600">
           <span className="flex items-center gap-2">
-            <span className="text-[#1CA7A6]">✓</span> Artisans vérifiés (RC + assurances)
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1CA7A6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Artisans vérifiés (RC + assurances)
           </span>
           <span className="flex items-center gap-2">
-            <span className="text-[#1CA7A6]">✓</span> Paiement sécurisé Stripe
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1CA7A6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Paiement sécurisé Stripe
           </span>
           <span className="flex items-center gap-2">
-            <span className="text-[#1CA7A6]">✓</span> Intervention en moins de 30 min
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1CA7A6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Intervention en moins de 30 min
           </span>
           <span className="flex items-center gap-2">
-            <span className="text-[#1CA7A6]">✓</span> Satisfaction garantie
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1CA7A6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Satisfaction garantie
           </span>
         </div>
       </section>

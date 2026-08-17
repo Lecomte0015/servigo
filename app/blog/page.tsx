@@ -52,7 +52,7 @@ export default function BlogPage() {
           >
             {/* Image placeholder */}
             <div className="md:w-2/5 h-48 md:h-auto bg-gradient-to-br from-[#1CA7A6] to-[#178F8E] flex items-center justify-center shrink-0">
-              <span className="text-6xl">🚿</span>
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
             </div>
             {/* Content */}
             <div className="p-6 md:p-8 flex flex-col justify-center">
@@ -86,10 +86,16 @@ export default function BlogPage() {
                 className="group flex flex-col bg-white border border-[#D1E5E5] rounded-[14px] overflow-hidden hover:border-[#1CA7A6] hover:shadow-md transition-all"
               >
                 {/* Color band */}
-                <div className="h-32 bg-gradient-to-br from-[#E6F2F2] to-[#D1E5E5] flex items-center justify-center">
-                  <span className="text-5xl">
-                    {post.category === "tarifs" ? "💰" : post.category === "metiers" ? "🔧" : post.category === "securite" ? "🔒" : "💡"}
-                  </span>
+                <div className="h-32 bg-gradient-to-br from-[#E6F2F2] to-[#D1E5E5] flex items-center justify-center text-[#1CA7A6]">
+                  {post.category === "tarifs" ? (
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  ) : post.category === "metiers" ? (
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                  ) : post.category === "securite" ? (
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  ) : (
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+                  )}
                 </div>
                 <div className="p-5 flex flex-col flex-1">
                   <div className="flex items-center gap-2 mb-2">

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { prisma } from "@/lib/prisma";
+import { TradeIcon, IconMapPin, IconZap, IconClock, IconStar, IconShieldCheck, StarRating } from "@/components/ui/Icons";
 
 // ── Données par ville ──────────────────────────────────────────────────────────
 const CITIES: Record<string, {
@@ -125,14 +126,14 @@ const CITIES: Record<string, {
 };
 
 const SERVICES = [
-  { icon: "🚿", name: "Plombier", slug: "plombier", desc: "Fuite, canalisation bouchée, chauffe-eau" },
-  { icon: "⚡", name: "Électricien", slug: "electricien", desc: "Panne électrique, installation, mise aux normes" },
-  { icon: "🔒", name: "Serrurier", slug: "serrurier", desc: "Porte claquée, serrure cassée, cylindre" },
-  { icon: "🌡️", name: "Chauffagiste", slug: "chauffagiste", desc: "Chaudière en panne, radiateurs, pompe à chaleur" },
-  { icon: "🏠", name: "Couvreur", slug: "couvreur", desc: "Tuiles cassées, fuite toiture, gouttières" },
-  { icon: "🔧", name: "Menuisier", slug: "menuisier", desc: "Porte, parquet, fenêtres, placards" },
-  { icon: "🖌️", name: "Peintre", slug: "peintre", desc: "Peinture intérieure, façade, rénovation" },
-  { icon: "🧹", name: "Nettoyage", slug: "nettoyage", desc: "Après sinistre, remise en état, fin de chantier" },
+  { slug: "plombier", name: "Plombier", desc: "Fuite, canalisation bouchée, chauffe-eau" },
+  { slug: "electricien", name: "Électricien", desc: "Panne électrique, installation, mise aux normes" },
+  { slug: "serrurier", name: "Serrurier", desc: "Porte claquée, serrure cassée, cylindre" },
+  { slug: "chauffagiste", name: "Chauffagiste", desc: "Chaudière en panne, radiateurs, pompe à chaleur" },
+  { slug: "couvreur", name: "Couvreur", desc: "Tuiles cassées, fuite toiture, gouttières" },
+  { slug: "menuisier", name: "Menuisier", desc: "Porte, parquet, fenêtres, placards" },
+  { slug: "peintre", name: "Peintre", desc: "Peinture intérieure, façade, rénovation" },
+  { slug: "nettoyage", name: "Nettoyage", desc: "Après sinistre, remise en état, fin de chantier" },
 ];
 
 export async function generateStaticParams() {
@@ -264,8 +265,8 @@ export default async function TrouverArtisanVillePage({
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1CA7A6] to-[#178F8E] text-white pt-14 pb-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <span className="inline-block bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full mb-4">
-            📍 {city.name} · Canton {city.canton}
+          <span className="inline-flex items-center gap-1.5 bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full mb-4">
+            <IconMapPin size={14} /> {city.name} · Canton {city.canton}
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
             Artisan à {city.name}<br />
@@ -295,13 +296,15 @@ export default async function TrouverArtisanVillePage({
       <section className="max-w-[1200px] mx-auto px-4 py-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           {[
-            { value: "< 30 min", label: "Délai d'intervention moyen", icon: "⚡" },
-            { value: "24h/24", label: "Disponibilité 7j/7", icon: "🕐" },
-            { value: "4.9/5", label: "Note moyenne des artisans", icon: "⭐" },
-            { value: "100%", label: "Artisans vérifiés & assurés", icon: "🛡️" },
+            { value: "< 30 min", label: "Délai d'intervention moyen", Icon: IconZap },
+            { value: "24h/24", label: "Disponibilité 7j/7", Icon: IconClock },
+            { value: "4.9/5", label: "Note moyenne des artisans", Icon: IconStar },
+            { value: "100%", label: "Artisans vérifiés & assurés", Icon: IconShieldCheck },
           ].map((s) => (
             <div key={s.label} className="bg-[#F4F7F7] rounded-[12px] p-5 text-center">
-              <p className="text-2xl mb-1">{s.icon}</p>
+              <span className="inline-flex w-9 h-9 rounded-full bg-[#E6F2F2] items-center justify-center text-[#1CA7A6] mb-2">
+                <s.Icon size={18} />
+              </span>
               <p className="text-xl font-extrabold text-[#1CA7A6]">{s.value}</p>
               <p className="text-xs text-gray-500 mt-1">{s.label}</p>
             </div>
@@ -322,9 +325,9 @@ export default async function TrouverArtisanVillePage({
             <Link
               key={service.slug}
               href={`/auth/register?service=${service.slug}&city=${encodeURIComponent(city.name)}`}
-              className="flex flex-col gap-2 p-4 border border-[#D1E5E5] rounded-[12px] hover:border-[#1CA7A6] hover:bg-[#F4F7F7] transition-all group"
+              className="flex flex-col gap-3 p-4 border border-[#D1E5E5] rounded-[12px] hover:border-[#1CA7A6] hover:bg-[#F4F7F7] transition-all group"
             >
-              <span className="text-3xl">{service.icon}</span>
+              <span className="w-10 h-10 flex items-center justify-center rounded-[10px] bg-[#E6F2F2] text-[#1CA7A6] shrink-0"><TradeIcon slug={service.slug} size={22} /></span>
               <p className="font-semibold text-[#1F2937] group-hover:text-[#1CA7A6] transition-colors">
                 {service.name} à {city.name}
               </p>
@@ -361,9 +364,10 @@ export default async function TrouverArtisanVillePage({
                     <div className="min-w-0">
                       <p className="font-semibold text-[#1F2937] text-sm truncate">{artisan.companyName}</p>
                       {artisan.ratingCount > 0 && (
-                        <p className="text-xs text-amber-500">
-                          ★ {artisan.ratingAverage.toFixed(1)} ({artisan.ratingCount} avis)
-                        </p>
+                        <div className="flex items-center gap-1 text-xs text-amber-500">
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                          <span>{artisan.ratingAverage.toFixed(1)} ({artisan.ratingCount} avis)</span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -374,8 +378,9 @@ export default async function TrouverArtisanVillePage({
                       </span>
                     ))}
                     {artisan.emergencyAvailable && (
-                      <span className="text-xs bg-red-50 text-red-600 border border-red-100 px-2 py-0.5 rounded-full">
-                        ⚡ Urgences
+                      <span className="inline-flex items-center gap-1 text-xs bg-red-50 text-red-600 border border-red-100 px-2 py-0.5 rounded-full">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        Urgences
                       </span>
                     )}
                   </div>
@@ -405,7 +410,7 @@ export default async function TrouverArtisanVillePage({
               key={n}
               className="px-3 py-1.5 bg-[#F4F7F7] border border-[#D1E5E5] rounded-full text-sm text-gray-600"
             >
-              📍 {n}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#1CA7A6]"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> {n}
             </span>
           ))}
         </div>
@@ -447,7 +452,8 @@ export default async function TrouverArtisanVillePage({
                 href={`/trouver-artisan/${c.slug}`}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#D1E5E5] rounded-full text-sm text-[#1CA7A6] hover:border-[#1CA7A6] transition-colors"
               >
-                📍 {c.name}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {c.name}
               </Link>
             ))}
         </div>

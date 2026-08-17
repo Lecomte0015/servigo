@@ -179,13 +179,13 @@ function HistoryPageInner() {
       {/* Payment result banner */}
       {paymentResult === "success" && (
         <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-800 text-sm px-4 py-3 rounded-[10px]">
-          <span>✓</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           <span>Paiement confirmé ! Votre mission est en cours de traitement.</span>
         </div>
       )}
       {paymentResult === "cancelled" && (
         <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-sm px-4 py-3 rounded-[10px]">
-          <span>⚠</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m10.29 3.86-8.6 14.9A2 2 0 0 0 3.4 22h17.2a2 2 0 0 0 1.71-3.14l-8.59-14.9a2 2 0 0 0-3.43 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <span>Paiement annulé. Vous pouvez réessayer depuis le détail de votre mission.</span>
         </div>
       )}
@@ -371,11 +371,12 @@ function HistoryPageInner() {
                           href={`tel:${selectedJob.assignment.artisan.user.phone}`}
                           className="text-xs text-[#1CA7A6] hover:underline mt-0.5 block"
                         >
-                          📞 {selectedJob.assignment.artisan.user.phone}
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline mr-1"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.18 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.55a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                          {selectedJob.assignment.artisan.user.phone}
                         </a>
                       )}
                       <div className="flex items-center gap-1 mt-1">
-                        <span className="text-amber-400 text-xs">★</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span className="text-xs text-gray-600">
                           {selectedJob.assignment.artisan.ratingAverage.toFixed(1)}
                         </span>
@@ -412,7 +413,8 @@ function HistoryPageInner() {
                     onClick={() => handlePay(selectedJob.id)}
                     className="mt-1"
                   >
-                    💳 Payer maintenant ({selectedJob.payment?.amount?.toFixed(0)} CHF)
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline mr-1.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    Payer maintenant ({selectedJob.payment?.amount?.toFixed(0)} CHF)
                   </Button>
                 )}
 
@@ -423,7 +425,8 @@ function HistoryPageInner() {
                     onClick={() => handleComplete(selectedJob.id)}
                     className="mt-1"
                   >
-                    ✓ Confirmer la fin de la mission
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="inline mr-1.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Confirmer la fin de la mission
                   </Button>
                 )}
 
@@ -435,7 +438,8 @@ function HistoryPageInner() {
                     onClick={() => handleCancel(selectedJob.id)}
                     className="mt-1 text-red-500 border-red-200 hover:border-red-400"
                   >
-                    ✗ Annuler la mission
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="inline mr-1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Annuler la mission
                   </Button>
                 )}
 
@@ -454,7 +458,7 @@ function HistoryPageInner() {
                                 star <= reviewState.rating ? "text-amber-400" : "text-gray-300"
                               }`}
                             >
-                              ★
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                             </button>
                           ))}
                         </div>
@@ -497,7 +501,8 @@ function HistoryPageInner() {
                           })
                         }
                       >
-                        ★ Laisser un avis
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline mr-1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        Laisser un avis
                       </Button>
                     )}
                   </div>
@@ -508,12 +513,12 @@ function HistoryPageInner() {
                     <p className="text-xs text-gray-400 mb-1">Votre avis</p>
                     <div className="flex gap-0.5">
                       {[1, 2, 3, 4, 5].map((star) => (
-                        <span
+                        <svg
                           key={star}
-                          className={star <= selectedJob.review!.rating ? "text-amber-400" : "text-gray-300"}
-                        >
-                          ★
-                        </span>
+                          width="14" height="14" viewBox="0 0 24 24"
+                          fill={star <= selectedJob.review!.rating ? "#fbbf24" : "#d1d5db"}
+                          stroke="none"
+                        ><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                       ))}
                     </div>
                     {selectedJob.review.comment && (

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
+import { TradeIcon } from "@/components/ui/Icons";
 
 // ── Données par métier ─────────────────────────────────────────────────────────
 const TRADES: Record<string, {
@@ -218,8 +219,8 @@ export default async function DevenirArtisanMetierPage({
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1CA7A6] to-[#178F8E] text-white pt-14 pb-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <span className="inline-block bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full mb-4">
-            {trade.icon} Spécialité : {trade.name}
+          <span className="inline-flex items-center gap-1.5 bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full mb-4">
+            <TradeIcon slug={metier} size={16} /> Spécialité : {trade.name}
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
             Trouvez des clients<br />
@@ -250,12 +251,12 @@ export default async function DevenirArtisanMetierPage({
       <section className="max-w-[1200px] mx-auto px-4 py-10">
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
           {[
-            { value: trade.jobsPerMonth, label: "Missions/mois en moyenne", icon: "📋" },
-            { value: trade.avgRevenue, label: "Revenus supplémentaires/mois", icon: "💶" },
-            { value: trade.urgencyRatio, label: "De missions urgentes (tarif majoré)", icon: "⚡" },
+            { value: trade.jobsPerMonth, label: "Missions/mois en moyenne", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> },
+            { value: trade.avgRevenue, label: "Revenus supplémentaires/mois", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
+            { value: trade.urgencyRatio, label: "De missions urgentes (tarif majoré)", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> },
           ].map((stat) => (
             <div key={stat.label} className="bg-[#F4F7F7] rounded-[12px] p-5 text-center">
-              <p className="text-2xl mb-1">{stat.icon}</p>
+              <span className="inline-flex w-10 h-10 rounded-full bg-[#E6F2F2] items-center justify-center text-[#1CA7A6] mb-2">{stat.icon}</span>
               <p className="text-2xl font-extrabold text-[#1CA7A6]">{stat.value}</p>
               <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
             </div>
@@ -271,7 +272,7 @@ export default async function DevenirArtisanMetierPage({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {trade.skills.map((skill) => (
             <div key={skill} className="flex items-center gap-3 p-4 border border-[#D1E5E5] rounded-[10px] bg-white">
-              <span className="w-6 h-6 rounded-full bg-[#E6F2F2] text-[#1CA7A6] flex items-center justify-center text-xs shrink-0 font-bold">✓</span>
+              <span className="w-6 h-6 rounded-full bg-[#E6F2F2] text-[#1CA7A6] flex items-center justify-center shrink-0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
               <p className="text-sm text-[#1F2937] font-medium">{skill}</p>
             </div>
           ))}

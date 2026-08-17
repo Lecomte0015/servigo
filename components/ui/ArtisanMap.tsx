@@ -68,13 +68,13 @@ function makePopupHtml(artisan: ArtisanForMap): string {
         ${avatar}
         <div style="flex:1;min-width:0;">
           <p style="font-weight:700;font-size:13px;margin:0 0 1px;color:#1F2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${artisan.companyName}</p>
-          <p style="color:#6B7280;font-size:11px;margin:0;">📍 ${artisan.city}</p>
-          <p style="font-size:11px;margin:2px 0 0;color:#374151;">⭐ ${artisan.ratingAverage.toFixed(1)} <span style="color:#9CA3AF">(${artisan.ratingCount} avis)</span></p>
+          <p style="color:#6B7280;font-size:11px;margin:0;display:flex;align-items:center;gap:3px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${artisan.city}</p>
+          <p style="font-size:11px;margin:2px 0 0;color:#374151;display:flex;align-items:center;gap:3px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fbbf24" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ${artisan.ratingAverage.toFixed(1)} <span style="color:#9CA3AF">(${artisan.ratingCount} avis)</span></p>
         </div>
       </div>
       ${artisan.services.length > 0 ? `<p style="font-size:11px;color:#374151;margin:0 0 4px;padding-top:4px;border-top:1px solid #F3F4F6;">${artisan.services.map((s) => s.category.icon ? s.category.icon + " " + s.category.name : s.category.name).join(" · ")}</p>` : ""}
       ${minPrice ? `<p style="font-size:12px;color:#1CA7A6;font-weight:600;margin:0 0 4px;">Dès ${minPrice} CHF</p>` : ""}
-      ${artisan.emergencyAvailable ? `<p style="font-size:11px;color:#EF4444;margin:0 0 8px;">⚡ Urgences disponibles</p>` : ""}
+      ${artisan.emergencyAvailable ? `<p style="font-size:11px;color:#EF4444;margin:0 0 8px;display:flex;align-items:center;gap:3px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="#EF4444" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Urgences disponibles</p>` : ""}
       <button id="contact-${artisan.id}" style="background:#1CA7A6;color:white;border:none;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;width:100%;margin-top:4px;">
         Contacter ce pro
       </button>

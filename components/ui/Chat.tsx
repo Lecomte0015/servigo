@@ -317,7 +317,9 @@ export default function Chat({ jobId, currentUserId, jobStatus }: ChatProps) {
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 3 }}>
                   <span style={{ fontSize: 10, color: "#9CA3AF", paddingLeft: isMine ? 0 : 4, paddingRight: isMine ? 4 : 0 }}>
                     {format(new Date(msg.createdAt), "HH:mm", { locale: fr })}
-                    {isMine && msg.readAt && " · Lu ✓"}
+                    {isMine && msg.readAt && (
+                      <> · Lu <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{display:"inline",verticalAlign:"middle"}}><polyline points="20 6 9 17 4 12"/></svg></>
+                    )}
                   </span>
 
                   {/* Bouton Signaler — visible uniquement si message d'autrui */}

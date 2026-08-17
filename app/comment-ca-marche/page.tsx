@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
+import { IconClipboard, IconBell, IconWrench, IconCheckCircle, IconUser, IconSearch, IconSmartphone, IconEuro } from "@/components/ui/Icons";
 
 export const metadata: Metadata = {
   title: "Comment ça marche — Trouvez un artisan en 4 étapes",
@@ -63,17 +64,17 @@ const faqSchema = {
 };
 
 const CLIENT_STEPS = [
-  { n: "01", icon: "📝", title: "Décrivez votre besoin", desc: "Choisissez le type d'intervention, décrivez le problème et renseignez votre adresse en 30 secondes." },
-  { n: "02", icon: "🔔", title: "Un artisan vous répond", desc: "Notre algorithme contacte les 5 meilleurs artisans disponibles près de chez vous. Le premier à accepter est assigné." },
-  { n: "03", icon: "🔧", title: "L'artisan intervient", desc: "L'artisan se déplace à votre domicile. Vous êtes notifié en temps réel à chaque étape." },
-  { n: "04", icon: "✅", title: "Vous validez et payez", desc: "Une fois la mission terminée, vous confirmez et le paiement est capturé. Simple et sécurisé." },
+  { n: "01", icon: <IconClipboard size={28} />, title: "Décrivez votre besoin", desc: "Choisissez le type d'intervention, décrivez le problème et renseignez votre adresse en 30 secondes." },
+  { n: "02", icon: <IconBell size={28} />, title: "Un artisan vous répond", desc: "Notre algorithme contacte les 5 meilleurs artisans disponibles près de chez vous. Le premier à accepter est assigné." },
+  { n: "03", icon: <IconWrench size={28} />, title: "L'artisan intervient", desc: "L'artisan se déplace à votre domicile. Vous êtes notifié en temps réel à chaque étape." },
+  { n: "04", icon: <IconCheckCircle size={28} />, title: "Vous validez et payez", desc: "Une fois la mission terminée, vous confirmez et le paiement est capturé. Simple et sécurisé." },
 ];
 
 const ARTISAN_STEPS = [
-  { n: "01", icon: "✍️", title: "Créez votre compte", desc: "Renseignez vos informations professionnelles (RC, assurances, services proposés)." },
-  { n: "02", icon: "🔍", title: "Validation par notre équipe", desc: "Nous vérifions votre dossier sous 24h ouvrées. Une fois approuvé, vous recevez des missions." },
-  { n: "03", icon: "📱", title: "Acceptez des missions", desc: "Recevez des notifications en temps réel. Acceptez les missions qui vous correspondent." },
-  { n: "04", icon: "💶", title: "Soyez payé rapidement", desc: "Le paiement est viré sur votre compte après chaque mission complétée. Pas de paperasse." },
+  { n: "01", icon: <IconUser size={28} />, title: "Créez votre compte", desc: "Renseignez vos informations professionnelles (RC, assurances, services proposés)." },
+  { n: "02", icon: <IconSearch size={28} />, title: "Validation par notre équipe", desc: "Nous vérifions votre dossier sous 24h ouvrées. Une fois approuvé, vous recevez des missions." },
+  { n: "03", icon: <IconSmartphone size={28} />, title: "Acceptez des missions", desc: "Recevez des notifications en temps réel. Acceptez les missions qui vous correspondent." },
+  { n: "04", icon: <IconEuro size={28} />, title: "Soyez payé rapidement", desc: "Le paiement est viré sur votre compte après chaque mission complétée. Pas de paperasse." },
 ];
 
 const FAQS = [
@@ -119,7 +120,7 @@ export default function CommentCaMarchePage() {
                 <span className="w-8 h-8 rounded-full bg-[#E6F2F2] text-[#1CA7A6] text-xs font-bold flex items-center justify-center shrink-0">{s.n}</span>
                 <div className="h-px flex-1 bg-[#E6F2F2]" />
               </div>
-              <div className="text-3xl">{s.icon}</div>
+              <span className="text-[#1CA7A6]">{s.icon}</span>
               <h3 className="font-semibold text-[#1F2937]">{s.title}</h3>
               <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
             </div>
@@ -142,7 +143,7 @@ export default function CommentCaMarchePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {ARTISAN_STEPS.map((s) => (
               <div key={s.n} className="bg-white rounded-[12px] border border-[#D1E5E5] p-5 flex flex-col gap-3">
-                <div className="text-3xl">{s.icon}</div>
+                <span className="text-[#1CA7A6]">{s.icon}</span>
                 <span className="text-xs font-bold text-[#1CA7A6]">ÉTAPE {s.n}</span>
                 <h3 className="font-semibold text-[#1F2937]">{s.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>

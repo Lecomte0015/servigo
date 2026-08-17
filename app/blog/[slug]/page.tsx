@@ -136,7 +136,10 @@ export default async function BlogPostPage({ params }: Props) {
 
             {/* Table of contents */}
             <nav className="bg-[#F4F7F7] border border-[#D1E5E5] rounded-[12px] p-5 mb-8">
-              <p className="text-sm font-bold text-[#1F2937] mb-3">📋 Sommaire</p>
+              <p className="text-sm font-bold text-[#1F2937] mb-3 flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1CA7A6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                Sommaire
+              </p>
               <ol className="space-y-1.5">
                 {post.sections.map((section, i) => (
                   <li key={i}>
@@ -166,10 +169,14 @@ export default async function BlogPostPage({ params }: Props) {
                   <ul className="mt-3 space-y-2">
                     {section.list.map((item, j) => (
                       <li key={j} className="flex items-start gap-2 text-sm text-gray-700">
-                        <span className="text-[#1CA7A6] mt-0.5 shrink-0">
-                          {item.startsWith("✅") || item.startsWith("❌") ? "" : "→"}
-                        </span>
-                        <span>{item}</span>
+                        {item.startsWith("✅") ? (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+                        ) : item.startsWith("❌") ? (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        ) : (
+                          <span className="text-[#1CA7A6] mt-0.5 shrink-0">→</span>
+                        )}
+                        <span>{item.replace(/^[✅❌]\s*/, "")}</span>
                       </li>
                     ))}
                   </ul>

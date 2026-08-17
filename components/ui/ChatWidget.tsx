@@ -142,10 +142,10 @@ export function ChatWidget() {
         aria-label="Ouvrir le chat GoServi"
       >
         {open ? (
-          <span className="text-base">✕</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         ) : (
           <>
-            <span className="text-xl">💬</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <span className="hidden sm:inline">Besoin d&apos;aide ?</span>
             {hasUnread && (
               <span className="w-2.5 h-2.5 bg-red-500 rounded-full absolute top-1 right-1" />
@@ -166,8 +166,8 @@ export function ChatWidget() {
             style={{ backgroundColor: "#1CA7A6" }}
           >
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-base">
-                ⚡
+              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               </div>
               <div>
                 <p className="text-white font-bold text-sm leading-tight">Assistant GoServi</p>
@@ -194,8 +194,8 @@ export function ChatWidget() {
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 {msg.role === "assistant" && (
-                  <div className="w-6 h-6 rounded-full bg-[#1CA7A6] flex items-center justify-center text-white text-[10px] font-bold shrink-0 mr-1.5 mt-0.5">
-                    ⚡
+                  <div className="w-6 h-6 rounded-full bg-[#1CA7A6] flex items-center justify-center text-white shrink-0 mr-1.5 mt-0.5">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                   </div>
                 )}
                 <div

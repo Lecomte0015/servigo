@@ -153,8 +153,10 @@ export function HomeSearchBar({ categories, placeholder, ctaText, primaryColor }
                       className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#E6F2F2] transition-colors text-left border-b border-[#F4F7F7] last:border-0 group"
                     >
                       {/* Icône */}
-                      <span className="text-2xl w-9 h-9 flex items-center justify-center bg-[#F4F7F7] rounded-[8px] group-hover:bg-white shrink-0 transition-colors">
-                        {cat.icon ?? "🔧"}
+                      <span className="text-xl w-9 h-9 flex items-center justify-center bg-[#F4F7F7] rounded-[8px] group-hover:bg-white shrink-0 transition-colors">
+                        {cat.icon ? cat.icon : (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                        )}
                       </span>
 
                       {/* Texte */}
@@ -191,7 +193,7 @@ export function HomeSearchBar({ categories, placeholder, ctaText, primaryColor }
               {showFooterLogin && (
                 <div className="px-4 py-3 bg-[#F4F7F7] border-t border-[#D1E5E5] flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-base">🔒</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     <p className="text-xs text-gray-500 leading-snug">
                       Connectez-vous pour contacter un artisan directement
                     </p>

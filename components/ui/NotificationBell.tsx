@@ -15,25 +15,26 @@ interface Notification {
   createdAt: string;
 }
 
-const TYPE_ICON: Record<string, string> = {
-  JOB_MATCHED:             "🔔",
-  JOB_ASSIGNED:            "✅",
-  JOB_STARTED:             "🔧",
-  JOB_COMPLETED:           "🎉",
-  JOB_CANCELLED:           "❌",
-  PROFILE_APPROVED:        "✅",
-  PROFILE_REJECTED:        "⚠️",
-  REVIEW_RECEIVED:         "⭐",
-  PAYMENT_CAPTURED:        "💰",
-  PAYOUT_REQUESTED:        "🏦",
-  PAYOUT_PROCESSING:       "🔄",
-  PAYOUT_COMPLETED:        "✅",
-  PAYOUT_FAILED:           "⚠️",
-  INSURANCE_CERT_UPLOADED: "📄",
-  INSURANCE_VERIFIED:      "🛡️",
-  INSURANCE_UNVERIFIED:    "⚠️",
-  MESSAGE_RECEIVED:        "💬",
-  FILE_SHARED_IN_CHAT:     "📎",
+// Colored dot per notification category — replaces emoji
+const TYPE_DOT: Record<string, string> = {
+  JOB_MATCHED:             "bg-[#1CA7A6]",
+  JOB_ASSIGNED:            "bg-[#1CA7A6]",
+  JOB_STARTED:             "bg-blue-500",
+  JOB_COMPLETED:           "bg-green-500",
+  JOB_CANCELLED:           "bg-red-400",
+  PROFILE_APPROVED:        "bg-green-500",
+  PROFILE_REJECTED:        "bg-red-400",
+  REVIEW_RECEIVED:         "bg-yellow-400",
+  PAYMENT_CAPTURED:        "bg-green-500",
+  PAYOUT_REQUESTED:        "bg-blue-500",
+  PAYOUT_PROCESSING:       "bg-blue-400",
+  PAYOUT_COMPLETED:        "bg-green-500",
+  PAYOUT_FAILED:           "bg-red-400",
+  INSURANCE_CERT_UPLOADED: "bg-gray-400",
+  INSURANCE_VERIFIED:      "bg-green-500",
+  INSURANCE_UNVERIFIED:    "bg-orange-400",
+  MESSAGE_RECEIVED:        "bg-[#1CA7A6]",
+  FILE_SHARED_IN_CHAT:     "bg-gray-400",
 };
 
 export function NotificationBell({ align = "right" }: { align?: "left" | "right" }) {
@@ -145,7 +146,9 @@ export function NotificationBell({ align = "right" }: { align?: "left" | "right"
       <div className="max-h-80 overflow-y-auto">
         {notifications.length === 0 ? (
           <div className="py-8 text-center">
-            <p className="text-2xl mb-1">🔔</p>
+            <div className="w-8 h-8 rounded-full bg-[#E6F2F2] flex items-center justify-center mx-auto mb-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1CA7A6" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
             <p className="text-sm text-gray-400">Aucune notification</p>
           </div>
         ) : (
@@ -159,9 +162,7 @@ export function NotificationBell({ align = "right" }: { align?: "left" | "right"
                 n.link ? "cursor-pointer hover:bg-[#EFF9F9] active:bg-[#E6F2F2]" : "",
               ].join(" ")}
             >
-              <span className="text-lg leading-none mt-0.5 shrink-0">
-                {TYPE_ICON[n.type] ?? "📌"}
-              </span>
+              <span className={`w-2 h-2 rounded-full mt-2 shrink-0 ${TYPE_DOT[n.type] ?? "bg-gray-300"}`} />
               <div className="min-w-0 flex-1">
                 <p className="text-sm text-[#1F2937] leading-snug">{n.message}</p>
                 <div className="flex items-center gap-2 mt-0.5">

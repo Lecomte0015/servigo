@@ -304,7 +304,10 @@ export default function ProWalletPage() {
             </div>
           ) : (
             <p className="text-sm text-gray-400">
-              ⚠️ Aucun compte bancaire configuré. Ajoutez votre IBAN pour pouvoir retirer vos gains.
+              <span className="inline-flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m10.29 3.86-8.6 14.9A2 2 0 0 0 3.4 22h17.2a2 2 0 0 0 1.71-3.14l-8.59-14.9a2 2 0 0 0-3.43 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Aucun compte bancaire configuré. Ajoutez votre IBAN pour pouvoir retirer vos gains.
+              </span>
             </p>
           )
         )}
@@ -426,7 +429,8 @@ export default function ProWalletPage() {
             {payoutError && <p className="text-sm text-red-500">{payoutError}</p>}
             <div className="flex gap-2">
               <Button type="submit" size="sm" loading={payoutSaving}>
-                ✓ Confirmer le retrait
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="inline mr-1.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Confirmer le retrait
               </Button>
               <Button
                 type="button"

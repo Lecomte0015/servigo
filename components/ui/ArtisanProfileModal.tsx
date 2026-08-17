@@ -19,13 +19,13 @@ interface Props {
 }
 
 function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) {
-  const cls = size === "sm" ? "text-xs" : "text-base";
+  const px = size === "sm" ? 11 : 14;
   return (
-    <span className={`inline-flex gap-px ${cls}`}>
+    <span className="inline-flex gap-px">
       {[1, 2, 3, 4, 5].map((i) => (
-        <span key={i} className={i <= Math.round(rating) ? "text-amber-400" : "text-gray-200"}>
-          ★
-        </span>
+        <svg key={i} width={px} height={px} viewBox="0 0 24 24" fill={i <= Math.round(rating) ? "#fbbf24" : "#e5e7eb"} stroke="none">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
       ))}
     </span>
   );
@@ -107,7 +107,7 @@ export function ArtisanProfileModal({ artisan, onClose }: Props) {
           className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center transition-colors"
           aria-label="Fermer"
         >
-          <span className="text-white font-bold text-sm leading-none">✕</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
 
         {/* ── En-tête avec photo ──────────────────────────────────────────── */}
@@ -131,7 +131,10 @@ export function ArtisanProfileModal({ artisan, onClose }: Props) {
               <h2 className="text-lg font-bold text-[#1F2937] leading-tight truncate">
                 {artisan.companyName}
               </h2>
-              <p className="text-sm text-gray-500 mt-0.5">📍 {artisan.city}</p>
+              <p className="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {artisan.city}
+              </p>
 
               {/* Rating global */}
               {artisan.ratingCount > 0 ? (
@@ -150,12 +153,14 @@ export function ArtisanProfileModal({ artisan, onClose }: Props) {
 
               {/* Badges */}
               <div className="flex flex-wrap gap-1.5 mt-2">
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
-                  ✅ Vérifié
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Vérifié
                 </span>
                 {artisan.emergencyAvailable && (
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
-                    ⚡ Urgences 24h/24
+                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    Urgences 24h/24
                   </span>
                 )}
                 {minPrice && (

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
+import { IconUser, IconWrench, IconHandshake, IconNewspaper, IconMessageCircle, IconMapPin, IconClock } from "@/components/ui/Icons";
 
 export const metadata = {
   title: "Contact | GoServi",
@@ -8,34 +9,10 @@ export const metadata = {
 };
 
 const TOPICS = [
-  {
-    icon: "👤",
-    title: "Vous êtes client",
-    desc: "Problème avec une mission, question sur un paiement, besoin d'aide pour créer votre demande.",
-    email: "contact@goservi.ch",
-    subject: "Support client",
-  },
-  {
-    icon: "🔧",
-    title: "Vous êtes artisan",
-    desc: "Questions sur votre compte, votre profil, les paiements ou pour rejoindre la plateforme.",
-    email: "contact@goservi.ch",
-    subject: "Espace artisan",
-  },
-  {
-    icon: "🤝",
-    title: "Partenariats",
-    desc: "Entreprises, collectivités, assurances — explorons ensemble une collaboration.",
-    email: "contact@goservi.ch",
-    subject: "Partenariat",
-  },
-  {
-    icon: "📰",
-    title: "Presse & médias",
-    desc: "Demandes d'interview, dossier de presse, informations pour les journalistes.",
-    email: "contact@goservi.ch",
-    subject: "Presse",
-  },
+  { Icon: IconUser, title: "Vous êtes client", desc: "Problème avec une mission, question sur un paiement, besoin d'aide pour créer votre demande.", email: "contact@goservi.ch", subject: "Support client" },
+  { Icon: IconWrench, title: "Vous êtes artisan", desc: "Questions sur votre compte, votre profil, les paiements ou pour rejoindre la plateforme.", email: "contact@goservi.ch", subject: "Espace artisan" },
+  { Icon: IconHandshake, title: "Partenariats", desc: "Entreprises, collectivités, assurances — explorons ensemble une collaboration.", email: "contact@goservi.ch", subject: "Partenariat" },
+  { Icon: IconNewspaper, title: "Presse & médias", desc: "Demandes d'interview, dossier de presse, informations pour les journalistes.", email: "contact@goservi.ch", subject: "Presse" },
 ];
 
 const FAQ = [
@@ -106,7 +83,9 @@ export default function ContactPage() {
               href={`mailto:${t.email}?subject=${encodeURIComponent(t.subject + " — GoServi")}`}
               className="group bg-white border border-[#D1E5E5] rounded-[16px] p-5 flex flex-col gap-3 hover:border-[#1CA7A6] hover:shadow-md transition-all"
             >
-              <span className="text-3xl">{t.icon}</span>
+              <span className="w-10 h-10 rounded-[10px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6]">
+                <t.Icon size={20} />
+              </span>
               <div>
                 <h3 className="font-semibold text-[#1F2937] group-hover:text-[#1CA7A6] transition-colors">
                   {t.title}
@@ -123,7 +102,7 @@ export default function ContactPage() {
         {/* Alternatives */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14">
           <div className="bg-[#F4F7F7] rounded-[16px] p-6 flex flex-col gap-2">
-            <span className="text-2xl">💬</span>
+            <span className="w-10 h-10 rounded-[10px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6]"><IconMessageCircle size={20} /></span>
             <h3 className="font-semibold text-[#1F2937]">Messagerie intégrée</h3>
             <p className="text-sm text-gray-500 leading-relaxed">
               Vous avez un compte GoServi ? Utilisez la messagerie depuis votre espace pour contacter
@@ -138,7 +117,7 @@ export default function ContactPage() {
           </div>
 
           <div className="bg-[#F4F7F7] rounded-[16px] p-6 flex flex-col gap-2">
-            <span className="text-2xl">📍</span>
+            <span className="w-10 h-10 rounded-[10px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6]"><IconMapPin size={20} /></span>
             <h3 className="font-semibold text-[#1F2937]">Adresse</h3>
             <p className="text-sm text-gray-500 leading-relaxed">
               GoServi SA<br />
@@ -149,7 +128,7 @@ export default function ContactPage() {
           </div>
 
           <div className="bg-[#F4F7F7] rounded-[16px] p-6 flex flex-col gap-2">
-            <span className="text-2xl">⏱️</span>
+            <span className="w-10 h-10 rounded-[10px] bg-[#E6F2F2] flex items-center justify-center text-[#1CA7A6]"><IconClock size={20} /></span>
             <h3 className="font-semibold text-[#1F2937]">Délais de réponse</h3>
             <div className="flex flex-col gap-1.5 text-sm text-gray-500 mt-1">
               <div className="flex justify-between">

@@ -212,7 +212,7 @@ export default async function HomePage() {
                 className="flex items-center gap-1.5 bg-white border border-[#D1E5E5] text-[#1F2937] text-sm font-medium px-3.5 py-1.5 rounded-full transition-all shadow-sm"
                 style={{"--hover-color": settings.primaryColor} as React.CSSProperties}
               >
-                <span>{cat.icon ?? "🔧"}</span>
+                {cat.icon ? <span>{cat.icon}</span> : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>}
                 {cat.name}
               </Link>
             ))}
@@ -221,17 +221,21 @@ export default async function HomePage() {
           {/* Trust row */}
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">
-              <span className="text-green-500 font-bold">✓</span> Artisans vérifiés
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Artisans vérifiés
             </span>
             <span className="hidden sm:block w-1 h-1 rounded-full bg-gray-300" />
             <span className="flex items-center gap-1">
-              <span className="text-amber-400 text-base">★★★★★</span>
+              {[1,2,3,4,5].map((i) => (
+                <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              ))}
               <span className="font-semibold text-[#1F2937] ml-1">4.9</span>
               <span className="ml-1">(200+ avis)</span>
             </span>
             <span className="hidden sm:block w-1 h-1 rounded-full bg-gray-300" />
             <span className="flex items-center gap-1.5">
-              <span>🔒</span> Paiement sécurisé Stripe
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Paiement sécurisé Stripe
             </span>
           </div>
         </div>
@@ -304,7 +308,7 @@ export default async function HomePage() {
                     )}
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-gray-400 mt-1">
-                    <span className="text-amber-400 text-sm">★★★★</span>
+                    <span className="flex items-center gap-px">{[1,2,3,4].map((i) => <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill="#fbbf24" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>)}</span>
                     <span className="font-medium text-gray-600">4.9</span>
                     <span>·</span>
                     <span className="flex items-center gap-1 text-green-600 font-medium">
@@ -473,7 +477,8 @@ export default async function HomePage() {
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">{footer.tagline}</p>
             <p className="text-xs text-gray-500 flex items-center gap-1">
-              <span>📍</span> {footer.location}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              {footer.location}
             </p>
           </div>
 
@@ -501,7 +506,7 @@ export default async function HomePage() {
         <div className="border-t border-white/10">
           <div className="max-w-[1200px] mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
             <span>© {new Date().getFullYear()} {footer.copyright}</span>
-            <span>Réalisé avec ❤️ en Suisse romande</span>
+            <span>Réalisé avec <svg width="12" height="12" viewBox="0 0 24 24" fill="#ef4444" stroke="none" className="inline-block align-middle"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> en Suisse romande</span>
           </div>
         </div>
       </footer>

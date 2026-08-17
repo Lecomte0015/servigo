@@ -173,7 +173,9 @@ export default function ArtisanOnboardingPage() {
                     i === step ? "bg-[#1CA7A6] text-white ring-4 ring-[#E6F2F2]" :
                     "bg-[#E6F2F2] text-gray-400"
                   }`}>
-                    {i < step ? "✓" : i + 1}
+                    {i < step ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    ) : i + 1}
                   </div>
                   <span className={`text-xs mt-1 font-medium ${i === step ? "text-[#1CA7A6]" : "text-gray-400"}`}>
                     {s.label}
@@ -276,7 +278,7 @@ export default function ArtisanOnboardingPage() {
                         <span className="text-[#1CA7A6] shrink-0">{getCategoryIcon(cat.slug, 18)}</span>
                         <span className="text-sm font-medium text-[#1F2937] flex-1">{cat.name}</span>
                         <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${selected ? "bg-[#1CA7A6] border-[#1CA7A6]" : "border-gray-300"}`}>
-                          {selected && <span className="text-white text-xs font-bold">✓</span>}
+                          {selected && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
                         </div>
                       </button>
                       {selected && svc && (
