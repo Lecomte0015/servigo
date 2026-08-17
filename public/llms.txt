@@ -1,0 +1,50 @@
+# GoServi
+
+> GoServi est une plateforme suisse qui met en relation des clients avec des artisans qualifiés et vérifiés en Suisse romande. Les clients publient une demande d'intervention (plomberie, électricité, serrurerie, chauffage, peinture, menuiserie, nettoyage, couverture), GoServi identifie l'artisan disponible le plus proche, et le paiement est sécurisé via la plateforme. Les artisans sont vérifiés, assurés RC Pro, et disponibles 24h/24, 7j/7 pour les urgences.
+
+GoServi opère exclusivement en Suisse romande dans les cantons de Genève, Vaud, Fribourg, Neuchâtel et Valais. La plateforme garantit des interventions en moins de 30 minutes pour les urgences, avec un paiement sécurisé par carte bancaire ou Twint. La commission de la plateforme est de 15%.
+
+## Pages principales
+
+- [Accueil](https://goservi.ch): Présentation de GoServi, recherche d'artisan par service et ville
+- [Trouver un artisan](https://goservi.ch/trouver-artisan): Annuaire des artisans disponibles par ville en Suisse romande
+- [Nos services](https://goservi.ch/services): Liste complète des services disponibles sur GoServi
+- [Comment ça marche](https://goservi.ch/comment-ca-marche): Fonctionnement de la plateforme étape par étape
+- [Devenir artisan](https://goservi.ch/devenir-artisan): Espace d'inscription et d'information pour les artisans
+- [Blog](https://goservi.ch/blog): Conseils d'entretien, tarifs et guides pratiques pour les propriétaires en Suisse
+
+## Villes desservies
+
+- [Artisan Genève](https://goservi.ch/trouver-artisan/geneve): Plombiers, électriciens, serruriers disponibles à Genève et dans le canton GE
+- [Artisan Lausanne](https://goservi.ch/trouver-artisan/lausanne): Artisans disponibles à Lausanne et dans le canton de Vaud
+- [Artisan Fribourg](https://goservi.ch/trouver-artisan/fribourg): Artisans dans le canton de Fribourg
+- [Artisan Neuchâtel](https://goservi.ch/trouver-artisan/neuchatel): Artisans dans le canton de Neuchâtel
+- [Artisan Sion](https://goservi.ch/trouver-artisan/sion): Artisans en Valais romand
+- [Artisan Nyon](https://goservi.ch/trouver-artisan/nyon): Artisans à Nyon et La Côte vaudoise
+- [Artisan Montreux](https://goservi.ch/trouver-artisan/montreux): Artisans à Montreux et Riviera vaudoise
+- [Artisan Yverdon](https://goservi.ch/trouver-artisan/yverdon): Artisans à Yverdon-les-Bains
+- [Artisan Morges](https://goservi.ch/trouver-artisan/morges): Artisans à Morges et environs
+- [Artisan Bienne](https://goservi.ch/trouver-artisan/bienne): Artisans à Bienne / Biel
+- [Artisan Martigny](https://goservi.ch/trouver-artisan/martigny): Artisans à Martigny et Bas-Valais
+- [Artisan La Chaux-de-Fonds](https://goservi.ch/trouver-artisan/la-chaux-de-fonds): Artisans à La Chaux-de-Fonds
+
+## Services disponibles
+
+- [Plombier](https://goservi.ch/devenir-artisan/plombier): Fuite d'eau, canalisation bouchée, chauffe-eau, sanitaires
+- [Électricien](https://goservi.ch/devenir-artisan/electricien): Panne électrique, installation, mise aux normes
+- [Serrurier](https://goservi.ch/devenir-artisan/serrurier): Porte claquée, serrure cassée, ouverture d'urgence
+- [Chauffagiste](https://goservi.ch/devenir-artisan/chauffagiste): Chaudière en panne, radiateurs, pompe à chaleur
+- [Couvreur](https://goservi.ch/devenir-artisan/couvreur): Fuite toiture, tuiles cassées, gouttières
+- [Menuisier](https://goservi.ch/devenir-artisan/menuisier): Portes, parquet, fenêtres, placards
+- [Peintre](https://goservi.ch/devenir-artisan/peintre): Peinture intérieure, façade, rénovation
+- [Nettoyage](https://goservi.ch/devenir-artisan/nettoyage): Après sinistre, remise en état, fin de chantier
+
+## Informations pratiques
+
+- **Pays** : Suisse (Suisse romande uniquement)
+- **Langues** : Français
+- **Paiement** : Carte bancaire (Visa, Mastercard), Twint
+- **Disponibilité urgence** : 24h/24, 7j/7
+- **Délai d'intervention** : moins de 30 minutes pour les urgences
+- **Contact** : contact@goservi.ch
+- **Site web** : https://goservi.ch

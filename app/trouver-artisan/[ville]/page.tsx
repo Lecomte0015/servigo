@@ -206,16 +206,51 @@ export default async function TrouverArtisanVillePage({
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
+    "@id": `https://goservi.ch/trouver-artisan/${ville}`,
     name: `GoServi — Artisans à ${city.name}`,
     description: city.description,
     url: `https://goservi.ch/trouver-artisan/${ville}`,
+    image: "https://goservi.ch/logo.png",
+    logo: "https://goservi.ch/logo.png",
+    email: "contact@goservi.ch",
+    priceRange: "$$",
+    currenciesAccepted: "CHF",
+    paymentAccepted: "Credit Card, Twint",
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+      opens: "00:00",
+      closes: "23:59",
+    },
     areaServed: {
       "@type": "City",
       name: city.name,
-      containedInPlace: { "@type": "State", name: city.region },
+      containedInPlace: { "@type": "State", name: city.region, containedInPlace: { "@type": "Country", name: "Suisse" } },
     },
-    serviceType: SERVICES.map((s) => s.name).join(", "),
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: `Services d'artisanat à ${city.name}`,
+      itemListElement: SERVICES.map((s, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "Service",
+          name: s.name,
+          description: s.desc,
+          provider: { "@id": "https://goservi.ch/#organization" },
+          areaServed: { "@type": "City", name: city.name },
+        },
+      })),
+    },
+    aggregateRating: artisans.length > 0 ? {
+      "@type": "AggregateRating",
+      ratingValue: (
+        artisans.reduce((sum, a) => sum + (a.ratingAverage ?? 0), 0) / artisans.length
+      ).toFixed(1),
+      reviewCount: artisans.reduce((sum, a) => sum + (a.ratingCount ?? 0), 0),
+      bestRating: "5",
+    } : undefined,
   };
 
   return (

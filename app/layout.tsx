@@ -74,12 +74,67 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLdOrg = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${APP_URL}/#organization`,
+      name: "GoServi",
+      url: APP_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${APP_URL}/logo.png`,
+        width: 200,
+        height: 60,
+      },
+      email: "contact@goservi.ch",
+      areaServed: {
+        "@type": "State",
+        name: "Suisse romande",
+        containedInPlace: { "@type": "Country", name: "Suisse" },
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "contact@goservi.ch",
+        contactType: "customer service",
+        availableLanguage: "French",
+      },
+      knowsAbout: [
+        "Plomberie", "Électricité", "Serrurerie", "Chauffage",
+        "Peinture", "Menuiserie", "Nettoyage", "Couverture",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${APP_URL}/#website`,
+      url: APP_URL,
+      name: "GoServi",
+      description: "Plateforme de mise en relation entre clients et artisans vérifiés en Suisse romande",
+      inLanguage: "fr-CH",
+      publisher: { "@id": `${APP_URL}/#organization` },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${APP_URL}/trouver-artisan/{search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr">
       <body className={`${inter.variable} antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrg) }}
+        />
         {children}
         <ChatWidget />
 
