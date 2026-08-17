@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { createNotification } from "@/services/notification";
-import { sendNewJobEmail, sendAdminNoMatchEmail } from "@/lib/email";
+import { sendNewJobEmail, sendAdminNoMatchEmail, sendArtisanOpportunityEmail } from "@/lib/email";
 
 const MAX_ARTISANS_NOTIFIED = 5;
 
@@ -50,12 +50,33 @@ export async function matchArtisans(
   });
 
   if (artisans.length === 0) {
-    // No artisan available locally — alert admin so they can handle it manually
-    sendAdminNoMatchEmail(
-      job?.category.name ?? categoryId,
-      city,
-      jobId
-    ).catch(() => {});
+    const categoryName = job?.category.name ?? categoryId;
+
+    // Alert admin
+    sendAdminNoMatchEmail(categoryName, city, jobId).catch(() => {});
+
+    // Broadcast to approved artisans of same trade in any city (max 10)
+    const fallbackArtisans = await prisma.artisanProfile.findMany({
+      where: {
+        isApproved: true,
+        city: { not: city },
+        services: { some: { categoryId, isActive: true } },
+      },
+      orderBy: { ratingAverage: "desc" },
+      take: 10,
+      include: { user: { select: { firstName: true, email: true } } },
+    });
+
+    for (const a of fallbackArtisans) {
+      sendArtisanOpportunityEmail(
+        a.user.email,
+        a.user.firstName,
+        categoryName,
+        city,
+        jobId
+      ).catch(() => {});
+    }
+
     return;
   }
 

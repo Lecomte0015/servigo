@@ -413,6 +413,52 @@ export async function sendAdminNoMatchEmail(
 
 // ─── 15. Statut payout artisan ───────────────────────────────────────────────
 
+// ─── 16. Opportunité mission sans match (artisan hors zone) ─────────────────
+
+export async function sendArtisanOpportunityEmail(
+  to: string,
+  firstName: string,
+  category: string,
+  city: string,
+  jobId: string
+): Promise<void> {
+  const html = baseTemplate(`
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="display:inline-block;width:60px;height:60px;background:#FFF7ED;border-radius:50%;line-height:60px;font-size:28px">🎯</div>
+    </div>
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700;text-align:center">Une mission vous attend à ${city}</h2>
+    <p style="color:#6B7280;line-height:1.7;text-align:center;margin:0 0 16px">Bonjour ${firstName},</p>
+    ${infoBox("#FFF7ED", "#FED7AA", "#92400E", `Une mission <strong>${category}</strong> à <strong>${city}</strong> n'a pas trouvé d'artisan disponible dans la zone. Êtes-vous en mesure d'intervenir ?`)}
+    <p style="color:#6B7280;font-size:14px;line-height:1.7;margin:0 0 20px">
+      Le client attend une réponse rapidement. Si vous pouvez couvrir cette zone, connectez-vous maintenant pour accepter la mission.
+    </p>
+    <div style="text-align:center">${btn(`${APP_URL}/pro/jobs`, "Voir la mission")}</div>
+    <p style="color:#9CA3AF;font-size:12px;text-align:center;margin-top:16px">
+      Si cette zone ne vous convient pas, ignorez cet email. Aucune action requise.
+    </p>
+  `);
+  await sendEmail(to, `🎯 Mission ${category} à ${city} — Êtes-vous disponible ?`, html);
+}
+
+// ─── 17. Campagne admin — email ciblé artisans ───────────────────────────────
+
+export async function sendArtisanCampaignEmail(
+  to: string,
+  firstName: string,
+  subject: string,
+  message: string
+): Promise<void> {
+  const html = baseTemplate(`
+    <h2 style="margin:0 0 6px;color:#1F2937;font-size:20px;font-weight:700;text-align:center">Message de GoServi</h2>
+    <p style="color:#6B7280;line-height:1.7;text-align:center;margin:0 0 16px">Bonjour ${firstName},</p>
+    <div style="background:#F4F7F7;border:1px solid #D1E5E5;border-radius:8px;padding:20px;margin:20px 0;">
+      <p style="margin:0;color:#1F2937;font-size:14px;line-height:1.8;white-space:pre-wrap">${message}</p>
+    </div>
+    <div style="text-align:center">${btn(`${APP_URL}/pro/dashboard`, "Accéder à mon espace")}</div>
+  `);
+  await sendEmail(to, subject, html);
+}
+
 export async function sendPayoutStatusEmail(
   to: string,
   firstName: string,
