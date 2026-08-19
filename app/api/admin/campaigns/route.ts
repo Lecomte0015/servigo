@@ -4,6 +4,18 @@ import { prisma } from "@/lib/prisma";
 import { sendArtisanCampaignEmail } from "@/lib/email";
 import { createAuditLog } from "@/lib/audit-log";
 
+// Normalise une ville : retire accents + minuscules → "Genève" = "geneve"
+function normalizeCity(city: string) {
+  return city.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+}
+
+function cityWhereClause(cityFilter: string) {
+  const normalized = normalizeCity(cityFilter);
+  // Cherche la valeur exacte ET la version sans accents (les artisans saisissent librement)
+  const variants = Array.from(new Set([cityFilter, normalized]));
+  return { city: { in: variants, mode: "insensitive" as const } };
+}
+
 export async function POST(req: NextRequest) {
   const auth = requireAuth(req, ["ADMIN"]);
   if ("error" in auth) return auth.error;
@@ -23,7 +35,7 @@ export async function POST(req: NextRequest) {
   const artisans = await prisma.artisanProfile.findMany({
     where: {
       isApproved: true,
-      ...(cityFilter ? { city: { equals: cityFilter, mode: "insensitive" as const } } : {}),
+      ...(cityFilter ? cityWhereClause(cityFilter) : {}),
       ...(categoryId ? { services: { some: { categoryId, isActive: true } } } : {}),
     },
     include: { user: { select: { firstName: true, email: true } } },
@@ -60,7 +72,7 @@ export async function GET(req: NextRequest) {
   const count = await prisma.artisanProfile.count({
     where: {
       isApproved: true,
-      ...(cityFilter ? { city: { equals: cityFilter, mode: "insensitive" as const } } : {}),
+      ...(cityFilter ? cityWhereClause(cityFilter) : {}),
       ...(categoryId ? { services: { some: { categoryId, isActive: true } } } : {}),
     },
   });
