@@ -21,11 +21,12 @@ export async function POST(req: NextRequest) {
   if ("error" in auth) return auth.error;
 
   const body = await req.json();
-  const { subject, message, cityFilter, categoryId } = body as {
+  const { subject, message, cityFilter, categoryId, artisanId } = body as {
     subject: string;
     message: string;
     cityFilter?: string;
     categoryId?: string;
+    artisanId?: string;
   };
 
   if (!subject?.trim() || !message?.trim()) {
@@ -35,8 +36,12 @@ export async function POST(req: NextRequest) {
   const artisans = await prisma.artisanProfile.findMany({
     where: {
       isApproved: true,
-      ...(cityFilter ? cityWhereClause(cityFilter) : {}),
-      ...(categoryId ? { services: { some: { categoryId, isActive: true } } } : {}),
+      ...(artisanId
+        ? { id: artisanId }
+        : {
+            ...(cityFilter ? cityWhereClause(cityFilter) : {}),
+            ...(categoryId ? { services: { some: { categoryId, isActive: true } } } : {}),
+          }),
     },
     include: { user: { select: { firstName: true, email: true } } },
   });
@@ -54,13 +59,13 @@ export async function POST(req: NextRequest) {
   await createAuditLog({
     adminId: auth.payload.userId,
     action: "SETTINGS_UPDATED",
-    details: { campaignSubject: subject, sent, total: artisans.length },
+    details: { campaignSubject: subject, sent, total: artisans.length, artisanId },
   });
 
   return NextResponse.json({ sent, total: artisans.length });
 }
 
-// Preview: count artisans matching filters
+// Preview: liste artisans + count selon filtres
 export async function GET(req: NextRequest) {
   const auth = requireAuth(req, ["ADMIN"]);
   if ("error" in auth) return auth.error;
@@ -69,13 +74,15 @@ export async function GET(req: NextRequest) {
   const cityFilter = searchParams.get("city") ?? undefined;
   const categoryId = searchParams.get("categoryId") ?? undefined;
 
-  const count = await prisma.artisanProfile.count({
+  const artisans = await prisma.artisanProfile.findMany({
     where: {
       isApproved: true,
       ...(cityFilter ? cityWhereClause(cityFilter) : {}),
       ...(categoryId ? { services: { some: { categoryId, isActive: true } } } : {}),
     },
+    select: { id: true, companyName: true, city: true },
+    orderBy: { companyName: "asc" },
   });
 
-  return NextResponse.json({ count });
+  return NextResponse.json({ count: artisans.length, artisans });
 }

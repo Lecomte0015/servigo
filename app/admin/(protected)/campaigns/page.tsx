@@ -8,18 +8,18 @@ const CITIES = [
   "Nyon", "Montreux", "Yverdon", "Morges", "Bienne", "Martigny", "La Chaux-de-Fonds",
 ];
 
-interface Category {
-  id: string;
-  name: string;
-}
+interface Category { id: string; name: string; }
+interface Artisan { id: string; companyName: string; city: string; }
 
 export default function CampaignsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [cityFilter, setCityFilter] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [artisanId, setArtisanId] = useState("");
+  const [artisans, setArtisans] = useState<Artisan[]>([]);
+  const [count, setCount] = useState<number | null>(null);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [count, setCount] = useState<number | null>(null);
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<{ sent: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -30,23 +30,32 @@ export default function CampaignsPage() {
       .then((j) => setCategories(j.data?.categories ?? []));
   }, []);
 
-  const fetchCount = useCallback(() => {
+  const fetchArtisans = useCallback(() => {
     const params = new URLSearchParams();
     if (cityFilter) params.set("city", cityFilter);
     if (categoryId) params.set("categoryId", categoryId);
     fetch(`/api/admin/campaigns?${params}`)
       .then((r) => r.json())
-      .then((j) => setCount(j.count ?? 0));
-  }, [cityFilter, categoryId]);
+      .then((j) => {
+        setArtisans(j.artisans ?? []);
+        setCount(j.count ?? 0);
+        // Réinitialise la sélection individuelle si elle n'est plus dans la liste
+        if (artisanId && !(j.artisans ?? []).find((a: Artisan) => a.id === artisanId)) {
+          setArtisanId("");
+        }
+      });
+  }, [cityFilter, categoryId, artisanId]);
 
-  useEffect(() => { fetchCount(); }, [fetchCount]);
+  useEffect(() => { fetchArtisans(); }, [fetchArtisans]);
+
+  const effectiveCount = artisanId ? 1 : (count ?? 0);
 
   const handleSend = async () => {
     if (!subject.trim() || !message.trim()) {
       setError("Veuillez renseigner le sujet et le message.");
       return;
     }
-    if (!window.confirm(`Envoyer cet email à ${count ?? "?"} artisan(s) ? Cette action est irréversible.`)) return;
+    if (!window.confirm(`Envoyer cet email à ${effectiveCount} artisan(s) ? Cette action est irréversible.`)) return;
     setSending(true);
     setError(null);
     setResult(null);
@@ -54,7 +63,13 @@ export default function CampaignsPage() {
       const res = await fetch("/api/admin/campaigns", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, message, cityFilter: cityFilter || undefined, categoryId: categoryId || undefined }),
+        body: JSON.stringify({
+          subject,
+          message,
+          artisanId: artisanId || undefined,
+          cityFilter: artisanId ? undefined : (cityFilter || undefined),
+          categoryId: artisanId ? undefined : (categoryId || undefined),
+        }),
       });
       const json = await res.json();
       if (!res.ok) { setError(json.error ?? "Erreur"); return; }
@@ -72,7 +87,7 @@ export default function CampaignsPage() {
     <div className="flex flex-col gap-5 max-w-2xl">
       <div>
         <h1 className="text-xl font-semibold text-[#1F2937]">Campagnes email artisans</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Envoyez un email ciblé aux artisans approuvés selon leur ville et métier.</p>
+        <p className="text-sm text-gray-500 mt-0.5">Envoyez un email ciblé aux artisans approuvés selon leur ville, métier ou individuellement.</p>
       </div>
 
       <Card>
@@ -85,7 +100,7 @@ export default function CampaignsPage() {
               <label className="block text-xs font-medium text-gray-500 mb-1.5">Ville</label>
               <select
                 value={cityFilter}
-                onChange={(e) => setCityFilter(e.target.value)}
+                onChange={(e) => { setCityFilter(e.target.value); setArtisanId(""); }}
                 className="w-full border border-[#D1E5E5] rounded-[8px] px-3 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#1CA7A6]"
               >
                 <option value="">Toutes les villes</option>
@@ -96,7 +111,7 @@ export default function CampaignsPage() {
               <label className="block text-xs font-medium text-gray-500 mb-1.5">Métier</label>
               <select
                 value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
+                onChange={(e) => { setCategoryId(e.target.value); setArtisanId(""); }}
                 className="w-full border border-[#D1E5E5] rounded-[8px] px-3 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#1CA7A6]"
               >
                 <option value="">Tous les métiers</option>
@@ -105,12 +120,33 @@ export default function CampaignsPage() {
             </div>
           </div>
 
-          {count !== null && (
-            <div className="flex items-center gap-2 bg-[#E6F2F2] rounded-[8px] px-4 py-2.5">
-              <span className="text-2xl font-bold text-[#1CA7A6]">{count}</span>
-              <span className="text-sm text-gray-600">artisan{count > 1 ? "s" : ""} correspondant{count > 1 ? "s" : ""} au ciblage</span>
-            </div>
-          )}
+          {/* Sélection individuelle */}
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5">
+              Artisan spécifique <span className="text-gray-400 font-normal">(optionnel — remplace les filtres ci-dessus)</span>
+            </label>
+            <select
+              value={artisanId}
+              onChange={(e) => setArtisanId(e.target.value)}
+              className="w-full border border-[#D1E5E5] rounded-[8px] px-3 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#1CA7A6]"
+            >
+              <option value="">— Envoyer à tous les artisans filtrés —</option>
+              {artisans.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.companyName} — {a.city}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className={`flex items-center gap-2 rounded-[8px] px-4 py-2.5 ${artisanId ? "bg-amber-50 border border-amber-200" : "bg-[#E6F2F2]"}`}>
+            <span className={`text-2xl font-bold ${artisanId ? "text-amber-600" : "text-[#1CA7A6]"}`}>{effectiveCount}</span>
+            <span className="text-sm text-gray-600">
+              {artisanId
+                ? `artisan sélectionné individuellement — ${artisans.find((a) => a.id === artisanId)?.companyName}`
+                : `artisan${effectiveCount > 1 ? "s" : ""} correspondant${effectiveCount > 1 ? "s" : ""} au ciblage`}
+            </span>
+          </div>
         </div>
       </Card>
 
@@ -146,17 +182,17 @@ export default function CampaignsPage() {
           {result && (
             <div className="bg-green-50 border border-green-200 rounded-[8px] px-4 py-3">
               <p className="text-sm text-green-700 font-medium">
-                ✅ Campagne envoyée — {result.sent} email{result.sent > 1 ? "s" : ""} sur {result.total} artisan{result.total > 1 ? "s" : ""}
+                Campagne envoyée — {result.sent} email{result.sent > 1 ? "s" : ""} sur {result.total} artisan{result.total > 1 ? "s" : ""}
               </p>
             </div>
           )}
 
           <button
             onClick={handleSend}
-            disabled={sending || !subject.trim() || !message.trim() || count === 0}
+            disabled={sending || !subject.trim() || !message.trim() || effectiveCount === 0}
             className="w-full py-3 px-4 rounded-[8px] text-sm font-semibold bg-[#1CA7A6] text-white hover:bg-[#178F8E] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {sending ? "Envoi en cours…" : `Envoyer à ${count ?? "…"} artisan${(count ?? 0) > 1 ? "s" : ""}`}
+            {sending ? "Envoi en cours…" : `Envoyer à ${effectiveCount} artisan${effectiveCount > 1 ? "s" : ""}`}
           </button>
         </div>
       </Card>
