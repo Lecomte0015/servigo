@@ -364,3 +364,22 @@ model SiteSettings {
   data      Json     // Full homepage config as JSON
   updatedAt DateTime @updatedAt
 }
+
+model CampaignDraft {
+  id          String    @id @default(cuid())
+  subject     String
+  message     String
+  cityFilter  String?
+  categoryId  String?
+  artisanId   String?
+  status      String    @default("DRAFT") // DRAFT | SCHEDULED | SENT
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  sentCount   Int?
+  totalCount  Int?
+  createdBy   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status, scheduledAt])
+}
