@@ -440,6 +440,52 @@ export default async function TrouverArtisanVillePage({
         </div>
       </section>
 
+      {/* Communes de l'agglomération — uniquement sur la page Genève */}
+      {ville === "geneve" && (
+        <section className="bg-[#F4F7F7] py-12 px-4">
+          <div className="max-w-[1200px] mx-auto">
+            <h2 className="text-2xl font-bold text-[#1F2937] mb-2 text-center">
+              Artisan d&apos;urgence dans les communes genevoises
+            </h2>
+            <p className="text-sm text-gray-500 text-center mb-8">
+              Plombier, électricien et serrurier disponibles dans toute l&apos;agglomération genevoise
+            </p>
+            {[
+              { slug: "plombier", name: "Plombier d'urgence", icon: "💧" },
+              { slug: "electricien", name: "Électricien d'urgence", icon: "⚡" },
+              { slug: "serrurier", name: "Serrurier d'urgence", icon: "🔑" },
+            ].map((svc) => (
+              <div key={svc.slug} className="mb-6">
+                <p className="text-sm font-semibold text-[#1CA7A6] mb-3 flex items-center gap-2">
+                  <TradeIcon slug={svc.slug} size={15} />
+                  {svc.name} — communes genevoises
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { slug: "carouge", name: "Carouge" },
+                    { slug: "plan-les-ouates", name: "Plan-les-Ouates" },
+                    { slug: "meyrin", name: "Meyrin" },
+                    { slug: "vernier", name: "Vernier" },
+                    { slug: "lancy", name: "Lancy" },
+                    { slug: "cologny", name: "Cologny" },
+                    { slug: "collonges-bellerive", name: "Collonges-Bellerive" },
+                  ].map((commune) => (
+                    <Link
+                      key={commune.slug}
+                      href={`/trouver-artisan/${commune.slug}/${svc.slug}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#D1E5E5] rounded-full text-sm text-[#1F2937] hover:border-[#1CA7A6] hover:text-[#1CA7A6] transition-colors"
+                    >
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1CA7A6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      {svc.name.split(" ")[0]} {commune.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Autres villes */}
       <section className="max-w-[1200px] mx-auto px-4 py-10">
         <p className="text-sm text-center text-gray-500 mb-5">GoServi est aussi disponible dans ces villes</p>
