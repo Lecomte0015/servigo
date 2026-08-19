@@ -65,14 +65,14 @@ function baseTemplate(content: string): string {
 
 // ─── Send Helper ────────────────────────────────────────────────────────────
 
-async function sendEmail(to: string, subject: string, html: string): Promise<void> {
+async function sendEmail(to: string, subject: string, html: string, replyTo?: string): Promise<void> {
   if (!resend) {
     // Dev mode: log instead of sending
     emailLogger.debug({ to, subject }, "📧 [EMAIL DEV MODE] Set RESEND_API_KEY to send real emails");
     return;
   }
   try {
-    await resend.emails.send({ from: FROM, to, subject, html });
+    await resend.emails.send({ from: FROM, to, subject, html, ...(replyTo ? { reply_to: replyTo } : {}) });
   } catch (err) {
     emailLogger.error({ err, to, subject }, "Email send error");
     // Don't throw — email failure should not break the main flow
@@ -456,7 +456,7 @@ export async function sendArtisanCampaignEmail(
     </div>
     <div style="text-align:center">${btn(`${APP_URL}/pro/dashboard`, "Accéder à mon espace")}</div>
   `);
-  await sendEmail(to, subject, html);
+  await sendEmail(to, subject, html, "contact@goservi.ch");
 }
 
 export async function sendPayoutStatusEmail(
