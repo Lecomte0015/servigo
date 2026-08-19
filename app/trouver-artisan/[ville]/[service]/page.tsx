@@ -101,6 +101,142 @@ const CITIES: Record<string, {
     neighborhoods: ["Anières", "Corsier", "Hermance", "Gy", "Meinier"],
     population: "3 200",
   },
+
+  // ── Communes de l'agglomération lausannoise ──────────────────────────────────
+  renens: {
+    name: "Renens",
+    canton: "VD",
+    postalCode: "1020",
+    parent: "Lausanne",
+    parentSlug: "lausanne",
+    distance: "4 km du centre de Lausanne",
+    description: "Renens est une commune dynamique et multiculturelle à l'ouest de Lausanne, en pleine transformation urbaine avec de nombreux projets résidentiels.",
+    character: "la commune en pleine transformation urbaine à l'ouest de Lausanne",
+    neighborhoods: ["Crissier", "Prilly", "Chavannes-près-Renens", "Écublens", "Villars-Sainte-Croix"],
+    population: "22 000",
+  },
+  prilly: {
+    name: "Prilly",
+    canton: "VD",
+    postalCode: "1008",
+    parent: "Lausanne",
+    parentSlug: "lausanne",
+    distance: "3 km du centre de Lausanne",
+    description: "Prilly est une commune résidentielle très proche du centre de Lausanne, appréciée pour ses quartiers calmes et son accès facile à la ville.",
+    character: "la commune résidentielle au cœur de l'agglomération lausannoise",
+    neighborhoods: ["Jouxtens-Mézery", "Romanel-sur-Lausanne", "Cheseaux-sur-Lausanne", "Bussigny", "Renens"],
+    population: "13 500",
+  },
+  pully: {
+    name: "Pully",
+    canton: "VD",
+    postalCode: "1009",
+    parent: "Lausanne",
+    parentSlug: "lausanne",
+    distance: "5 km du centre de Lausanne",
+    description: "Pully est une commune résidentielle prisée à l'est de Lausanne, sur les rives du lac Léman, connue pour ses villas et son cadre verdoyant.",
+    character: "la commune résidentielle haut de gamme à l'est de Lausanne",
+    neighborhoods: ["Paudex", "Belmont-sur-Lausanne", "Lutry", "Savigny", "Cully"],
+    population: "17 500",
+  },
+  crissier: {
+    name: "Crissier",
+    canton: "VD",
+    postalCode: "1023",
+    parent: "Lausanne",
+    parentSlug: "lausanne",
+    distance: "7 km du centre de Lausanne",
+    description: "Crissier est une commune commerciale et résidentielle à l'ouest de Lausanne, connue pour ses grandes surfaces et son développement rapide.",
+    character: "la commune commerciale et résidentielle à l'ouest de Lausanne",
+    neighborhoods: ["Ecublens", "Bussigny", "Villars-Sainte-Croix", "Romanel-sur-Lausanne", "Mex"],
+    population: "8 000",
+  },
+  ecublens: {
+    name: "Écublens",
+    canton: "VD",
+    postalCode: "1024",
+    parent: "Lausanne",
+    parentSlug: "lausanne",
+    distance: "8 km du centre de Lausanne",
+    description: "Écublens est une commune universitaire abritant l'EPFL et l'UNIL, à l'ouest de Lausanne, avec une population jeune et internationale.",
+    character: "la commune universitaire abritant l'EPFL à l'ouest de Lausanne",
+    neighborhoods: ["Saint-Sulpice", "Chavannes-près-Renens", "Renens", "Denges", "Lonay"],
+    population: "14 000",
+  },
+  bussigny: {
+    name: "Bussigny",
+    canton: "VD",
+    postalCode: "1030",
+    parent: "Lausanne",
+    parentSlug: "lausanne",
+    distance: "8 km du centre de Lausanne",
+    description: "Bussigny est une commune résidentielle et industrielle à l'ouest de Lausanne, en pleine croissance démographique avec de nombreux nouveaux quartiers.",
+    character: "la commune résidentielle en forte croissance à l'ouest de Lausanne",
+    neighborhoods: ["Crissier", "Villars-Sainte-Croix", "Ecublens", "Romanel-sur-Lausanne", "Denges"],
+    population: "10 500",
+  },
+  lutry: {
+    name: "Lutry",
+    canton: "VD",
+    postalCode: "1095",
+    parent: "Lausanne",
+    parentSlug: "lausanne",
+    distance: "7 km du centre de Lausanne",
+    description: "Lutry est une charmante commune viticole en bord de lac à l'est de Lausanne, classée au patrimoine mondial de l'UNESCO pour ses vignobles de Lavaux.",
+    character: "la commune viticole en bord de lac classée au patrimoine UNESCO",
+    neighborhoods: ["Paudex", "Pully", "Savigny", "Cully", "Grandvaux"],
+    population: "11 000",
+  },
+
+  // ── Communes de l'agglomération fribourgeoise ────────────────────────────────
+  "villars-sur-glane": {
+    name: "Villars-sur-Glâne",
+    canton: "FR",
+    postalCode: "1752",
+    parent: "Fribourg",
+    parentSlug: "fribourg",
+    distance: "3 km du centre de Fribourg",
+    description: "Villars-sur-Glâne est la commune la plus peuplée de l'agglomération fribourgeoise, un secteur résidentiel dynamique au nord-ouest de Fribourg.",
+    character: "la commune résidentielle la plus peuplée de l'agglomération fribourgeoise",
+    neighborhoods: ["Cormanon", "Les Plans-Fremaux", "Beaumont", "Granges-Paccot", "Givisiez"],
+    population: "13 000",
+  },
+  "granges-paccot": {
+    name: "Granges-Paccot",
+    canton: "FR",
+    postalCode: "1763",
+    parent: "Fribourg",
+    parentSlug: "fribourg",
+    distance: "4 km du centre de Fribourg",
+    description: "Granges-Paccot est une commune résidentielle et commerciale au nord de Fribourg, en plein développement avec de nombreuses zones d'activités.",
+    character: "la commune résidentielle et commerciale au nord de Fribourg",
+    neighborhoods: ["Corminbœuf", "Givisiez", "Villars-sur-Glâne", "Grolley", "Lossy-Formangueires"],
+    population: "5 500",
+  },
+  marly: {
+    name: "Marly",
+    canton: "FR",
+    postalCode: "1723",
+    parent: "Fribourg",
+    parentSlug: "fribourg",
+    distance: "5 km du centre de Fribourg",
+    description: "Marly est une commune résidentielle paisible au sud-ouest de Fribourg, appréciée pour son environnement calme et sa proximité avec la nature.",
+    character: "la commune résidentielle paisible au sud de Fribourg",
+    neighborhoods: ["Pierrafortscha", "Matran", "Avry-sur-Matran", "Cottens", "Neyruz"],
+    population: "8 500",
+  },
+  givisiez: {
+    name: "Givisiez",
+    canton: "FR",
+    postalCode: "1762",
+    parent: "Fribourg",
+    parentSlug: "fribourg",
+    distance: "4 km du centre de Fribourg",
+    description: "Givisiez est une commune résidentielle en plein essor au nord de Fribourg, connue pour ses infrastructures modernes et son cadre de vie agréable.",
+    character: "la commune résidentielle en essor au nord de Fribourg",
+    neighborhoods: ["Granges-Paccot", "Villars-sur-Glâne", "Corminbœuf", "Lossy-Formangueires", "Grolley"],
+    population: "4 500",
+  },
 };
 
 // ── Services d'urgence ────────────────────────────────────────────────────────
@@ -582,7 +718,7 @@ export default async function ServiceVillePage({
               </p>
               <p className="text-sm text-gray-500 leading-relaxed">
                 Oui, GoServi dispose de {svc.name.toLowerCase()}s partenaires basés à {city.name} et
-                dans l&apos;agglomération genevoise. {city.description} Nos artisans
+                dans l&apos;agglomération {city.parent.toLowerCase()}oise. {city.description} Nos artisans
                 connaissent bien {city.character} et peuvent intervenir rapidement dans
                 tous les quartiers, à seulement {city.distance}.
               </p>
@@ -614,14 +750,14 @@ export default async function ServiceVillePage({
         </div>
       </section>
 
-      {/* ── Autres communes autour de Genève ──────────────────────────────── */}
+      {/* ── Autres communes de la même agglomération ──────────────────────── */}
       <section className="bg-[#F4F7F7] py-10 px-4">
         <div className="max-w-[1200px] mx-auto">
           <p className="text-sm text-center text-gray-500 mb-5">
-            {svc.name} disponible dans toute l&apos;agglomération genevoise
+            {svc.name} disponible dans toute l&apos;agglomération {city.parent.toLowerCase()}oise
           </p>
           <div className="flex flex-wrap gap-2 justify-center">
-            {CITY_SLUGS.filter((s) => s !== ville).map((slug) => {
+            {CITY_SLUGS.filter((s) => s !== ville && CITIES[s].parentSlug === city.parentSlug).map((slug) => {
               const c = CITIES[slug];
               return (
                 <Link
@@ -635,11 +771,11 @@ export default async function ServiceVillePage({
               );
             })}
             <Link
-              href={`/trouver-artisan/geneve/${service}`}
+              href={`/trouver-artisan/${city.parentSlug}/${service}`}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1CA7A6] text-white rounded-full text-sm hover:bg-[#178F8E] transition-colors font-medium"
             >
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              {svc.name} Genève →
+              {svc.name} {city.parent} →
             </Link>
           </div>
         </div>

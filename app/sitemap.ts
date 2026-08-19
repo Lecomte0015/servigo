@@ -15,10 +15,16 @@ const CITY_SLUGS = [
   "la-chaux-de-fonds", "martigny",
 ];
 
-// Communes de l'agglomération genevoise — pages hyperlocales ville×service
-const GENEVA_SUBURB_SLUGS = [
+// Communes des agglomérations — pages hyperlocales ville×service (54 pages)
+const SUBURB_SLUGS = [
+  // Agglomération genevoise (7)
   "carouge", "plan-les-ouates", "meyrin", "vernier",
   "lancy", "cologny", "collonges-bellerive",
+  // Agglomération lausannoise (7)
+  "renens", "prilly", "pully", "crissier",
+  "ecublens", "bussigny", "lutry",
+  // Agglomération fribourgeoise (4)
+  "villars-sur-glane", "granges-paccot", "marly", "givisiez",
 ];
 
 const URGENT_SERVICE_SLUGS = ["plombier", "electricien", "serrurier"];
@@ -86,8 +92,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Prisma indisponible — on continue sans les profils artisans
   }
 
-  // Pages hyperlocales commune genevoise × service urgent (21 pages)
-  const suburbanServicePages: MetadataRoute.Sitemap = GENEVA_SUBURB_SLUGS.flatMap((ville) =>
+  // Pages hyperlocales commune × service urgent (54 pages)
+  const suburbanServicePages: MetadataRoute.Sitemap = SUBURB_SLUGS.flatMap((ville) =>
     URGENT_SERVICE_SLUGS.map((service) => ({
       url: `${APP_URL}/trouver-artisan/${ville}/${service}`,
       lastModified: new Date(),

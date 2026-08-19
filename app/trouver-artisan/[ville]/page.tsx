@@ -136,6 +136,43 @@ const SERVICES = [
   { slug: "nettoyage", name: "Nettoyage", desc: "Après sinistre, remise en état, fin de chantier" },
 ];
 
+// Communes par agglomération — liens hyperlocaux vers pages [ville]/[service]
+const SUBURB_LINKS: Record<string, { label: string; communes: { slug: string; name: string }[] }> = {
+  geneve: {
+    label: "Communes genevoises",
+    communes: [
+      { slug: "carouge", name: "Carouge" },
+      { slug: "plan-les-ouates", name: "Plan-les-Ouates" },
+      { slug: "meyrin", name: "Meyrin" },
+      { slug: "vernier", name: "Vernier" },
+      { slug: "lancy", name: "Lancy" },
+      { slug: "cologny", name: "Cologny" },
+      { slug: "collonges-bellerive", name: "Collonges-Bellerive" },
+    ],
+  },
+  lausanne: {
+    label: "Communes vaudoises",
+    communes: [
+      { slug: "renens", name: "Renens" },
+      { slug: "prilly", name: "Prilly" },
+      { slug: "pully", name: "Pully" },
+      { slug: "crissier", name: "Crissier" },
+      { slug: "ecublens", name: "Écublens" },
+      { slug: "bussigny", name: "Bussigny" },
+      { slug: "lutry", name: "Lutry" },
+    ],
+  },
+  fribourg: {
+    label: "Communes fribourgeoises",
+    communes: [
+      { slug: "villars-sur-glane", name: "Villars-sur-Glâne" },
+      { slug: "granges-paccot", name: "Granges-Paccot" },
+      { slug: "marly", name: "Marly" },
+      { slug: "givisiez", name: "Givisiez" },
+    ],
+  },
+};
+
 export async function generateStaticParams() {
   return Object.keys(CITIES).map((slug) => ({ ville: slug }));
 }
@@ -440,36 +477,28 @@ export default async function TrouverArtisanVillePage({
         </div>
       </section>
 
-      {/* Communes de l'agglomération — uniquement sur la page Genève */}
-      {ville === "geneve" && (
+      {/* Communes de l'agglomération — pour les villes ayant des pages hyperlocales */}
+      {SUBURB_LINKS[ville] && (
         <section className="bg-[#F4F7F7] py-12 px-4">
           <div className="max-w-[1200px] mx-auto">
             <h2 className="text-2xl font-bold text-[#1F2937] mb-2 text-center">
-              Artisan d&apos;urgence dans les communes genevoises
+              Artisan d&apos;urgence dans les {SUBURB_LINKS[ville].label.toLowerCase()}
             </h2>
             <p className="text-sm text-gray-500 text-center mb-8">
-              Plombier, électricien et serrurier disponibles dans toute l&apos;agglomération genevoise
+              Plombier, électricien et serrurier disponibles dans toute l&apos;agglomération {city.name.toLowerCase()}oise
             </p>
             {[
-              { slug: "plombier", name: "Plombier d'urgence", icon: "💧" },
-              { slug: "electricien", name: "Électricien d'urgence", icon: "⚡" },
-              { slug: "serrurier", name: "Serrurier d'urgence", icon: "🔑" },
+              { slug: "plombier", name: "Plombier d'urgence" },
+              { slug: "electricien", name: "Électricien d'urgence" },
+              { slug: "serrurier", name: "Serrurier d'urgence" },
             ].map((svc) => (
               <div key={svc.slug} className="mb-6">
                 <p className="text-sm font-semibold text-[#1CA7A6] mb-3 flex items-center gap-2">
                   <TradeIcon slug={svc.slug} size={15} />
-                  {svc.name} — communes genevoises
+                  {svc.name} — {SUBURB_LINKS[ville].label.toLowerCase()}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {[
-                    { slug: "carouge", name: "Carouge" },
-                    { slug: "plan-les-ouates", name: "Plan-les-Ouates" },
-                    { slug: "meyrin", name: "Meyrin" },
-                    { slug: "vernier", name: "Vernier" },
-                    { slug: "lancy", name: "Lancy" },
-                    { slug: "cologny", name: "Cologny" },
-                    { slug: "collonges-bellerive", name: "Collonges-Bellerive" },
-                  ].map((commune) => (
+                  {SUBURB_LINKS[ville].communes.map((commune) => (
                     <Link
                       key={commune.slug}
                       href={`/trouver-artisan/${commune.slug}/${svc.slug}`}
